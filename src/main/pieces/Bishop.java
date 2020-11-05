@@ -1,4 +1,4 @@
-package main;
+package main.pieces;
 
 public class Bishop extends Piece{
     // Defines how the piece moves (Dx, Dy)

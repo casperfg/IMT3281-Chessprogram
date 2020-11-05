@@ -1,4 +1,4 @@
-package main;
+package main.pieces;
 
 public class Knight extends Piece { // Hest
     // Defines how the piece moves (Dx, Dy)

@@ -1,5 +1,13 @@
 package main;
 
+import main.pieces.Bishop;
+import main.pieces.King;
+import main.pieces.Knight;
+import main.pieces.Pawn;
+import main.pieces.Piece;
+import main.pieces.Queen;
+import main.pieces.Rook;
+
 public class Tile {
     public int[] position; // internal position of tile (x,y) 0-7
     boolean tileColorWhite; // tile is white
