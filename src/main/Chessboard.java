@@ -1,24 +1,22 @@
 package main;
 
 public class Chessboard {
-    public Piece[][] board = new Piece[8][8];
-    public String line = "rhbkqbhr"; // h=knight
+    public Tile[][] board = new Tile[8][8];
+    public String line = "rnbkqbnr"; // n=knight
     public boolean isWhite = true; // starting color
+    // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
     public void makeStart(){
-        int[] startLine = new int[]{7,1};
-        int y = 7;
-        for(int i = 0; i<2; i++){
-            y = startLine[i];
+        int[] startLine = new int[]{7,0};
+        for(int y = 0; y<8; y++){
             for(int x = 0; x<8; x++){
-                switch (line.charAt(x)) {
-                    case 'h' -> board[y][x] = new Knight();
-                    case 'b' -> board[y][x] = new Bishop();
-                    case 'r' -> board[y][x] = new Rook();
-                    case 'k' -> board[y][x] = new King();
-                    case 'q' -> board[y][x] = new Queen();
+                board[y][x] = new Tile();
+                if(y == 7 || y == 0){
+                    board[y][x].updatePiece(line.charAt(x));
+                }else if(y == 6 || y == 1){
+                    board[y][x].updatePiece('p');
                 }
-                board[y][x].color = (y == 7) == isWhite;
+                board[y][x].setPos(new int[]{x,y});
             }
         }
     }
