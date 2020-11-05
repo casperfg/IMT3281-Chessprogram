@@ -23,6 +23,6 @@ public class Tile {
     }
     public void removePiece(){
         chessPiece = null;
-        hasPiece
+        hasPiece = false;
     }
 }
