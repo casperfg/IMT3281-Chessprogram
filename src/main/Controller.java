@@ -1,5 +1,5 @@
 package main;
 
 public class Controller {
-    public Chessboard board = new Chessboard(true);
+    //public Chessboard board = new Chessboard(true);
 }

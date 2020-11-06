@@ -1,6 +1,8 @@
 package main;
 
-public class Chessboard {
+import javafx.scene.Node;
+
+public class Chessboard extends Node {
     public Tile[][] board = new Tile[8][8];
     public String line = "rnbkqbnr"; // n=knight
     public boolean isWhite = true; // true if white is at bottom (y=6 || y=7)
