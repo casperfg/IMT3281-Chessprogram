@@ -13,6 +13,7 @@ public class Tile {
     boolean tileColorWhite; // tile is white
     Boolean hasPiece = false; // has a piece on it
     Piece chessPiece; // piece pointer
+    char pieceChar; // piece type
     String tileName; // name of tile: e4, e6 etc..
     String column = "abcdefgh"; // column names for tilename
 
@@ -26,6 +27,7 @@ public class Tile {
             case 'q' -> chessPiece = new Queen();
             case 'p' -> chessPiece = new Pawn();
         }
+        pieceChar = type;
     }
     public void updateTileName(int[] pos){ // make e4, e5, g7 etc..
         tileName = String.valueOf(column.charAt(pos[0]));
