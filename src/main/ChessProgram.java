@@ -37,7 +37,7 @@ public class ChessProgram extends Application {
     @Override
     public void start(Stage primaryStage) {
         final int size = 8;
-        Chessboard board = new Chessboard(true);
+        Chessboard board = new Chessboard();
         BorderPane borderPane = new BorderPane();
         GridPane gridPane = new GridPane();
         for (int row = 0; row < size; row++) {

@@ -4,7 +4,6 @@ import main.pieces.Piece;
 public class Chessboard{
     public Tile[][] board = new Tile[8][8];
     public String line = "rnbkqbnr"; // n=knight
-    public boolean isWhite = true; // true if white is at bottom (y=6 || y=7)
     public boolean whiteTurn = true;
 
     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
@@ -45,11 +44,12 @@ public class Chessboard{
                     fen.append((myPiece.color) ? Character.toUpperCase(myTile.pieceChar) : myTile.pieceChar);
                 }
             }
+            if(empty != 0){fen.append(empty);}
+            if(y != 7) {fen.append('/'); }
         }
         return fen.toString();
     }
-    public Chessboard(boolean stBool){
-        this.isWhite = stBool;
+    public Chessboard(){
         makeStart();
         System.out.println(toFen());
     }
