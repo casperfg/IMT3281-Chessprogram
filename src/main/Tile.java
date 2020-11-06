@@ -45,7 +45,6 @@ public class Tile {
         }else{ // if odd
             tileColorWhite = (pos[0]%2 == 1); // then odd x is white
         }
-        System.out.println(tileName+" "+String.valueOf(tileColorWhite));
     }
     public void removePiece(){ // remove piece
         chessPiece = null;
