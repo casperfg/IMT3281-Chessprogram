@@ -22,4 +22,12 @@ public class EngineHandler {
         }
         return true;
     }
+    public void sendCommand(String command){
+        try {
+            processWriter.write(command + "\n");
+            processWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
