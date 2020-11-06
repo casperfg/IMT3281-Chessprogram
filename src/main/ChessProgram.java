@@ -1,5 +1,6 @@
 package main;
 
+import main.Chessboard;
 import java.util.Locale;
 import java.util.Random;
 import java.util.*;

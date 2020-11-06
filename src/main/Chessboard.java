@@ -1,16 +1,7 @@
 package main;
-
-<<<<<<< HEAD
 import javafx.scene.Node;
-
-public class Chessboard extends Node {
-=======
 import main.pieces.Piece;
-
-// I see pussy other people need food
-// -Mac Miller
-public class Chessboard {
->>>>>>> engine
+public class Chessboard{
     public Tile[][] board = new Tile[8][8];
     public String line = "rnbkqbnr"; // n=knight
     public boolean isWhite = true; // true if white is at bottom (y=6 || y=7)
