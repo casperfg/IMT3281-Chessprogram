@@ -9,9 +9,10 @@ public class Chessboard extends Node {
     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
     public void makeStart(){
+        int size = 8;
         int[] startLine = new int[]{7,0};
-        for(int y = 0; y<8; y++){
-            for(int x = 0; x<8; x++){
+        for(int y = 0; y < size; y++){
+            for(int x = 0; x<size; x++){
                 board[y][x] = new Tile();
                 if(y == 7 || y == 0){
                     board[y][x].updatePiece(line.charAt(x));
@@ -22,6 +23,7 @@ public class Chessboard extends Node {
             }
         }
     }
+
     public Chessboard(boolean stBool){
         this.isWhite = stBool;
         makeStart();
