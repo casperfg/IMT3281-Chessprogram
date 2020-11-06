@@ -1,6 +1,8 @@
 package main;
 
+import java.util.Locale;
 import java.util.Random;
+import java.util.*;
 
 import javafx.application.Application;
 import javafx.geometry.HPos;
@@ -20,6 +22,16 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class ChessProgram extends Application {
+
+    String language = "en";
+    String country = "UK";
+
+
+    Locale currentLocale = new Locale(language, country);
+    ResourceBundle messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale);
+
+
+
 
     @Override
     public void start(Stage primaryStage) {
@@ -46,9 +58,9 @@ public class ChessProgram extends Application {
             gridPane.getRowConstraints().add(new RowConstraints(5, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.ALWAYS, VPos.CENTER, true));
         }
 
-        Menu file = new Menu("File"); //Må endres til å lese fra fil mtp internasjonalisering.
-        Menu settings = new Menu("Settings");
-        Menu help = new Menu("Help");
+        Menu file = new Menu(messages.getString("File")); //Må endres til å lese fra fil mtp internasjonalisering.
+        Menu settings = new Menu(messages.getString("Settings"));
+        Menu help = new Menu(messages.getString("Help"));
         MenuBar menubar = new MenuBar();
         menubar.getMenus().addAll(file,settings,help);
 
