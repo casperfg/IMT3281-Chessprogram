@@ -9,7 +9,8 @@ public class EngineHandler {
     private Process engine;
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
-    private int eloRating = 2500;
+    public int eloRating = 2500;
+    public int thinkTime = 15; // seconds
     private static final String PATH = "./res/stockfish.exe";
     public boolean startEngine(){
         try{
@@ -51,15 +52,8 @@ public class EngineHandler {
     public void setElo(int Elo){
         sendCommand("setoption name UCI_Elo value "+String.valueOf(Elo));
     }
-    public void getFen(){
-
-    }
-    public void sendMove(String move, String fen){ // if fen="" use startpos
-        if(fen == ""){
-            fen = "startpos";
-        }else{
-            fen = "fen "+fen;
-        }
-        sendCommand("position "+fen+" move "+move);
+    public void getBestMove(Chessboard cb){
+        sendCommand("position fen "+cb.toFen());
+        sendCommand("go movetime "+thinkTime*1000);
     }
 }
