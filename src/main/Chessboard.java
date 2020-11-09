@@ -1,5 +1,6 @@
 package main;
 import javafx.scene.Node;
+import javafx.scene.layout.StackPane;
 import main.pieces.Piece;
 public class Chessboard{
     public Tile[][] board = new Tile[8][8];
@@ -66,7 +67,7 @@ public class Chessboard{
         int empty;
 
         // state information, castle, enpassant movecount
-        if(wCastle == "" && bCastle == ""){
+        if(wCastle.equals("") && bCastle.equals("")){
             wCastle = "-";
         }
         result = " "+turn+" "+wCastle+bCastle;
