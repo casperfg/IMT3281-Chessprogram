@@ -5,13 +5,22 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 // https://github.com/rahular/chess-misc/blob/master/JavaStockfish/src/com/rahul/stockfish/Stockfish.java
-public class EngineHandler {
+public class EngineHandler extends Thread{
     private Process engine;
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
     public int eloRating = 2500;
-    public int thinkTime = 15; // seconds
+    public int thinkTime = 1000; // ms
+    public boolean done = false;
+    String Best;
     private static final String PATH = "./res/stockfish.exe";
+
+    public EngineHandler(){
+        startEngine();
+    }
+    public void run(Chessboard ch){
+        getBestMove(ch);
+    }
     public boolean startEngine(){
         try{
             engine = Runtime.getRuntime().exec(PATH); // execute exe
@@ -24,13 +33,16 @@ public class EngineHandler {
         }
         return true;
     }
-    public void sendCommand(String command){
+    public boolean sendCommand(String command){
         try {
             processWriter.write(command + "\n");
             processWriter.flush();
         } catch (IOException e) {
             e.printStackTrace();
+            startEngine();
+            sendCommand(command);
         }
+        return true;
     }
     public String getOutput(int waitTime) {
         StringBuffer buffer = new StringBuffer();
@@ -52,8 +64,23 @@ public class EngineHandler {
     public void setElo(int Elo){
         sendCommand("setoption name UCI_Elo value "+String.valueOf(Elo));
     }
-    public void getBestMove(Chessboard cb){
-        sendCommand("position fen "+cb.toFen());
-        sendCommand("go movetime "+thinkTime*1000);
+    public String getBestMove(Chessboard cb) {
+        String out;
+
+        done = false;
+        sendCommand("position fen " + cb.toFen());
+        sendCommand("go movetime " + String.valueOf(thinkTime));
+        out = getOutput(thinkTime + 30);
+        for (int i = 0; i < 3; i++){ // makes sure the bestmove call is caught
+            try {
+                out = out.split("bestmove ")[1].split(" ")[0];
+                break;
+            } catch (Exception e) {
+                out = getOutput(250);
+            }
+        }
+        Best = out;
+        done = true;
+        return out;
     }
 }

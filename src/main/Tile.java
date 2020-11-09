@@ -10,8 +10,7 @@ import main.pieces.Piece;
 import main.pieces.Queen;
 import main.pieces.Rook;
 
-public class Tile extends Node {
-    public int[] position; // internal position of tile (x,y) 0-7
+public class Tile{
     boolean tileColorWhite; // tile is white
     String tileName; // name of tile: e4, e6 etc..
     String column = "abcdefgh"; // column names for tilename
@@ -50,9 +49,10 @@ public class Tile extends Node {
         }
     }
     public void setProp(int[] pos, boolean color){ // set properties
-        position = pos; // (x,y)
         if(hasPiece){
             chessPiece.color = color; // is true if white
+            chessPiece.position = pos;
+            chessPiece.setIcon();
         }
         updateTileName(pos);
         updateTileColor(pos);
@@ -62,6 +62,13 @@ public class Tile extends Node {
         chessPiece = null;
         hasPiece = false;
     }
-
-
+    public char getType(){
+        return chessPiece.type;
+    }
+    public boolean getColor(){
+        return chessPiece.color;
+    }
+    public void possible() {
+        chessPiece.possible();
+    }
 }

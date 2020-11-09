@@ -1,5 +1,6 @@
 package main;
 
+import javafx.animation.AnimationTimer;
 import javafx.scene.control.*;
 import main.Chessboard;
 
@@ -38,11 +39,10 @@ import javax.swing.*;
 
 public class ChessProgram extends Application {
 
-
+    Chessboard cb = new Chessboard();
+    EngineHandler eng = new EngineHandler();
     Locale currentLocale = setLanguage("en", "UK");
     ResourceBundle messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle.
-
-
 
 
     @Override
@@ -50,7 +50,6 @@ public class ChessProgram extends Application {
 
         System.out.println(currentLocale);
         final int size = 8;
-        Chessboard board = new Chessboard();
         BorderPane borderPane = new BorderPane();
 
 //================== File ==================
@@ -93,25 +92,27 @@ public class ChessProgram extends Application {
         primaryStage.setTitle("Chess");
         primaryStage.setResizable(false);
         primaryStage.show();
+        eng.run(cb);
+        new AnimationTimer() { // mainloop of the program
+            @Override
+            public void handle(long currentNanoTime) {
+                cb.move(eng.getBestMove(cb)); // do the best move.
+                GridPane chessboard = createChessBoard(); // update new chessboard view
+                borderPane.setCenter(chessboard); // set the new chessboard
+
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {;
+                }
+            }
+        }.start(); // start main animation loop
 
     }
 
     public GridPane createChessBoard(){
         final int size = 10;
-        GridPane gridPane = new GridPane();
-        for (int row = 1; row < size-1; row++) {
-            for (int col = 1; col < size-1; col ++) {
-                StackPane tileSquare = new StackPane();
-                String color;
-                if ((row + col) % 2 == 0) {
-                    color = "white";
-                } else {
-                    color = "gray";
-                }
-                tileSquare.setStyle("-fx-background-color: "+color+";");
-                gridPane.add(tileSquare,row, col);
-            }
-        }
+        GridPane gridPane = cb.boardView();
+
         for (int i = 0; i < size; i++) {
             gridPane.getColumnConstraints().add(new ColumnConstraints(5, Control.USE_COMPUTED_SIZE,
                                                 Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true));

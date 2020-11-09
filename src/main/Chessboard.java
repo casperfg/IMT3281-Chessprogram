@@ -1,8 +1,10 @@
 package main;
-import javafx.scene.Node;
+
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import main.pieces.Piece;
+
 public class Chessboard extends GridPane {
     public Tile[][] board = new Tile[8][8];
     public boolean whiteTurn = true;
@@ -10,25 +12,25 @@ public class Chessboard extends GridPane {
     public boolean blackCastle = false;
     public String passantSquare = "-"; // '-' if no passantsquare
     public int moveCount = 0; // increments after black move
+
+
+    private String compMove;
     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
-    public Chessboard(){
+    public Chessboard() {
         makeStart();
-        System.out.println(toFen());
-        move(3,6,3,5);
-        System.out.println(toFen());
     }
 
-    public void makeStart(){ // setup start position
+    public void makeStart() { // setup start position
         int size = 8;
-        String line = "rnbkqbnr"; // n=knight
-        for(int y = 0; y < size; y++){
-            for(int x = 0; x<size; x++){
+        String line = "rnbqkbnr"; // n=knight
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
                 board[y][x] = new Tile();
 
-                if(y == 7 || y == 0){ // place officer
+                if (y == 7 || y == 0) { // place officer
                     board[y][x].updatePiece(line.charAt(x));
-                }else if(y == 6 || y == 1){ // place pawn
+                } else if (y == 6 || y == 1) { // place pawn
                     board[y][x].updatePiece('p');
                 }
 
@@ -38,31 +40,63 @@ public class Chessboard extends GridPane {
             }
         }
     }
+
+    public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
+        if (fPiece.type == 'k') {
+            if (fPiece.color) { // king moved, no castling
+                whiteCastle = true;
+            } else {
+                blackCastle = true;
+            }
+            //if((x-xt) != 1){ // castleing
+
+            //}
+        }
+    }
+
+    public void move(String move) { // e2e4
+        String column = "abcdefgh";
+        System.out.println(move);
+        int x = column.indexOf(move.charAt(0));
+        int y = Character.getNumericValue(move.charAt(1));
+        int xt = column.indexOf(move.charAt(2));
+        int yt = Character.getNumericValue(move.charAt(3));
+
+        compMove = move;
+        move(x, 8 - y, xt, 8 - yt); // internalY = 8-External
+    }
+
     // validates before moving.
-    public void move(int x, int y, int xt, int yt){ // from x,y to xt, yt
+    public void move(int x, int y, int xt, int yt) { // from x,y to xt, yt
         Tile chTile; // tile
         Piece fPiece = board[y][x].chessPiece;
         Piece tPiece = board[yt][xt].chessPiece; // from piece and topiece
         boolean isBlank = !board[yt][xt].hasPiece;
 
         boolean isOpposite = false;
-        if (!isBlank){
+        if (!isBlank) {
             isOpposite = tPiece.color != fPiece.color;
         }
 
-        if(board[y][x].hasPiece && (isBlank || isOpposite)){
+        if(board[y][x].hasPiece && (isBlank || isOpposite)) {
+            fPiece.position = new int[]{xt, yt};
+            fPiece.lastPosition = new int[]{x, y};
             board[yt][xt].chessPiece = fPiece; // move piece to new tile
-            board[yt][xt].chessPiece.lastPosition = new int[]{x,y};
             board[yt][xt].hasPiece = true;
             board[y][x].removePiece();
 
             whiteTurn = !whiteTurn;
-            if(whiteTurn) {moveCount++;}
+            if (whiteTurn) {
+                moveCount++;
+            }
+            specialMoves(x, y, xt, yt, fPiece);
+
         }else{
             System.out.println("wrong move");
             System.exit(1);
         }
     }
+
     public String toFen(){
         Tile myTile;
         Piece myPiece;
@@ -98,9 +132,48 @@ public class Chessboard extends GridPane {
                     fen.append((myPiece.color) ? Character.toUpperCase(myPiece.type) : myPiece.type);
                 }
             }
-            if(empty != 0){fen.append(empty);}
-            if(y != 7) {fen.append('/'); } // add
+            if (empty != 0) {
+                fen.append(empty);
+            }
+            if (y != 7) {
+                fen.append('/');
+            } // add
         }
-        return fen.toString()+result;
+        return fen.toString() + result;
+    }
+
+    public GridPane boardView() {
+        final int size = 10;
+        GridPane gridPane = new GridPane();
+        for (int row = 1; row < size-1; row++) {
+            for (int col = 1; col < size-1; col ++) {
+                StackPane tileSquare = new StackPane();
+                Piece cp;
+                String color;
+                if (board[col-1][row-1].tileColorWhite) {
+                    color = "white";
+                } else {
+                    color = "gray";
+                }
+                if(board[col-1][row-1].hasPiece){ // if has piece
+                    cp = board[col-1][row-1].chessPiece;
+                    ImageView vImg = new ImageView(cp.icon);
+                    vImg.setFitHeight(20);
+                    vImg.setFitWidth(20);
+                    tileSquare.getChildren().add(vImg);
+                }
+                tileSquare.setStyle("-fx-background-color: "+color+";");
+                gridPane.add(tileSquare,row, col);
+            }
+        }
+        return gridPane;
+    }
+
+    public void humanClick(int x, int y) {
+        if (board[y][x].hasPiece) {
+            if (board[y][x].chessPiece.color == whiteTurn) { // is correct turn
+                board[y][x].possible(); // call possible WIP
+            }
+        }
     }
 }
