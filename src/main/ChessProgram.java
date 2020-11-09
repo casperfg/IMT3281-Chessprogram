@@ -1,6 +1,5 @@
 package main;
 
-<<<<<<< HEAD
 import javafx.animation.AnimationTimer;
 import javafx.scene.control.*;
 import main.Chessboard;
@@ -15,8 +14,6 @@ import javafx.scene.image.Image;
 
 
 import java.util.Arrays;
-=======
->>>>>>> 02d7911839542544c6fd08f74915490eb7207361
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -42,16 +39,12 @@ import javafx.stage.Stage;
 
 public class ChessProgram extends Application {
 
-<<<<<<< HEAD
     Chessboard cb = new Chessboard();
     EngineHandler eng = new EngineHandler();
-    Locale currentLocale = setLanguage("en", "UK");
     ResourceBundle messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle.
-=======
     String defaultLanguage = "en";
     String defaultCountry = "UK";
     Locale currentLocale = setLanguage(defaultLanguage, defaultCountry); //sets default language to english.
->>>>>>> 02d7911839542544c6fd08f74915490eb7207361
 
 
     @Override
@@ -59,11 +52,7 @@ public class ChessProgram extends Application {
         ResourceBundle messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle.
 
         System.out.println(currentLocale);
-<<<<<<< HEAD
         final int size = 8;
-=======
-        Chessboard board = new Chessboard();
->>>>>>> 02d7911839542544c6fd08f74915490eb7207361
         BorderPane borderPane = new BorderPane();
 
 //================== File ==================
