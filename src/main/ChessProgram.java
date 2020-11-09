@@ -1,6 +1,5 @@
 package main;
 
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -37,17 +36,18 @@ public class ChessProgram extends Application {
         Menu help = new Menu(messages.getString("Help"));
         MenuBar menubar = new MenuBar();
         menubar.getMenus().addAll(file,settings,help);
+        GridPane chessboard = createChessBoard();
 
 
         borderPane.setTop(menubar);
-        borderPane.setCenter(createTileGUI());
+        borderPane.setCenter(chessboard);
         primaryStage.setScene(new Scene(borderPane, 700, 700));
         primaryStage.setResizable(false);
         primaryStage.show();
 
     }
 
-    public GridPane createTileGUI(){
+    public GridPane createChessBoard(){
         final int size = 8;
         GridPane gridPane = new GridPane();
         for (int row = 0; row < size; row++) {
@@ -57,15 +57,17 @@ public class ChessProgram extends Application {
                 if ((row + col) % 2 == 0) {
                     color = "white";
                 } else {
-                    color = "black";
+                    color = "gray";
                 }
                 tileSquare.setStyle("-fx-background-color: "+color+";");
                 gridPane.add(tileSquare,row, col);
             }
         }
         for (int i = 0; i < size; i++) {
-            gridPane.getColumnConstraints().add(new ColumnConstraints(5, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true));
-            gridPane.getRowConstraints().add(new RowConstraints(5, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.ALWAYS, VPos.CENTER, true));
+            gridPane.getColumnConstraints().add(new ColumnConstraints(5, Control.USE_COMPUTED_SIZE,
+                                                Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true));
+            gridPane.getRowConstraints().add(new RowConstraints(5, Control.USE_COMPUTED_SIZE,
+                                                Double.POSITIVE_INFINITY, Priority.ALWAYS, VPos.CENTER, true));
         }
 
         return gridPane;
