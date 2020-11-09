@@ -12,12 +12,18 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 
 
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javafx.application.Application;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -45,25 +51,49 @@ public class ChessProgram extends Application {
         final int size = 8;
         Chessboard board = new Chessboard();
         BorderPane borderPane = new BorderPane();
+        Menu file = new Menu(messages.getString("File")); //Må endres til å lese fra fil mtp internasjonalisering.
+        Menu settings = new Menu(messages.getString("Settings"));
+        Menu help = new Menu(messages.getString("Help"));
+        MenuBar menubar = new MenuBar();
+        menubar.getMenus().addAll(file,settings,help);
+        GridPane chessboard = createChessBoard();
+
+
+        borderPane.setTop(menubar);
+        borderPane.setCenter(chessboard);
+        primaryStage.setScene(new Scene(borderPane, 800, 800));
+        primaryStage.setTitle("Chess");
+        primaryStage.setResizable(false);
+        primaryStage.show();
+
+    }
+
+    public GridPane createChessBoard(){
+        final int size = 10;
         GridPane gridPane = new GridPane();
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                StackPane square = new StackPane();
+        for (int row = 1; row < size-1; row++) {
+            for (int col = 1; col < size-1; col ++) {
+                StackPane tileSquare = new StackPane();
                 String color;
                 if ((row + col) % 2 == 0) {
                     color = "white";
                 } else {
-                    color = "black";
+                    color = "gray";
                 }
-                square.setStyle("-fx-background-color: " + color + ";");
-                gridPane.add(square, col, row);
+                tileSquare.setStyle("-fx-background-color: "+color+";");
+                gridPane.add(tileSquare,row, col);
             }
         }
-
         for (int i = 0; i < size; i++) {
-            gridPane.getColumnConstraints().add(new ColumnConstraints(5, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true));
-            gridPane.getRowConstraints().add(new RowConstraints(5, Control.USE_COMPUTED_SIZE, Double.POSITIVE_INFINITY, Priority.ALWAYS, VPos.CENTER, true));
+            gridPane.getColumnConstraints().add(new ColumnConstraints(5, Control.USE_COMPUTED_SIZE,
+                                                Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true));
+            gridPane.getRowConstraints().add(new RowConstraints(5, Control.USE_COMPUTED_SIZE,
+                                                Double.POSITIVE_INFINITY, Priority.ALWAYS, VPos.CENTER, true));
         }
+        labelBoard(gridPane);
+        return gridPane;
+    }
+
 
 //================== File ==================
         Menu file = new Menu(messages.getString("File"));
@@ -99,11 +129,18 @@ public class ChessProgram extends Application {
         MenuBar menubar = new MenuBar();
         menubar.getMenus().addAll(file, settings, help);
 
+        return gridPane;
+    }
 
-        borderPane.setTop(menubar);
-        borderPane.setCenter(gridPane);
-        primaryStage.setScene(new Scene(borderPane, 600, 600));
-        primaryStage.show();
+    void labelBoard(GridPane gridPane){
+        final String[] letterLabels = {"A", "B", "C", "D", "E", "F", "G", "H"};
+        final String[] numbers = {"8", "7", "6", "5", "4", "3","2", "1"};
+            for (int i = 8; i > 0; i--) {
+                gridPane.add(new Label(letterLabels[i - 1]), i, 0);
+                gridPane.add(new Label(letterLabels[i - 1]), i, 9);
+                gridPane.add(new Label(numbers[i - 1]), 9, i);
+                gridPane.add(new Label(numbers[i - 1]), 0, i);
+            }
     }
 
 
