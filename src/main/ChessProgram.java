@@ -1,5 +1,6 @@
 package main;
 
+<<<<<<< HEAD
 import javafx.animation.AnimationTimer;
 import javafx.scene.control.*;
 import main.Chessboard;
@@ -14,6 +15,8 @@ import javafx.scene.image.Image;
 
 
 import java.util.Arrays;
+=======
+>>>>>>> 02d7911839542544c6fd08f74915490eb7207361
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -25,6 +28,9 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -32,24 +38,32 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import main.pieces.*;
-
-import javax.swing.*;
 
 
 public class ChessProgram extends Application {
 
+<<<<<<< HEAD
     Chessboard cb = new Chessboard();
     EngineHandler eng = new EngineHandler();
     Locale currentLocale = setLanguage("en", "UK");
     ResourceBundle messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle.
+=======
+    String defaultLanguage = "en";
+    String defaultCountry = "UK";
+    Locale currentLocale = setLanguage(defaultLanguage, defaultCountry); //sets default language to english.
+>>>>>>> 02d7911839542544c6fd08f74915490eb7207361
 
 
     @Override
     public void start(Stage primaryStage) {
+        ResourceBundle messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle.
 
         System.out.println(currentLocale);
+<<<<<<< HEAD
         final int size = 8;
+=======
+        Chessboard board = new Chessboard();
+>>>>>>> 02d7911839542544c6fd08f74915490eb7207361
         BorderPane borderPane = new BorderPane();
 
 //================== File ==================
@@ -70,8 +84,16 @@ public class ChessProgram extends Application {
 
 //================== Language Item event handler ==================
         Norwegian.setOnAction(e -> {
-            Locale currentLocale = setLanguage("no", "NO");
+            currentLocale = setLanguage("no", "NO");
+            start(primaryStage);
         });
+
+        English.setOnAction(e -> {
+            currentLocale = setLanguage("en", "UK");
+            start(primaryStage);
+        });
+
+
 
 
         langSubMenu.getItems().addAll(Norwegian, English); //adds item to language
@@ -82,7 +104,7 @@ public class ChessProgram extends Application {
         Menu help = new Menu(messages.getString("Help"));
         MenuBar menubar = new MenuBar();
         menubar.getMenus().addAll(file, settings, help);
-        
+
         GridPane chessboard = createChessBoard();
 
 
@@ -150,12 +172,6 @@ public class ChessProgram extends Application {
         }
         return currentLocale; //return locale object.
     }
-
-    public Locale getLanguage(){
-
-        return  null;
-    }
-
 
 
     public ImageView setIcon(Image flagIcon){ //gets an image as parameter and adds to imageView
