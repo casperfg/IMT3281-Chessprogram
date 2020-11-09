@@ -1,8 +1,9 @@
 package main;
 import javafx.scene.Node;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import main.pieces.Piece;
-public class Chessboard{
+public class Chessboard extends GridPane {
     public Tile[][] board = new Tile[8][8];
     public boolean whiteTurn = true;
     public boolean whiteCastle = false;
@@ -10,6 +11,13 @@ public class Chessboard{
     public String passantSquare = "-"; // '-' if no passantsquare
     public int moveCount = 0; // increments after black move
     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+
+    public Chessboard(){
+        makeStart();
+        System.out.println(toFen());
+        move(3,6,3,5);
+        System.out.println(toFen());
+    }
 
     public void makeStart(){ // setup start position
         int size = 8;
@@ -94,11 +102,5 @@ public class Chessboard{
             if(y != 7) {fen.append('/'); } // add
         }
         return fen.toString()+result;
-    }
-    public Chessboard(){
-        makeStart();
-        System.out.println(toFen());
-        move(3,6,3,5);
-        System.out.println(toFen());
     }
 }

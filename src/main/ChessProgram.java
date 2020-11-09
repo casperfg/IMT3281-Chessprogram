@@ -1,5 +1,6 @@
 package main;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -8,6 +9,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.BorderPane;
@@ -41,17 +43,21 @@ public class ChessProgram extends Application {
 
         borderPane.setTop(menubar);
         borderPane.setCenter(chessboard);
-        primaryStage.setScene(new Scene(borderPane, 700, 700));
+        primaryStage.setScene(new Scene(borderPane, 800, 800));
+        primaryStage.setTitle("Chess");
         primaryStage.setResizable(false);
         primaryStage.show();
 
     }
 
     public GridPane createChessBoard(){
-        final int size = 8;
+        final int size = 10;
+        final String[] letterLabels = {"A", "B", "C", "D", "E", "F", "G", "H"};
+        final String[] numbers = {"8", "7", "6", "5", "4", "3","2", "1"};
+
         GridPane gridPane = new GridPane();
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col ++) {
+        for (int row = 1; row < size-1; row++) {
+            for (int col = 1; col < size-1; col ++) {
                 StackPane tileSquare = new StackPane();
                 String color;
                 if ((row + col) % 2 == 0) {
@@ -69,6 +75,16 @@ public class ChessProgram extends Application {
             gridPane.getRowConstraints().add(new RowConstraints(5, Control.USE_COMPUTED_SIZE,
                                                 Double.POSITIVE_INFINITY, Priority.ALWAYS, VPos.CENTER, true));
         }
+
+        for(int row = 8; row > 0; row-- ) {
+            for (int col = 8; col > 0; col--) {
+                gridPane.add(new Label(letterLabels[row - 1]), row, 0);
+                gridPane.add(new Label(letterLabels[row - 1]), row, 9);
+                gridPane.add(new Label(numbers[col-1]), 9, col);
+                gridPane.add(new Label(numbers[col-1]), 0, col);
+            }
+        }
+
 
         return gridPane;
     }
