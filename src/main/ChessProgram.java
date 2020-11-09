@@ -25,15 +25,16 @@ import javafx.stage.Stage;
 
 public class ChessProgram extends Application {
 
-
-    Locale currentLocale = setLanguage("en", "UK");
-    ResourceBundle messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle.
+    String defaultLanguage = "en";
+    String defaultCountry = "UK";
+    Locale currentLocale = setLanguage(defaultLanguage, defaultCountry); //sets default language to english.
 
 
 
 
     @Override
     public void start(Stage primaryStage) {
+        ResourceBundle messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle.
 
         System.out.println(currentLocale);
         Chessboard board = new Chessboard();
@@ -57,8 +58,16 @@ public class ChessProgram extends Application {
 
 //================== Language Item event handler ==================
         Norwegian.setOnAction(e -> {
-            Locale currentLocale = setLanguage("no", "NO");
+            currentLocale = setLanguage("no", "NO");
+            start(primaryStage);
         });
+
+        English.setOnAction(e -> {
+            currentLocale = setLanguage("en", "UK");
+            start(primaryStage);
+        });
+
+
 
 
         langSubMenu.getItems().addAll(Norwegian, English); //adds item to language
@@ -69,7 +78,7 @@ public class ChessProgram extends Application {
         Menu help = new Menu(messages.getString("Help"));
         MenuBar menubar = new MenuBar();
         menubar.getMenus().addAll(file, settings, help);
-        
+
         GridPane chessboard = createChessBoard();
 
 
@@ -135,12 +144,6 @@ public class ChessProgram extends Application {
         }
         return currentLocale; //return locale object.
     }
-
-    public Locale getLanguage(){
-
-        return  null;
-    }
-
 
 
     public ImageView setIcon(Image flagIcon){ //gets an image as parameter and adds to imageView
