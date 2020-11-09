@@ -1,4 +1,4 @@
-package sample.networking;
+package main.networking;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

@@ -1,4 +1,4 @@
-package sample.networking;
+package main.networking;
 
 import java.io.Serializable;
 import java.util.function.Consumer;
