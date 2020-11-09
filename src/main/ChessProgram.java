@@ -52,9 +52,6 @@ public class ChessProgram extends Application {
 
     public GridPane createChessBoard(){
         final int size = 10;
-        final String[] letterLabels = {"A", "B", "C", "D", "E", "F", "G", "H"};
-        final String[] numbers = {"8", "7", "6", "5", "4", "3","2", "1"};
-
         GridPane gridPane = new GridPane();
         for (int row = 1; row < size-1; row++) {
             for (int col = 1; col < size-1; col ++) {
@@ -76,16 +73,20 @@ public class ChessProgram extends Application {
                                                 Double.POSITIVE_INFINITY, Priority.ALWAYS, VPos.CENTER, true));
         }
 
-        for(int row = 8; row > 0; row-- ) {
-            for (int col = 8; col > 0; col--) {
-                gridPane.add(new Label(letterLabels[row - 1]), row, 0);
-                gridPane.add(new Label(letterLabels[row - 1]), row, 9);
-                gridPane.add(new Label(numbers[col-1]), 9, col);
-                gridPane.add(new Label(numbers[col-1]), 0, col);
-            }
-        }
-
+        labelBoard(gridPane);
 
         return gridPane;
     }
+
+    void labelBoard(GridPane gridPane){
+        final String[] letterLabels = {"A", "B", "C", "D", "E", "F", "G", "H"};
+        final String[] numbers = {"8", "7", "6", "5", "4", "3","2", "1"};
+            for (int i = 8; i > 0; i--) {
+                gridPane.add(new Label(letterLabels[i - 1]), i, 0);
+                gridPane.add(new Label(letterLabels[i - 1]), i, 9);
+                gridPane.add(new Label(numbers[i - 1]), 9, i);
+                gridPane.add(new Label(numbers[i - 1]), 0, i);
+            }
+    }
+
 }
