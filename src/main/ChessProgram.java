@@ -1,18 +1,5 @@
 package main;
 
-import javafx.scene.control.*;
-import main.Chessboard;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Locale;
-import java.util.Random;
-import java.util.*;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.Image;
-
-
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -24,6 +11,9 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -31,31 +21,55 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import main.pieces.*;
-
-import javax.swing.*;
 
 
 public class ChessProgram extends Application {
 
 
     Locale currentLocale = setLanguage("en", "UK");
+    ResourceBundle messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle.
 
 
 
 
     @Override
     public void start(Stage primaryStage) {
-        ResourceBundle messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle.
+
         System.out.println(currentLocale);
-        final int size = 8;
         Chessboard board = new Chessboard();
         BorderPane borderPane = new BorderPane();
-        Menu file = new Menu(messages.getString("File")); //Må endres til å lese fra fil mtp internasjonalisering.
-        Menu settings = new Menu(messages.getString("Settings"));
+
+//================== File ==================
+        Menu file = new Menu(messages.getString("File"));
+
+//================== Settings ==================
+        Menu settings = new Menu(messages.getString("Settings")); //creating settings in menu bar
+        Menu langSubMenu = new Menu(messages.getString("Language")); //submenu for language
+
+//================== Language Item + Icons ==================
+        MenuItem Norwegian = new MenuItem(messages.getString("Norwegian")); //Norwegian as a choice
+        Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg")); //fetches from res folder
+        Norwegian.setGraphic(setIcon(norFlag)); //set icon
+
+        MenuItem English = new MenuItem(messages.getString("English")); //English as a choice
+        Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg")); //fetches from res folder
+        English.setGraphic(setIcon(UKFlag)); //set icon
+
+//================== Language Item event handler ==================
+        Norwegian.setOnAction(e -> {
+            Locale currentLocale = setLanguage("no", "NO");
+        });
+
+
+        langSubMenu.getItems().addAll(Norwegian, English); //adds item to language
+        settings.getItems().add(langSubMenu); //adds language under settings
+
+
+//================== Help ==================
         Menu help = new Menu(messages.getString("Help"));
         MenuBar menubar = new MenuBar();
-        menubar.getMenus().addAll(file,settings,help);
+        menubar.getMenus().addAll(file, settings, help);
+        
         GridPane chessboard = createChessBoard();
 
 
@@ -95,42 +109,6 @@ public class ChessProgram extends Application {
     }
 
 
-//================== File ==================
-        Menu file = new Menu(messages.getString("File"));
-
-//================== Settings ==================
-        Menu settings = new Menu(messages.getString("Settings")); //creating settings in menu bar
-        Menu langSubMenu = new Menu(messages.getString("Language")); //submenu for language
-
-//================== Language Item + Icons ==================
-        MenuItem Norwegian = new MenuItem(messages.getString("Norwegian")); //Norwegian as a choice
-        Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg")); //fetches from res folder
-        Norwegian.setGraphic(setIcon(norFlag)); //set icon
-
-        MenuItem English = new MenuItem(messages.getString("English")); //English as a choice
-        Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg")); //fetches from res folder
-        English.setGraphic(setIcon(UKFlag)); //set icon
-
-//================== Language Item event handler ==================
-        Norwegian.setOnAction(e -> {
-            Locale currentLocale = setLanguage("no", "NO");
-            start(primaryStage);
-                });
-
-
-
-
-        langSubMenu.getItems().addAll(Norwegian, English); //adds item to language
-        settings.getItems().add(langSubMenu); //adds language under settings
-
-
-//================== Help ==================
-        Menu help = new Menu(messages.getString("Help"));
-        MenuBar menubar = new MenuBar();
-        menubar.getMenus().addAll(file, settings, help);
-
-        return gridPane;
-    }
 
     void labelBoard(GridPane gridPane){
         final String[] letterLabels = {"A", "B", "C", "D", "E", "F", "G", "H"};
@@ -169,7 +147,7 @@ public class ChessProgram extends Application {
         ImageView flag = new ImageView(flagIcon); //creates new imageview
         flag.setFitHeight(10); //set height
         flag.setFitWidth(15); //set width
-        return  flag; //return ImageView-object
+        return flag; //return ImageView-object
     }
 
 }
