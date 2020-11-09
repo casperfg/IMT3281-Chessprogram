@@ -1,18 +1,5 @@
 package main;
 
-import javafx.scene.control.*;
-import main.Chessboard;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Locale;
-import java.util.Random;
-import java.util.*;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.Image;
-
-
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -24,6 +11,9 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -31,9 +21,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import main.pieces.*;
-
-import javax.swing.*;
 
 
 public class ChessProgram extends Application {
@@ -49,7 +36,6 @@ public class ChessProgram extends Application {
     public void start(Stage primaryStage) {
 
         System.out.println(currentLocale);
-        final int size = 8;
         Chessboard board = new Chessboard();
         BorderPane borderPane = new BorderPane();
 
