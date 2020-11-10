@@ -13,7 +13,9 @@ public class EngineHandler extends Thread{
     public int thinkTime = 500; // ms
     public boolean done = false;
     String Best;
-    private static final String PATH = "./res/stockfish.exe";
+    private static String PATH = "./res/stockfishWin.exe";
+    private static final String PATHmac = "./res/stockfish";
+
 
     public EngineHandler(){
         startEngine();
@@ -22,6 +24,10 @@ public class EngineHandler extends Thread{
         getBestMove(ch);
     }
     public boolean startEngine(){
+        String os = System.getProperty("os.name");
+        if(!os.contains("Windows")){
+            PATH = PATHmac;
+        }
         try{
             engine = Runtime.getRuntime().exec(PATH); // execute exe
             // made reader / writer stream
