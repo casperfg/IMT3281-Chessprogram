@@ -44,8 +44,6 @@ public class ChessProgram extends Application {
     String defaultLanguage = "en";
     String defaultCountry = "UK";
     Locale currentLocale = setLanguage(defaultLanguage, defaultCountry); //sets default language to english.
-    ResourceBundle messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle.
-
 
 
     @Override
@@ -104,7 +102,6 @@ public class ChessProgram extends Application {
         primaryStage.setTitle("Chess");
         primaryStage.setResizable(false);
         primaryStage.show();
-        eng.run(cb);
         new AnimationTimer() { // mainloop of the program
             @Override
             public void handle(long currentNanoTime) {
