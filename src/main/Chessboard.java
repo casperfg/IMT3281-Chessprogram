@@ -75,7 +75,7 @@ public class Chessboard extends GridPane {
         boolean isBlank = blankSq(xt, yt);
 
         boolean isOpposite = false;
-        if (!isBlank) {
+        if (!isBlank) { // landing on piece
             isOpposite = tPiece.color != fPiece.color;
         }
         return board[y][x].hasPiece && (isBlank || isOpposite);

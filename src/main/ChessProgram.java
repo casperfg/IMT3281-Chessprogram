@@ -101,12 +101,21 @@ public class ChessProgram extends Application {
         primaryStage.setTitle("Chess");
         primaryStage.setResizable(false);
         primaryStage.show();
-        new AnimationTimer() { // mainloop of the program
+
+        borderPane.setCenter(createChessBoard()); // set the new chessboard
+
+        eng.getBest(cb); // needs to be outside mainloop somehow.
+        // starts the engine thread
+        new AnimationTimer() { // mainloop of the program (controller??)
             @Override
             public void handle(long currentNanoTime) {
-                cb.move(eng.getBestMove(cb)); // do the best move.
-                GridPane chessboard = createChessBoard(); // update new chessboard view
-                borderPane.setCenter(chessboard); // set the new chessboard
+                String ret = eng.checkWorker(); // check workerThread
+                if(ret != "-1"){ // is -1 when workerthread is still working
+                    cb.move(ret); // move the best move
+                    GridPane chessboard = createChessBoard(); // update new chessboard view
+                    borderPane.setCenter(chessboard); // set the new chessboardView
+                    eng.getBest(cb); // start new
+                }
 
                 try {
                     Thread.sleep(100);

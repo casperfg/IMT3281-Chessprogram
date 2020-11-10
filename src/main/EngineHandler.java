@@ -5,27 +5,35 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 // https://github.com/rahular/chess-misc/blob/master/JavaStockfish/src/com/rahul/stockfish/Stockfish.java
-public class EngineHandler extends Thread{
+public class EngineHandler{
     private Process engine;
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
     public int eloRating = 2500;
-    public int thinkTime = 500; // ms
-    public boolean done = false;
-    String Best;
-    private static String PATH = "./res/stockfishWin.exe";
-    private static final String PATHmac = "./res/stockfish";
+    public int thinkTime = 1000; // ms
+
+    private engineWorker worker; // workThread that lets engine wait and calculate
+    private static String PATH = "./res/stockfishWin.exe"; // path for window
+    private static final String PATHmac = "./res/stockfish"; // path max
 
 
-    public EngineHandler(){
+    public EngineHandler(){ // start the engine
         startEngine();
     }
-    public void run(Chessboard ch){
-        getBestMove(ch);
+    public void getBest(Chessboard cboard){ // get best move
+        worker = new engineWorker(processReader, processWriter, thinkTime, cboard);
+        worker.start(); // make new Workerthread and start it
+    }
+    public String checkWorker(){ // check if the workerthread is finished
+        if(worker.done){
+            worker.done = false;
+            return worker.Best;
+        }
+        return "-1";
     }
     public boolean startEngine(){
         String os = System.getProperty("os.name");
-        if(!os.contains("Windows")){
+        if(!os.contains("Windows")){ // mac functionality
             PATH = PATHmac;
         }
         try{
@@ -39,54 +47,9 @@ public class EngineHandler extends Thread{
         }
         return true;
     }
-    public boolean sendCommand(String command){
-        try {
-            processWriter.write(command + "\n");
-            processWriter.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-            startEngine();
-            sendCommand(command);
-        }
-        return true;
-    }
-    public String getOutput(int waitTime) {
-        StringBuffer buffer = new StringBuffer();
-        try {
-            Thread.sleep(waitTime);
-            sendCommand("isready");
-            while (true) {
-                String text = processReader.readLine();
-                if (text.equals("readyok"))
-                    break;
-                else
-                    buffer.append(text + "\n");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return buffer.toString();
-    }
     public void setElo(int Elo){
-        sendCommand("setoption name UCI_Elo value "+String.valueOf(Elo));
+        worker = new engineWorker(processReader, processWriter);
+        worker.sendCommand("setoption name UCI_Elo value "+String.valueOf(Elo));
     }
-    public String getBestMove(Chessboard cb) {
-        String out;
 
-        done = false;
-        sendCommand("position fen " + cb.toFen());
-        sendCommand("go movetime " + String.valueOf(thinkTime));
-        out = getOutput(thinkTime + 30);
-        for (int i = 0; i < 3; i++){ // makes sure the bestmove call is caught
-            try {
-                out = out.split("bestmove ")[1].split(" ")[0];
-                break;
-            } catch (Exception e) {
-                out = getOutput(250);
-            }
-        }
-        Best = out;
-        done = true;
-        return out;
-    }
 }
