@@ -20,6 +20,10 @@ public class EngineHandler{
     public EngineHandler(){ // start the engine
         startEngine();
     }
+    public EngineHandler(int elo, int thkTime){ // start the engine
+        eloRating = elo; thinkTime = thkTime;
+        startEngine();
+    }
     public void getBest(Chessboard cboard){ // get best move
         worker = new engineWorker(processReader, processWriter, thinkTime, cboard);
         worker.start(); // make new Workerthread and start it
@@ -33,7 +37,7 @@ public class EngineHandler{
         }
         return "-1";
     }
-    public boolean startEngine(){
+    private boolean startEngine(){
         String os = System.getProperty("os.name");
         if(!os.contains("Windows")){ // mac functionality
             PATH = PATHmac;
@@ -49,9 +53,21 @@ public class EngineHandler{
         }
         return true;
     }
-    public void setElo(int Elo){
+    private void sendCommand(String cmd){
         worker = new engineWorker(processReader, processWriter);
-        worker.sendCommand("setoption name UCI_Elo value "+String.valueOf(Elo));
+        worker.sendCommand(cmd);
+    }
+    private void stopEngine() {
+        try {
+            sendCommand("quit");
+            processReader.close();
+            processWriter.close();
+        } catch (IOException e) {
+        }
+    }
+
+    public void setElo(int Elo){
+        sendCommand("setoption name UCI_Elo value "+String.valueOf(Elo));
     }
 
 }

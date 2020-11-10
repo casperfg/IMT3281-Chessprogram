@@ -122,6 +122,7 @@ public class ChessProgram extends Application {
                     borderPane.setCenter(chessboard); // set the new chessboardView
                     eng.getBest(cb); // start new
                 }
+                cb.humanClick(1,0);
                 if(!aniGoing){
                     aniGoing = true;
                     this.stop();

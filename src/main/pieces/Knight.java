@@ -1,6 +1,7 @@
 package main.pieces;
 
 import javafx.scene.image.Image;
+import main.Chessboard;
 
 public class Knight extends Piece { // Hest
     // Defines how the piece moves (Dx, Dy)
@@ -12,7 +13,14 @@ public class Knight extends Piece { // Hest
             icon = new Image(getClass().getResourceAsStream("/images/black_knight.png"));
         }
     }
-    public void possible() {
-        System.out.println("knight");
+    public void possible(Chessboard board) {
+        int[] vector;
+        for(int i = 0; i < moveVector.length; i++){
+            vector = moveVector[i];
+            if(board.legalMove(position[0], position[1], vector[0], vector[1])){
+                addPoss(board, vector[0], vector[0]);
+            }
+        }
+        System.out.println("Knight");
     }
 }

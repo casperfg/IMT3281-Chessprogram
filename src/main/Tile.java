@@ -8,6 +8,8 @@ import main.pieces.Piece;
 import main.pieces.Queen;
 import main.pieces.Rook;
 
+import java.util.Arrays;
+
 public class Tile{
     boolean tileColorWhite; // tile is white
     String tileName; // name of tile: e4, e6 etc..
@@ -15,12 +17,6 @@ public class Tile{
 
     Boolean hasPiece = false; // has a piece on it
     Piece chessPiece; // piece pointer
-
-    public Tile(){
-        String name = this.tileName;
-        String col = this.column;
-        Boolean hasPiez = this.hasPiece;
-    }
 
     public void updatePiece(char type){ // set a piece
         hasPiece = true;
@@ -60,13 +56,10 @@ public class Tile{
         chessPiece = null;
         hasPiece = false;
     }
-    public char getType(){
-        return chessPiece.type;
-    }
-    public boolean getColor(){
-        return chessPiece.color;
-    }
     public void possible(Chessboard board) {
         chessPiece.possible(board);
+        for(int i = 0; i < chessPiece.possibleMoves.size(); i++) {
+
+        }
     }
 }

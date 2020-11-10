@@ -40,7 +40,7 @@ public class Chessboard extends GridPane {
             }
         }
     }
-
+    // ------------MOVE-----------------
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
         if (fPiece.type == 'k') {
             if (fPiece.color) { // king moved, no castling
@@ -53,8 +53,8 @@ public class Chessboard extends GridPane {
             //}
         }
     }
-
-    public void move(String move) { // e2e4
+    // computer move
+    public void move(String move) { // e2e4, promotion: e6e7q
         String column = "abcdefgh";
         System.out.println(move);
         int x = column.indexOf(move.charAt(0));
@@ -64,21 +64,6 @@ public class Chessboard extends GridPane {
 
         compMove = move;
         move(x, 8 - y, xt, 8 - yt); // internalY = 8-External
-    }
-    public Boolean blankSq(int xt, int yt){
-        return !board[yt][xt].hasPiece;
-    }
-    // from (x,y) ==> to (xt,yt)
-    public Boolean legalMove(int x, int y, int xt, int yt){ // if given move is lega
-        Piece fPiece = board[y][x].chessPiece;
-        Piece tPiece = board[yt][xt].chessPiece; // from piece and topiece
-        boolean isBlank = blankSq(xt, yt);
-
-        boolean isOpposite = false;
-        if (!isBlank) { // landing on piece
-            isOpposite = tPiece.color != fPiece.color;
-        }
-        return board[y][x].hasPiece && (isBlank || isOpposite);
     }
 
     // validates before moving.
@@ -102,7 +87,32 @@ public class Chessboard extends GridPane {
             System.exit(1);
         }
     }
+    // -----------------LEGALMOVE ---------------------------
+    // is blank square
+    public Boolean blankSq(int xt, int yt){
+        return !board[yt][xt].hasPiece;
+    }
+    // inside valuerange
+    public Boolean inside(int xt, int yt){
+        return (xt >= 0) && (xt < 8) && (yt >= 0) && (yt < 8);
+    }
+    // from (x,y) ==> to (xt,yt)
+    public Boolean legalMove(int x, int y, int xt, int yt){ // if given move is lega
+        if (inside(x, y) && inside(xt, yt)) {
+            Piece fPiece = board[y][x].chessPiece;
+            Piece tPiece = board[yt][xt].chessPiece; // from piece and topiece
+            boolean isBlank = blankSq(xt, yt);
 
+            boolean isOpposite = false;
+            if (!isBlank) { // landing on piece
+                isOpposite = tPiece.color != fPiece.color;
+            }
+            return board[y][x].hasPiece && (isBlank || isOpposite);
+        }else{
+            return false;
+        }
+    }
+    // ------------BOARD CONVERTIONS ----------
     public String toFen(){
         Tile myTile;
         Piece myPiece;
@@ -175,7 +185,7 @@ public class Chessboard extends GridPane {
         return gridPane;
     }
 
-    public void humanClick(int x, int y) {
+    public void humanClick(int x, int y) { // maybee possible of board should be known beforehand
         if (board[y][x].hasPiece) {
             if (board[y][x].chessPiece.color == whiteTurn) { // is correct turn
                 board[y][x].possible(this); // call possible WIP
@@ -183,3 +193,9 @@ public class Chessboard extends GridPane {
         }
     }
 }
+/*
+MATT:
+1. kongen er under trussel (aka sjakk)
+2. kongen har ingen felt å gå til
+3. det er ikke noe trekk kongens farge kan gjøre for å forhindre trusselen til kongen
+ */
