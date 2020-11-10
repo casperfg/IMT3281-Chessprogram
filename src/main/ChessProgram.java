@@ -41,10 +41,11 @@ public class ChessProgram extends Application {
 
     Chessboard cb = new Chessboard();
     EngineHandler eng = new EngineHandler();
-    ResourceBundle messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle.
     String defaultLanguage = "en";
     String defaultCountry = "UK";
     Locale currentLocale = setLanguage(defaultLanguage, defaultCountry); //sets default language to english.
+    ResourceBundle messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle.
+
 
 
     @Override
