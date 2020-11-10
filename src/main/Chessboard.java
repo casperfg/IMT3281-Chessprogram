@@ -65,20 +65,26 @@ public class Chessboard extends GridPane {
         compMove = move;
         move(x, 8 - y, xt, 8 - yt); // internalY = 8-External
     }
-
-    // validates before moving.
-    public void move(int x, int y, int xt, int yt) { // from x,y to xt, yt
-        Tile chTile; // tile
+    public Boolean blankSq(int xt, int yt){
+        return !board[yt][xt].hasPiece;
+    }
+    // from (x,y) ==> to (xt,yt)
+    public Boolean legalMove(int x, int y, int xt, int yt){ // if given move is lega
         Piece fPiece = board[y][x].chessPiece;
         Piece tPiece = board[yt][xt].chessPiece; // from piece and topiece
-        boolean isBlank = !board[yt][xt].hasPiece;
+        boolean isBlank = blankSq(xt, yt);
 
         boolean isOpposite = false;
         if (!isBlank) {
             isOpposite = tPiece.color != fPiece.color;
         }
+        return board[y][x].hasPiece && (isBlank || isOpposite);
+    }
 
-        if(board[y][x].hasPiece && (isBlank || isOpposite)) {
+    // validates before moving.
+    public void move(int x, int y, int xt, int yt) { // from x,y to xt, yt
+        Piece fPiece = board[y][x].chessPiece;
+        if(legalMove(x, y, xt, yt)) { // checks if legal
             fPiece.position = new int[]{xt, yt};
             fPiece.lastPosition = new int[]{x, y};
             board[yt][xt].chessPiece = fPiece; // move piece to new tile
@@ -158,8 +164,8 @@ public class Chessboard extends GridPane {
                 if(board[col-1][row-1].hasPiece){ // if has piece
                     cp = board[col-1][row-1].chessPiece;
                     ImageView vImg = new ImageView(cp.icon);
-                    vImg.setFitHeight(20);
-                    vImg.setFitWidth(20);
+                    vImg.setFitHeight(50);
+                    vImg.setFitWidth(50);
                     tileSquare.getChildren().add(vImg);
                 }
                 tileSquare.setStyle("-fx-background-color: "+color+";");
@@ -172,7 +178,7 @@ public class Chessboard extends GridPane {
     public void humanClick(int x, int y) {
         if (board[y][x].hasPiece) {
             if (board[y][x].chessPiece.color == whiteTurn) { // is correct turn
-                board[y][x].possible(); // call possible WIP
+                board[y][x].possible(this); // call possible WIP
             }
         }
     }

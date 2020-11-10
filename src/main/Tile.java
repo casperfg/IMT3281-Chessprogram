@@ -1,7 +1,5 @@
 package main;
 
-import javafx.scene.Node;
-import javafx.scene.layout.StackPane;
 import main.pieces.Bishop;
 import main.pieces.King;
 import main.pieces.Knight;
@@ -18,7 +16,7 @@ public class Tile{
     Boolean hasPiece = false; // has a piece on it
     Piece chessPiece; // piece pointer
 
-    Tile(){
+    public Tile(){
         String name = this.tileName;
         String col = this.column;
         Boolean hasPiez = this.hasPiece;
@@ -68,7 +66,7 @@ public class Tile{
     public boolean getColor(){
         return chessPiece.color;
     }
-    public void possible() {
-        chessPiece.possible();
+    public void possible(Chessboard board) {
+        chessPiece.possible(board);
     }
 }
