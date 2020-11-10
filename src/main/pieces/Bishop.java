@@ -14,19 +14,7 @@ public class Bishop extends Piece{
         }
     }
     public void possible(Chessboard board) {
-        int[] vector;
-        int x,y;
-
-        for(int i = 0; i < moveVector.length; i++){
-            x = position[0];
-            y = position[1];
-            vector = moveVector[i];
-            while(board.legalMove(x, y, vector[0], vector[1])){
-                addPoss(board, vector[0], vector[0]);
-                x = position[0]+vector[0];
-                y = position[1]+vector[1];
-            }
-        }
+        repeat(moveVector, board);
         System.out.println("Knight");
     }
 }

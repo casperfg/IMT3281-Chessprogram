@@ -14,13 +14,7 @@ public class Knight extends Piece { // Hest
         }
     }
     public void possible(Chessboard board) {
-        int[] vector;
-        for(int i = 0; i < moveVector.length; i++){
-            vector = moveVector[i];
-            if(board.legalMove(position[0], position[1], vector[0], vector[1])){
-                addPoss(board, vector[0], vector[0]);
-            }
-        }
+        nonRepeat(moveVector, board);
         System.out.println("Knight");
     }
 }

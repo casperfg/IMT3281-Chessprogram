@@ -18,7 +18,7 @@ public class Tile{
     Boolean hasPiece = false; // has a piece on it
     Piece chessPiece; // piece pointer
 
-    public void updatePiece(char type){ // set a piece
+    public void updatePiece(char type){ // set a piece (INITIAL)
         hasPiece = true;
         switch (type) {
             case 'n' -> chessPiece = new Knight();
@@ -59,7 +59,8 @@ public class Tile{
     public void possible(Chessboard board) {
         chessPiece.possible(board);
         for(int i = 0; i < chessPiece.possibleMoves.size(); i++) {
-
+            System.out.println(chessPiece.possibleMoves.get(i)[0]);
+            System.out.println(chessPiece.possibleMoves.get(i)[1]);
         }
     }
 }
