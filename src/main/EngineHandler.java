@@ -25,9 +25,11 @@ public class EngineHandler{
         worker.start(); // make new Workerthread and start it
     }
     public String checkWorker(){ // check if the workerthread is finished
-        if(worker.done){
-            worker.done = false;
-            return worker.Best;
+        if(worker != null) {
+            if (worker.done) {
+                worker.done = false;
+                return worker.Best;
+            }
         }
         return "-1";
     }

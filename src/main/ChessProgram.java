@@ -4,6 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.control.*;
 import main.Chessboard;
 
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Locale;
@@ -44,7 +45,8 @@ public class ChessProgram extends Application {
     String defaultLanguage = "en";
     String defaultCountry = "UK";
     Locale currentLocale = setLanguage(defaultLanguage, defaultCountry); //sets default language to english.
-
+    boolean aniGoing = true; // animation timer is running
+    // TODO: slit start and text setting.
     @Override
     public void start(Stage primaryStage) {
         ResourceBundle messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle.
@@ -72,15 +74,15 @@ public class ChessProgram extends Application {
 //================== Language Item event handler ==================
         Norwegian.setOnAction(e -> {
             currentLocale = setLanguage("no", "NO");
+            aniGoing = false;
             start(primaryStage);
         });
 
         English.setOnAction(e -> {
             currentLocale = setLanguage("en", "UK");
+            aniGoing = false;
             start(primaryStage);
         });
-
-
 
 
         langSubMenu.getItems().addAll(Norwegian, English); //adds item to language
@@ -97,14 +99,18 @@ public class ChessProgram extends Application {
 
         borderPane.setTop(menubar);
         borderPane.setCenter(chessboard);
-        primaryStage.setScene(new Scene(borderPane, 800, 800));
+
+        primaryStage.setScene(new Scene(borderPane, 500, 500));
         primaryStage.setTitle("Chess");
         primaryStage.setResizable(false);
         primaryStage.show();
 
         borderPane.setCenter(createChessBoard()); // set the new chessboard
 
-        eng.getBest(cb); // needs to be outside mainloop somehow.
+        if(eng.checkWorker() == "-1"){
+            eng.getBest(cb);
+        }
+        // needs to be outside mainloop somehow.
         // starts the engine thread
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
@@ -116,10 +122,9 @@ public class ChessProgram extends Application {
                     borderPane.setCenter(chessboard); // set the new chessboardView
                     eng.getBest(cb); // start new
                 }
-
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {;
+                if(!aniGoing){
+                    aniGoing = true;
+                    this.stop();
                 }
             }
         }.start(); // start main animation loop
@@ -167,6 +172,7 @@ public class ChessProgram extends Application {
         }
         return currentLocale; //return locale object.
     }
+
 
 
     public ImageView setIcon(Image flagIcon){ //gets an image as parameter and adds to imageView
