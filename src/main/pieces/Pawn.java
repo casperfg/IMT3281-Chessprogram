@@ -23,10 +23,15 @@ public class Pawn extends Piece{
         return false;
     }
     public void possible(Chessboard board) {
+            direction = color? -1: 1; // y change direction
+            if(board.blankSq(position[0], position[0]+direction)){ // 1 square forward is blank
+                addPoss(board, 0, direction); // move 1 square forward
+                if((position[1] == 6 && color) || (position[1] == 1 && !color)){ // is on enpassant position
+                    if(board.blankSq(position[0], position[0]+2*direction)){ // 2 squares forward is blank
+                        addPoss(board, 0,2*direction);
+                    }
 
-            if(addPoss(board, 0, 1))
-            if((position[1] == 6 && color) || (position[1] == 1 && !color)){
-                addPoss(board, 0,-2*(color? 1: -1)); // ensure right direction
+                }
             }
         System.out.println("pawn");
     }

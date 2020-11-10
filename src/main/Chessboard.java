@@ -65,10 +65,14 @@ public class Chessboard extends GridPane {
         compMove = move;
         move(x, 8 - y, xt, 8 - yt); // internalY = 8-External
     }
-    public Boolean legalMove(int x, int y, int xt, int yt){
+    public Boolean blankSq(int xt, int yt){
+        return !board[yt][xt].hasPiece;
+    }
+    // from (x,y) ==> to (xt,yt)
+    public Boolean legalMove(int x, int y, int xt, int yt){ // if given move is lega
         Piece fPiece = board[y][x].chessPiece;
         Piece tPiece = board[yt][xt].chessPiece; // from piece and topiece
-        boolean isBlank = !board[yt][xt].hasPiece;
+        boolean isBlank = blankSq(xt, yt);
 
         boolean isOpposite = false;
         if (!isBlank) {

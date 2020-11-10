@@ -10,7 +10,7 @@ public class EngineHandler extends Thread{
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
     public int eloRating = 2500;
-    public int thinkTime = 1000; // ms
+    public int thinkTime = 500; // ms
     public boolean done = false;
     String Best;
     private static final String PATH = "./res/stockfish.exe";

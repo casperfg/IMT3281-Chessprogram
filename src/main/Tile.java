@@ -16,7 +16,7 @@ public class Tile{
     Boolean hasPiece = false; // has a piece on it
     Piece chessPiece; // piece pointer
 
-    Tile(){
+    public Tile(){
         String name = this.tileName;
         String col = this.column;
         Boolean hasPiez = this.hasPiece;
