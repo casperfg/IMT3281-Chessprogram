@@ -1,5 +1,8 @@
 package main;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -15,12 +18,13 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.*;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 
 
 public class ChessProgram extends Application {
@@ -33,6 +37,7 @@ public class ChessProgram extends Application {
     //================== Internationalization variables ==================
     String defaultLanguage = "en";
     String defaultCountry = "UK";
+    String currentLanguage;
     ResourceBundle messages; //initializing resource bundle
 
     //================== Menu-bar  ==================
@@ -46,10 +51,12 @@ public class ChessProgram extends Application {
     Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg")); //fetches from res folder
     MenuItem English = new MenuItem(); //English as a choice
     Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg")); //fetches from res folder
+    boolean startUp = true;
 
-    boolean run = true;
+    Stage aboutStage = new Stage();
 
-    // TODO: slit start and text setting.
+
+
     @Override
     public void start(Stage primaryStage) {
         setLanguage(defaultLanguage,defaultCountry); //sets default language
@@ -133,6 +140,7 @@ public class ChessProgram extends Application {
             case "NO" -> { Norwegian.setDisable(true); English.setDisable(false); currentLocale = new Locale(language, country);} //sets language to norwegian.
             default -> currentLocale = new Locale("en", "UK"); //sets language to english as default;
         }
+        currentLanguage = language;
         messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle
         setMenuBar();
 
@@ -163,6 +171,10 @@ public class ChessProgram extends Application {
         English.setText(messages.getString("English")); //English as a choice
         English.setGraphic(setIcon(UKFlag)); //set icon
 
+        //================== Help ==================
+        help.setText(messages.getString("Help"));
+        about.setText(messages.getString("About"));
+
         //================== Language Item event handler ==================
 
         Norwegian.setOnAction(e -> {
@@ -175,12 +187,18 @@ public class ChessProgram extends Application {
 
         });
 
-        //================== Help ==================
-        help.setText(messages.getString("Help"));
-        about.setText(messages.getString("About"));
+        about.setOnAction(e -> {
+            try {
+                getAbout();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
 
-        if(run){
-            run = false;
+        });
+
+
+        if(startUp){
+            startUp = false;
             help.getItems().add(about);
             langSubMenu.getItems().addAll(Norwegian, English); //adds item to language
             settings.getItems().add(langSubMenu); //adds language under settings
@@ -190,5 +208,52 @@ public class ChessProgram extends Application {
 
 
     }
+
+    private void getAbout() throws IOException {
+
+        VBox layout = new VBox(); //creates vbox layout
+        Scene aboutScene = new Scene(layout); //creates scene
+        Text titleText = new Text(); //creates text object
+        Text dateText = new Text();
+        Text inputText = new Text();
+        String input = new String(); //creates string to insert the input into
+        String displayText = new String(); //creates string that will display the entire file
+        BufferedReader txtReader; //creates BufferedReader object
+        System.out.println(currentLanguage);
+
+        txtReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/text/about_"+currentLanguage.toUpperCase()+".txt")));
+
+
+        String title = txtReader.readLine(); //reads first line
+        String date = txtReader.readLine(); //reads date
+        while(txtReader.ready()) { //while there still is text to ready
+            input = input.concat(txtReader.readLine()); //read line and add text to string
+        }
+        txtReader.close(); //closes the reader
+
+
+        titleText = setStyling(titleText,title,30, "BOLD"); //defines styling parameters
+        inputText = setStyling(inputText,input, 15, "NORMAL"); //not good practice hardcoding in values
+        dateText = setStyling(dateText,date,20, "SEMI-BOLD"); //but the textfile is static
+
+
+
+        layout.getChildren().addAll(titleText, inputText, dateText); //adds all text objects to layout
+
+        aboutStage.setScene(aboutScene); //add scene to stage(frame)
+        aboutStage.show(); //display the stage
+
+    }
+
+
+    public Text setStyling(Text text, String input,  int fontSize, String weight){ //sets styling to text
+        text.setText(input + "\n"); //create seperator
+        text.setTextAlignment(TextAlignment.CENTER); //center text
+        text.setFont(Font.font("verdana", FontWeight.findByName(weight), FontPosture.REGULAR, fontSize)); //sets font, boldness, posture and size
+        text.setWrappingWidth(400); //size before wrapping
+        return text; //returns text object
+    }
+
+
 
 }
