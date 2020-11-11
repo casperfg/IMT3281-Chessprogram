@@ -50,11 +50,13 @@ public class StartMenu extends Application {
         Button btn_play = new Button("PLAYER vs. CPU");
         Button btn_multi = new Button("PLAYER vs. PLAYER");
         Button btn_cpu = new Button("CPU vs. CPU");
+        Button btn_settings = new Button("CPU vs. CPU");
         Button btn_exit = new Button("EXIT");
 
         addButton(btn_play);
         addButton(btn_multi);
         addButton(btn_cpu);
+        addButton(btn_settings);
         addButton(btn_exit);
 
 
