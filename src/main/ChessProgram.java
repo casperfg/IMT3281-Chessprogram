@@ -30,56 +30,31 @@ public class ChessProgram extends Application {
 
     String defaultLanguage = "en";
     String defaultCountry = "UK";
-    Locale currentLocale = setLanguage(defaultLanguage, defaultCountry); //sets default language to english.
-    boolean aniGoing = true; // animation timer is running
+    ResourceBundle messages; //initializing resource bundle
+
+    //================== Menu-bar  ==================
+    MenuBar menubar = new MenuBar(); //creates menubar
+    Menu file = new Menu(); //creating file in menu bar
+    Menu settings = new Menu(); //creating settings in menu bar
+    Menu langSubMenu = new Menu(); //submenu for language
+    Menu help = new Menu();
+    MenuItem about = new MenuItem();
+    MenuItem Norwegian = new MenuItem(); //Norwegian as a choice
+    Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg")); //fetches from res folder
+    MenuItem English = new MenuItem(); //English as a choice
+    Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg")); //fetches from res folder
+
+    boolean run = true;
 
     // TODO: slit start and text setting.
     @Override
     public void start(Stage primaryStage) {
-        ResourceBundle messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle.
+        setLanguage(defaultLanguage,defaultCountry); //sets default language
+        English.setDisable(true); //disable default language button
 
-        System.out.println(currentLocale);
         final int size = 8;
         BorderPane borderPane = new BorderPane();
-
-//================== File ==================
-        Menu file = new Menu(messages.getString("File"));
-
-//================== Settings ==================
-        Menu settings = new Menu(messages.getString("Settings")); //creating settings in menu bar
-        Menu langSubMenu = new Menu(messages.getString("Language")); //submenu for language
-
-//================== Language Item + Icons ==================
-        MenuItem Norwegian = new MenuItem(messages.getString("Norwegian")); //Norwegian as a choice
-        Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg")); //fetches from res folder
-        Norwegian.setGraphic(setIcon(norFlag)); //set icon
-
-        MenuItem English = new MenuItem(messages.getString("English")); //English as a choice
-        Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg")); //fetches from res folder
-        English.setGraphic(setIcon(UKFlag)); //set icon
-
-//================== Language Item event handler ==================
-        Norwegian.setOnAction(e -> {
-            currentLocale = setLanguage("no", "NO");
-            aniGoing = false;
-            start(primaryStage);
-        });
-
-        English.setOnAction(e -> {
-            currentLocale = setLanguage("en", "UK");
-            aniGoing = false;
-            start(primaryStage);
-        });
-
-
-        langSubMenu.getItems().addAll(Norwegian, English); //adds item to language
-        settings.getItems().add(langSubMenu); //adds language under settings
-
-
-//================== Help ==================
-        Menu help = new Menu(messages.getString("Help"));
-        MenuBar menubar = new MenuBar();
-        menubar.getMenus().addAll(file, settings, help);
+        setMenuBar();
 
         chessboard = createChessBoard();
         borderPane.setCenter(createChessBoard());
@@ -135,16 +110,20 @@ public class ChessProgram extends Application {
     }
 
 
-    public Locale setLanguage(String language, String country) {  //set language for program
+
+
+    public void setLanguage(String language, String country){  //set language for program
         language = language.toUpperCase(); //makes uppercase
         country = country.toUpperCase(); //makes uppercase
         Locale currentLocale; //defines locale variable
         switch (language) { //switch for different languages.
-            case "EN" -> currentLocale = new Locale(language, country); //sets language to english.
-            case "NO" -> currentLocale = new Locale(language, country); //sets language to norwegian.
+            case "EN" -> { English.setDisable(true); Norwegian.setDisable(false); currentLocale = new Locale(language, country); }//sets language to english.
+            case "NO" -> { Norwegian.setDisable(true); English.setDisable(false); currentLocale = new Locale(language, country);} //sets language to norwegian.
             default -> currentLocale = new Locale("en", "UK"); //sets language to english as default;
         }
-        return currentLocale; //return locale object.
+        messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle
+        setMenuBar();
+
     }
 
 
@@ -153,6 +132,51 @@ public class ChessProgram extends Application {
         flag.setFitHeight(10); //set height
         flag.setFitWidth(15); //set width
         return flag; //return ImageView-object
+    }
+
+
+    public void setMenuBar(){
+        //================== File ==================
+        file.setText(messages.getString("File"));
+        System.out.println(messages.getString("File"));
+
+        //================== Settings ==================
+        settings.setText(messages.getString("Settings")); //creating settings in menu bar
+        langSubMenu.setText(messages.getString("Language")); //submenu for language
+
+        //================== Language Item + Icons ==================
+        Norwegian.setText(messages.getString("Norwegian")); //Norwegian as a choice
+        Norwegian.setGraphic(setIcon(norFlag)); //set icon
+
+        English.setText(messages.getString("English")); //English as a choice
+        English.setGraphic(setIcon(UKFlag)); //set icon
+
+        //================== Language Item event handler ==================
+
+        Norwegian.setOnAction(e -> {
+            setLanguage("no", "NO"); //function to change language
+
+        });
+
+        English.setOnAction(e -> {
+            setLanguage("en", "UK"); //function to change language
+
+        });
+
+        //================== Help ==================
+        help.setText(messages.getString("Help"));
+        about.setText(messages.getString("About"));
+
+        if(run){
+            run = false;
+            help.getItems().add(about);
+            langSubMenu.getItems().addAll(Norwegian, English); //adds item to language
+            settings.getItems().add(langSubMenu); //adds language under settings
+            menubar.getMenus().addAll(file, settings, help); //add all menus to menubar
+        }
+
+
+
     }
 
 }
