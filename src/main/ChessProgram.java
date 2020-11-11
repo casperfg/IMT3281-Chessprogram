@@ -25,8 +25,9 @@ import javafx.stage.Stage;
 
 public class ChessProgram extends Application {
 
-    Chessboard cb = new Chessboard();
-    EngineHandler eng = new EngineHandler();
+    Controller cont = new Controller();
+    public GridPane chessboard;
+
     String defaultLanguage = "en";
     String defaultCountry = "UK";
     Locale currentLocale = setLanguage(defaultLanguage, defaultCountry); //sets default language to english.
@@ -80,33 +81,24 @@ public class ChessProgram extends Application {
         MenuBar menubar = new MenuBar();
         menubar.getMenus().addAll(file, settings, help);
 
-        GridPane chessboard = createChessBoard();
+        chessboard = createChessBoard();
+        borderPane.setCenter(createChessBoard());
         borderPane.setTop(menubar);
-        borderPane.setCenter(chessboard);
 
         primaryStage.setScene(new Scene(borderPane, 500, 500));
         primaryStage.setTitle("Chess");
         primaryStage.setResizable(false);
         primaryStage.show();
 
-        borderPane.setCenter(createChessBoard()); // set the new chessboard
 
-        if (eng.checkWorker().equals("-1")) {
-            eng.getBest(cb);
-        }
-        // needs to be outside mainloop somehow.
-        // starts the engine thread
+
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
             public void handle(long currentNanoTime) {
-                String ret = eng.checkWorker(); // check workerThread
-                if (!ret.equals("-1")) { // is -1 when workerthread is still working
-                    cb.move(ret); // move the best move
-                    GridPane chessboard = createChessBoard(); // update new chessboard view
+                if(cont.mainLoop()){
+                    chessboard = createChessBoard(); // update new chessboard view
                     borderPane.setCenter(chessboard); // set the new chessboardView
-                    eng.getBest(cb); // start new
                 }
-                //cb.humanClick(1,0);
                 if(!aniGoing){
                     aniGoing = true;
                     this.stop();
@@ -118,7 +110,7 @@ public class ChessProgram extends Application {
 
     public GridPane createChessBoard() {
         final int size = 10;
-        GridPane gridPane = cb.createBoard();
+        GridPane gridPane = cont.cb.createBoard();
 
         for (int i = 0; i < size; i++) {
             gridPane.getColumnConstraints().add(new ColumnConstraints(5, Control.USE_COMPUTED_SIZE,

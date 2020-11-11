@@ -16,7 +16,6 @@ public class EngineHandler{
     private static String PATH = "./res/stockfishWin.exe"; // path for window
     private static final String PATHmac = "./res/stockfish"; // path max
 
-
     public EngineHandler(){ // start the engine
         startEngine();
     }
