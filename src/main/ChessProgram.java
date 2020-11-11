@@ -27,6 +27,7 @@ public class ChessProgram extends Application {
 
     Controller cont = new Controller();
     public GridPane chessboard;
+    public boolean aniGoing = true;
 
     String defaultLanguage = "en";
     String defaultCountry = "UK";
