@@ -56,6 +56,10 @@ public class ChessProgram extends Application {
     //================== about window ==================
     Stage helpStage = new Stage();
 
+    //================== final variables ==================
+    final int WINDOW_WITH = 600;
+    final int WINDOW_HEIGHT = 600;
+
 
 
     @Override
@@ -63,7 +67,6 @@ public class ChessProgram extends Application {
         setLanguage(defaultLanguage,defaultCountry); //sets default language
         English.setDisable(true); //disable default language button
 
-        final int size = 8;
         BorderPane borderPane = new BorderPane();
         setMenuBar();
 
@@ -71,7 +74,7 @@ public class ChessProgram extends Application {
         borderPane.setCenter(createChessBoard());
         borderPane.setTop(menubar);
 
-        primaryStage.setScene(new Scene(borderPane, 500, 500));
+        primaryStage.setScene(new Scene(borderPane, WINDOW_WITH, WINDOW_HEIGHT));
         primaryStage.setTitle("Chess");
         primaryStage.setResizable(false);
         primaryStage.show();
@@ -119,8 +122,6 @@ public class ChessProgram extends Application {
             gridPane.add(new Label(numbers[i - 1]), 0, i);
         }
     }
-
-
 
 
     public void setLanguage(String language, String country){  //set language for program
@@ -218,15 +219,15 @@ public class ChessProgram extends Application {
         Text titleText = new Text(); //creates text object
         Text dateText = new Text(); //date text
         Text inputText = new Text(); //input text
-        String input = new String(); //creates string to insert the input into
+        String input = ""; //creates string to insert the input into
         BufferedReader txtReader; //creates BufferedReader object
 
 
 
         //================== Read text from file ==================
         switch (type) { //switch for different languages.
-            case "ABOUT" -> { txtReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/text/about_" + currentLanguage.toUpperCase() + ".txt"))); }
-            case "RULES" -> { txtReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/text/rules_" + currentLanguage.toUpperCase() + ".txt"))); }
+            case "ABOUT" -> txtReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/text/about_" + currentLanguage.toUpperCase() + ".txt")));
+            case "RULES" -> txtReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/text/rules_" + currentLanguage.toUpperCase() + ".txt")));
             default -> throw new IllegalStateException("Unexpected value: " + type);
         }
 
