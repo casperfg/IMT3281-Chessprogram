@@ -16,7 +16,7 @@ public class King extends Piece{
         }
     }
     public void possible(Chessboard board) {
-         nonRepeat(moveVector, board);
-        System.out.println("Knight");
+        nonRepeat(moveVector, board);
+        System.out.println("King");
     }
 }

@@ -37,7 +37,7 @@ public class EngineHandler{
         }
         return "-1";
     }
-    private boolean startEngine(){
+    private void startEngine(){
         String os = System.getProperty("os.name");
         if(!os.contains("Windows")){ // mac functionality
             PATH = PATHmac;
@@ -49,9 +49,7 @@ public class EngineHandler{
             processWriter = new OutputStreamWriter(engine.getOutputStream());
         }catch(Exception e){
             e.printStackTrace();
-            return false;
         }
-        return true;
     }
     private void sendCommand(String cmd){
         worker = new engineWorker(processReader, processWriter);
@@ -62,7 +60,7 @@ public class EngineHandler{
             sendCommand("quit");
             processReader.close();
             processWriter.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
     }
 

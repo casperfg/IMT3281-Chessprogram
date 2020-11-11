@@ -45,8 +45,8 @@ public class Piece{
     }
     // checks each vector if legal, if so add it to list
     public void nonRepeat(int[][] moveVector, Chessboard board){
-        for(int i = 0; i < moveVector.length; i++){
-            addPoss(board, moveVector[i][0], moveVector[i][1]);
+        for (int[] ints : moveVector) {
+            addPoss(board, ints[0], ints[1]);
         }
     }
     public void setIcon() {  // Calls child classes

@@ -13,7 +13,7 @@ public class Chessboard extends GridPane {
     public String passantSquare = "-"; // '-' if no passantsquare
     public int moveCount = 0; // increments after black move
 
-
+    public char promotionTo = '-';
     private String compMove;
     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
@@ -40,17 +40,30 @@ public class Chessboard extends GridPane {
             }
         }
     }
+    public void newPiece(int x, int y, char type, boolean color){
+        board[y][x].updatePiece(type);
+        board[y][x].setProp(new int[]{x,y}, color);
+    }
     // ------------MOVE-----------------
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
         if (fPiece.type == 'k') {
+            if((x-xt) != 1){ // castleing. assumes is legal (threats from black)
+                if(!whiteCastle || !blackCastle){
+                    board[y][((xt-x) == 2)? 7 : 0].removePiece();
+                    newPiece((xt+x)/2, y, 'r', fPiece.color);
+                }
+            }
             if (fPiece.color) { // king moved, no castling
-                whiteCastle = true;
+                whiteCastle = true; // has castled or moved king
             } else {
                 blackCastle = true;
             }
-            //if((x-xt) != 1){ // castleing
 
-            //}
+        }
+        if(fPiece.type == 'p'){
+            if((fPiece.color && yt == 0) || (!fPiece.color && yt == 7)){
+                newPiece(xt, yt, (promotionTo == '-')? 'q' : promotionTo, fPiece.color);
+            }
         }
     }
     // computer move
@@ -62,11 +75,18 @@ public class Chessboard extends GridPane {
         int xt = column.indexOf(move.charAt(2));
         int yt = Character.getNumericValue(move.charAt(3));
 
-        compMove = move;
+        if(move.length() > 4){ // is promotion, set char
+            promotionTo = move.charAt(4); // used in SPECIALMOVE
+        }
         move(x, 8 - y, xt, 8 - yt); // internalY = 8-External
     }
 
     // validates before moving.
+    public void move(int x, int y, int xt, int yt, char promotionTo){
+        move(x, y, xt, yt); // move with setting promotionTO.
+        this.promotionTo = promotionTo;
+    }
+    // TODO: update king functionality (castle/check/mate)
     public void move(int x, int y, int xt, int yt) { // from x,y to xt, yt
         Piece fPiece = board[y][x].chessPiece;
         if(legalMove(x, y, xt, yt)) { // checks if legal
