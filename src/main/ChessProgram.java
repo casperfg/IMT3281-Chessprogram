@@ -53,6 +53,7 @@ public class ChessProgram extends Application {
     @Override
     public void start(Stage primaryStage) {
         setLanguage(defaultLanguage,defaultCountry); //sets default language
+        English.setDisable(true); //disable default language button
 
         final int size = 8;
         BorderPane borderPane = new BorderPane();
@@ -128,11 +129,12 @@ public class ChessProgram extends Application {
         country = country.toUpperCase(); //makes uppercase
         Locale currentLocale; //defines locale variable
         switch (language) { //switch for different languages.
-            case "EN" -> currentLocale = new Locale(language, country); //sets language to english.
-            case "NO" -> currentLocale = new Locale(language, country); //sets language to norwegian.
+            case "EN" -> { English.setDisable(true); Norwegian.setDisable(false); currentLocale = new Locale(language, country); }//sets language to english.
+            case "NO" -> { Norwegian.setDisable(true); English.setDisable(false); currentLocale = new Locale(language, country);} //sets language to norwegian.
             default -> currentLocale = new Locale("en", "UK"); //sets language to english as default;
         }
         messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle
+        setMenuBar();
 
     }
 
@@ -164,11 +166,13 @@ public class ChessProgram extends Application {
         //================== Language Item event handler ==================
 
         Norwegian.setOnAction(e -> {
-            languageEvent("no", "NO"); //function to change language
+            setLanguage("no", "NO"); //function to change language
+
         });
 
         English.setOnAction(e -> {
-            languageEvent("en", "UK"); //function to change language
+            setLanguage("en", "UK"); //function to change language
+
         });
 
         //================== Help ==================
@@ -186,16 +190,5 @@ public class ChessProgram extends Application {
 
 
     }
-
-
-    public void languageEvent(String language, String country){ //sets language and refreshes menu bar
-        setLanguage(language, country); //call function to set language
-        setMenuBar(); //runs function again to update text
-    }
-
-
-
-
-
 
 }
