@@ -129,7 +129,7 @@ public class Chessboard extends GridPane {
             wCastle = "-";
         }
         result = " "+turn+" "+wCastle+bCastle;
-        result += " "+passantSquare + " 0 "+String.valueOf(moveCount);
+        result += " "+passantSquare + " 0 "+ moveCount;
 
         // board position
         for(int y = 0; y<8; y++){
@@ -158,31 +158,39 @@ public class Chessboard extends GridPane {
         return fen.toString() + result;
     }
 
-    public GridPane boardView() {
-        final int size = 10;
+    public GridPane createBoard() {
+        final int size = 8;
+        final int squareSize = 50;
         GridPane gridPane = new GridPane();
-        for (int row = 1; row < size-1; row++) {
-            for (int col = 1; col < size-1; col ++) {
-                StackPane tileSquare = new StackPane();
-                Piece cp;
-                String color;
-                if (board[col-1][row-1].tileColorWhite) {
-                    color = "white";
-                } else {
-                    color = "gray";
-                }
-                if(board[col-1][row-1].hasPiece){ // if has piece
-                    cp = board[col-1][row-1].chessPiece;
-                    ImageView vImg = new ImageView(cp.icon);
-                    vImg.setFitHeight(50);
-                    vImg.setFitWidth(50);
-                    tileSquare.getChildren().add(vImg);
-                }
-                tileSquare.setStyle("-fx-background-color: "+color+";");
-                gridPane.add(tileSquare,row, col);
+
+        for (int row = 1; row <= size; row++) {
+            for (int col = 1; col <= size; col ++) {
+                createSquare(gridPane, row, col, squareSize);
             }
         }
         return gridPane;
+    }
+
+    public void createSquare(GridPane gridPane, int col, int row, int size) {
+        StackPane square = new StackPane();     //creates new square obj
+        square.setPrefSize(size,size);          //sets a preferred size
+        Piece piece;
+        String color;
+        if (board[col-1][row-1].tileColorWhite)
+            color = "white";
+        else
+            color = "gray";
+
+        if(board[col-1][row-1].hasPiece) { // if has piece
+            piece = board[col-1][row-1].chessPiece;
+            ImageView pieceIcon = new ImageView(piece.icon);
+            pieceIcon.setFitHeight(50);
+            pieceIcon.setFitWidth(50);
+            square.getChildren().add(pieceIcon);
+        }
+
+        square.setStyle("-fx-background-color: "+color+";");
+        gridPane.add(square, row, col);
     }
 
     public void humanClick(int x, int y) { // maybee possible of board should be known beforehand
@@ -192,6 +200,8 @@ public class Chessboard extends GridPane {
             }
         }
     }
+
+
 }
 /*
 MATT:

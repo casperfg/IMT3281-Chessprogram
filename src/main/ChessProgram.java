@@ -1,23 +1,9 @@
 package main;
 
-import javafx.animation.AnimationTimer;
-import javafx.scene.control.*;
-import main.Chessboard;
-
-import java.awt.*;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Locale;
-import java.util.Random;
-import java.util.*;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.Image;
-
-
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
@@ -34,7 +20,6 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 
@@ -46,6 +31,7 @@ public class ChessProgram extends Application {
     String defaultCountry = "UK";
     Locale currentLocale = setLanguage(defaultLanguage, defaultCountry); //sets default language to english.
     boolean aniGoing = true; // animation timer is running
+
     // TODO: slit start and text setting.
     @Override
     public void start(Stage primaryStage) {
@@ -95,8 +81,6 @@ public class ChessProgram extends Application {
         menubar.getMenus().addAll(file, settings, help);
 
         GridPane chessboard = createChessBoard();
-
-
         borderPane.setTop(menubar);
         borderPane.setCenter(chessboard);
 
@@ -107,7 +91,7 @@ public class ChessProgram extends Application {
 
         borderPane.setCenter(createChessBoard()); // set the new chessboard
 
-        if(eng.checkWorker() == "-1"){
+        if (eng.checkWorker().equals("-1")) {
             eng.getBest(cb);
         }
         // needs to be outside mainloop somehow.
@@ -116,14 +100,14 @@ public class ChessProgram extends Application {
             @Override
             public void handle(long currentNanoTime) {
                 String ret = eng.checkWorker(); // check workerThread
-                if(ret != "-1"){ // is -1 when workerthread is still working
+                if (!ret.equals("-1")) { // is -1 when workerthread is still working
                     cb.move(ret); // move the best move
                     GridPane chessboard = createChessBoard(); // update new chessboard view
                     borderPane.setCenter(chessboard); // set the new chessboardView
                     eng.getBest(cb); // start new
                 }
-                cb.humanClick(1,0);
-                if(!aniGoing){
+                cb.humanClick(1, 0);
+                if (!aniGoing) {
                     aniGoing = true;
                     this.stop();
                 }
@@ -132,40 +116,37 @@ public class ChessProgram extends Application {
 
     }
 
-    public GridPane createChessBoard(){
+    public GridPane createChessBoard() {
         final int size = 10;
-        GridPane gridPane = cb.boardView();
+        GridPane gridPane = cb.createBoard();
 
         for (int i = 0; i < size; i++) {
             gridPane.getColumnConstraints().add(new ColumnConstraints(5, Control.USE_COMPUTED_SIZE,
-                                                Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true));
+                    Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true));
             gridPane.getRowConstraints().add(new RowConstraints(5, Control.USE_COMPUTED_SIZE,
-                                                Double.POSITIVE_INFINITY, Priority.ALWAYS, VPos.CENTER, true));
+                    Double.POSITIVE_INFINITY, Priority.ALWAYS, VPos.CENTER, true));
         }
         labelBoard(gridPane);
         return gridPane;
     }
 
 
-
-    void labelBoard(GridPane gridPane){
+    void labelBoard(GridPane gridPane) {
         final String[] letterLabels = {"A", "B", "C", "D", "E", "F", "G", "H"};
-        final String[] numbers = {"8", "7", "6", "5", "4", "3","2", "1"};
-            for (int i = 8; i > 0; i--) {
-                gridPane.add(new Label(letterLabels[i - 1]), i, 0);
-                gridPane.add(new Label(letterLabels[i - 1]), i, 9);
-                gridPane.add(new Label(numbers[i - 1]), 9, i);
-                gridPane.add(new Label(numbers[i - 1]), 0, i);
-            }
+        final String[] numbers = {"8", "7", "6", "5", "4", "3", "2", "1"};
+        for (int i = 8; i > 0; i--) {
+            gridPane.add(new Label(letterLabels[i - 1]), i, 0);
+            gridPane.add(new Label(letterLabels[i - 1]), i, 9);
+            gridPane.add(new Label(numbers[i - 1]), 9, i);
+            gridPane.add(new Label(numbers[i - 1]), 0, i);
+        }
     }
 
 
-
-
-    public Locale setLanguage(String language, String country){  //set language for program
+    public Locale setLanguage(String language, String country) {  //set language for program
         language = language.toUpperCase(); //makes uppercase
         country = country.toUpperCase(); //makes uppercase
-        Locale currentLocale = null; //defines locale variable
+        Locale currentLocale; //defines locale variable
         switch (language) { //switch for different languages.
             case "EN" -> currentLocale = new Locale(language, country); //sets language to english.
             case "NO" -> currentLocale = new Locale(language, country); //sets language to norwegian.
@@ -175,8 +156,7 @@ public class ChessProgram extends Application {
     }
 
 
-
-    public ImageView setIcon(Image flagIcon){ //gets an image as parameter and adds to imageView
+    public ImageView setIcon(Image flagIcon) { //gets an image as parameter and adds to imageView
         ImageView flag = new ImageView(flagIcon); //creates new imageview
         flag.setFitHeight(10); //set height
         flag.setFitWidth(15); //set width
