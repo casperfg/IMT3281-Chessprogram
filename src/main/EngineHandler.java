@@ -68,6 +68,7 @@ public class EngineHandler{
     }
 
     public void setElo(int Elo){
+        sendCommand("setoption name UCI_LimitStrength value true");
         sendCommand("setoption name UCI_Elo value "+String.valueOf(Elo));
     }
 

@@ -31,7 +31,6 @@ public class Controller {
     public Boolean engVsEng(){
         String ret = eng.checkWorker(); // check workerThread
         if(firstRun){
-            //cb.board[0][3].removePiece();
             startEng();
         }
         if (!ret.equals("-1")) { // is -1 when workerthread is still working
@@ -39,10 +38,10 @@ public class Controller {
             System.out.println(cb.repetition);
             if(gameGoing){
                 if(cb.whiteTurn){
-                    eng.thinkTime = 100;
+                    eng.thinkTime = 1000;
                     eng.setElo(100);
                 }else{
-                    eng.thinkTime = 100;
+                    eng.thinkTime = 1000;
                     eng.setElo(2500);
                 }
                 cb.move(ret); // move the best move

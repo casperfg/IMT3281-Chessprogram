@@ -63,6 +63,10 @@ public class Chessboard extends GridPane {
         }
         if(!blankSq(xt,yt)){ moveString += "x"; }
         moveString += board[yt][xt].tileName; // the tilename it hits
+        if(promotionTo != '-'){ // pawn promotion
+            moveString += Character.toString(promotionTo).toUpperCase();
+        }
+
     }
     public void repetition(int xt, int yt, Piece fPiece){
         if(fPiece.lastPosition[0] == xt && fPiece.lastPosition[1] == yt){ // 4x repetition ==> stalemate
@@ -72,6 +76,7 @@ public class Chessboard extends GridPane {
         }
     }
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
+        passantSquare = "-";
         if (fPiece.type == 'k') {
             if((x-xt) != 1){ // castleing. assumes is legal (threats from black)
                 if(!whiteCastle || !blackCastle){
@@ -86,9 +91,13 @@ public class Chessboard extends GridPane {
                 blackCastle = true;
             }
         }
-        if(fPiece.type == 'p'){ // PROMOTION
-            if((fPiece.color && yt == 0) || (!fPiece.color && yt == 7)){
+        if(fPiece.type == 'p'){
+            if((fPiece.color && yt == 0) || (!fPiece.color && yt == 7)){ // PROMOTION
                 newPiece(xt, yt, (promotionTo == '-')? 'q' : promotionTo, fPiece.color);
+                promotionTo = '-';
+            }else if(yt-y != 1){ // 2 squares up
+                passantSquare = board[(fPiece.color)? 5 : 2][xt].tileName;
+                System.out.println("PASSANT: "+passantSquare);
             }
         }
     }
@@ -131,10 +140,11 @@ public class Chessboard extends GridPane {
                 moveCount++;
             }
             specialMoves(x, y, xt, yt, fPiece);
-            System.out.println(moveString);
+            System.out.println(moveString + " " + repetition);
             moves.add(moveString);
         }else{
             System.out.println("wrong move");
+            System.out.println(toFen()+" "+moveString);
             //System.exit(1);
         }
     }
