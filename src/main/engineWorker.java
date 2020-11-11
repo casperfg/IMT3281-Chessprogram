@@ -39,6 +39,9 @@ public class engineWorker extends Thread{
             sendCommand("isready");
             while (true) {
                 String text = processReader.readLine();
+                if(text.contains("mate 0")){
+                    return "MaTe";
+                }
                 if (text.equals("readyok"))
                     break;
                 else
@@ -57,6 +60,9 @@ public class engineWorker extends Thread{
         out = getOutput(thinkTime + 30);
         for (int i = 0; i < 3; i++){ // makes sure the bestmove call is caught
             try {
+                if(out.contains("MaTe")){
+                    break;
+                }
                 out = out.split("bestmove ")[1].split(" ")[0];
                 break;
             } catch (Exception e) {

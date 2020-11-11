@@ -36,6 +36,10 @@ public class EngineHandler{
         }
         return "-1";
     }
+    public void checkMate(Chessboard cboard){
+        thinkTime = 100;
+        getBest(cboard);
+    }
     private void startEngine(){
         String os = System.getProperty("os.name");
         if(!os.contains("Windows")){ // mac functionality

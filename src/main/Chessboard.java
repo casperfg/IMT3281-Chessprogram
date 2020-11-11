@@ -5,6 +5,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import main.pieces.Piece;
 
+import java.util.ArrayList;
+
 public class Chessboard extends GridPane {
     public Tile[][] board = new Tile[8][8];
     public boolean whiteTurn = true;
@@ -13,6 +15,9 @@ public class Chessboard extends GridPane {
     public String passantSquare = "-"; // '-' if no passantsquare
     public int moveCount = 0; // increments after black move
 
+    public int repetition = 0;
+    public String moveString;
+    public ArrayList<String> moves = new ArrayList<String>();
     public char promotionTo = '-';
     private String compMove;
     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
@@ -44,13 +49,35 @@ public class Chessboard extends GridPane {
         board[y][x].updatePiece(type);
         board[y][x].setProp(new int[]{x,y}, color);
     }
+
     // ------------MOVE-----------------
+    // converts move to save friendly format
+    public void moveStringSet(Piece fPiece, int x, int y, int xt, int yt){
+        moveString = "";
+        if(fPiece.type != 'p'){
+            moveString = Character.toString(fPiece.type).toUpperCase();
+        }else{ // is pawn
+            if(!blankSq(xt,yt)){ // is taking piece, must reference square (feks: exg3)
+                moveString = Character.toString(board[y][x].tileName.charAt(0));
+            }
+        }
+        if(!blankSq(xt,yt)){ moveString += "x"; }
+        moveString += board[yt][xt].tileName; // the tilename it hits
+    }
+    public void repetition(int xt, int yt, Piece fPiece){
+        if(fPiece.lastPosition[0] == xt && fPiece.lastPosition[1] == yt){ // 4x repetition ==> stalemate
+            repetition += 1;
+        }else{
+            repetition = 0;
+        }
+    }
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
         if (fPiece.type == 'k') {
             if((x-xt) != 1){ // castleing. assumes is legal (threats from black)
                 if(!whiteCastle || !blackCastle){
-                    board[y][((xt-x) == 2)? 7 : 0].removePiece();
-                    newPiece((xt+x)/2, y, 'r', fPiece.color);
+                    moveString = (((xt-x) == 2)? "0-0" : "0-0-0"); // true if short castle.
+                    board[y][((xt-x) == 2)? 7 : 0].removePiece(); // remove tower
+                    newPiece((xt+x)/2, y, 'r', fPiece.color); // place new tower
                 }
             }
             if (fPiece.color) { // king moved, no castling
@@ -58,9 +85,8 @@ public class Chessboard extends GridPane {
             } else {
                 blackCastle = true;
             }
-
         }
-        if(fPiece.type == 'p'){
+        if(fPiece.type == 'p'){ // PROMOTION
             if((fPiece.color && yt == 0) || (!fPiece.color && yt == 7)){
                 newPiece(xt, yt, (promotionTo == '-')? 'q' : promotionTo, fPiece.color);
             }
@@ -69,7 +95,6 @@ public class Chessboard extends GridPane {
     // computer move
     public void move(String move) { // e2e4, promotion: e6e7q
         String column = "abcdefgh";
-        System.out.println(move);
         int x = column.indexOf(move.charAt(0));
         int y = Character.getNumericValue(move.charAt(1));
         int xt = column.indexOf(move.charAt(2));
@@ -88,10 +113,15 @@ public class Chessboard extends GridPane {
     }
     // TODO: update king functionality (castle/check/mate)
     public void move(int x, int y, int xt, int yt) { // from x,y to xt, yt
-        Piece fPiece = board[y][x].chessPiece;
+        Piece fPiece;
         if(legalMove(x, y, xt, yt)) { // checks if legal
+            fPiece = board[y][x].chessPiece;
+            repetition(xt, yt, fPiece);
+
             fPiece.position = new int[]{xt, yt};
             fPiece.lastPosition = new int[]{x, y};
+            moveStringSet(fPiece, x, y, xt, yt);
+
             board[yt][xt].chessPiece = fPiece; // move piece to new tile
             board[yt][xt].hasPiece = true;
             board[y][x].removePiece();
@@ -101,10 +131,11 @@ public class Chessboard extends GridPane {
                 moveCount++;
             }
             specialMoves(x, y, xt, yt, fPiece);
-
+            System.out.println(moveString);
+            moves.add(moveString);
         }else{
             System.out.println("wrong move");
-            System.exit(1);
+            //System.exit(1);
         }
     }
     // -----------------LEGALMOVE ---------------------------
@@ -122,7 +153,6 @@ public class Chessboard extends GridPane {
             Piece fPiece = board[y][x].chessPiece;
             Piece tPiece = board[yt][xt].chessPiece; // from piece and topiece
             boolean isBlank = blankSq(xt, yt);
-
             boolean isOpposite = false;
             if (!isBlank) { // landing on piece
                 isOpposite = tPiece.color != fPiece.color;
@@ -132,7 +162,7 @@ public class Chessboard extends GridPane {
             return false;
         }
     }
-    // ------------BOARD CONVERTIONS ----------
+    // ------------BOARD CONVERSION ----------
     public String toFen(){
         Tile myTile;
         Piece myPiece;
