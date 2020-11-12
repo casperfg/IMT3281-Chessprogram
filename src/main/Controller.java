@@ -6,25 +6,27 @@ public class Controller {
     public EngineHandler engineHandler;
     public EngineHandler mateEngine;
     public Boolean firstRun = true;
-    public Boolean gameGoing = true;
+    public Boolean engineRunning = true;
 
     public Controller() {
         chessboard = new Chessboard();
         engineHandler = new EngineHandler();
     }
     public void startEngine(){
+        System.out.println("Engine starting...");
         if (engineHandler.checkWorker().equals("-1")) {
             engineHandler.getBest(chessboard);
         }
     }
     public void stopEngine(){
-        gameGoing = false;
+        engineRunning = false;
+        System.out.println("Engine stopped...");
     }
 
     public void gameCheck(String ret){
         if(ret.equals("MaTe") || chessboard.repetition == 4) {
             System.out.println("Game Finished: ");
-            gameGoing = false;
+            engineRunning = false;
         }
     }
     // FOOLS MATE:
@@ -37,7 +39,7 @@ public class Controller {
         if (!ret.equals("-1")) { // is -1 when workerthread is still working
             gameCheck(ret);
             System.out.println(chessboard.repetition);
-            if(gameGoing){
+            if(engineRunning){
                 if(chessboard.whiteTurn){
                     engineHandler.thinkTime = 1000;
                     engineHandler.setElo(100);
@@ -55,7 +57,7 @@ public class Controller {
 
     public boolean mainLoop(){
         Boolean change = false;
-        if(game.equals("e-e") && gameGoing){
+        if(game.equals("e-e") && engineRunning){
             change = engVsEng();
         }
         firstRun = false;
