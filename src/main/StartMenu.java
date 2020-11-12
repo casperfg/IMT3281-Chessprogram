@@ -22,7 +22,7 @@ public class StartMenu extends Application {
     FlowPane flowPane = new FlowPane();
 
     Image logo = new Image(getClass().getResourceAsStream("/images/logo.png"));
-    Scene scene = new Scene(borderPane, 500, 500);
+    Scene scene = new Scene(borderPane, 600, 600);
 
     final int WIDTH = 290;
     final int HEIGHT = 50;
