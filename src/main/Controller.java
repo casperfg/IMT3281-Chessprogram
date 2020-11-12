@@ -1,26 +1,28 @@
 package main;
 
-import javafx.scene.layout.GridPane;
-
 public class Controller {
-    public Chessboard cb;
+    public Chessboard chessboard;
     public String game = "e-e";
-    public EngineHandler eng;
-    public EngineHandler mateEng;
+    public EngineHandler engineHandler;
+    public EngineHandler mateEngine;
     public Boolean firstRun = true;
     public Boolean gameGoing = true;
 
     public Controller() {
-        cb = new Chessboard();
-        eng = new EngineHandler();
+        chessboard = new Chessboard();
+        engineHandler = new EngineHandler();
     }
-    public void startEng(){
-        if (eng.checkWorker().equals("-1")) {
-            eng.getBest(cb);
+    public void startEngine(){
+        if (engineHandler.checkWorker().equals("-1")) {
+            engineHandler.getBest(chessboard);
         }
     }
+    public void stopEngine(){
+        gameGoing = false;
+    }
+
     public void gameCheck(String ret){
-        if(ret.equals("MaTe") || cb.repetition == 4) {
+        if(ret.equals("MaTe") || chessboard.repetition == 4) {
             System.out.println("Game Finished: ");
             gameGoing = false;
         }
@@ -28,23 +30,23 @@ public class Controller {
     // FOOLS MATE:
     //cb.move("f2f3"); cb.move("e7e5"); cb.move("g2g4");
     public Boolean engVsEng(){
-        String ret = eng.checkWorker(); // check workerThread
+        String ret = engineHandler.checkWorker(); // check workerThread
         if(firstRun){
-            startEng();
+            startEngine();
         }
         if (!ret.equals("-1")) { // is -1 when workerthread is still working
             gameCheck(ret);
-            System.out.println(cb.repetition);
+            System.out.println(chessboard.repetition);
             if(gameGoing){
-                if(cb.whiteTurn){
-                    eng.thinkTime = 1000;
-                    eng.setElo(100);
+                if(chessboard.whiteTurn){
+                    engineHandler.thinkTime = 1000;
+                    engineHandler.setElo(100);
                 }else{
-                    eng.thinkTime = 1000;
-                    eng.setElo(2500);
+                    engineHandler.thinkTime = 1000;
+                    engineHandler.setElo(2500);
                 }
-                cb.move(ret); // move the best move
-                eng.getBest(cb); // start new
+                chessboard.move(ret); // move the best move
+                engineHandler.getBest(chessboard); // start new
             }
             return true;
         }
@@ -60,7 +62,5 @@ public class Controller {
         return change;
     }
 
-    public void stopEngine(){
-        gameGoing = false;
-    }
+
 }

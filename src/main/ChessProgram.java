@@ -8,7 +8,6 @@ import java.util.ResourceBundle;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
@@ -26,12 +25,11 @@ import javafx.stage.Stage;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import javafx.stage.WindowEvent;
 
 
 public class ChessProgram extends Application {
 
-    Controller cont = new Controller();
+    Controller controller = new Controller();
     public GridPane chessboard;
     public boolean aniGoing = true;
 
@@ -66,7 +64,7 @@ public class ChessProgram extends Application {
 
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage chessBoardStage) {
         setLanguage(defaultLanguage,defaultCountry); //sets default language
         English.setDisable(true); //disable default language button
 
@@ -77,23 +75,16 @@ public class ChessProgram extends Application {
         borderPane.setCenter(createChessBoard());
         borderPane.setTop(menubar);
 
-        primaryStage.setScene(new Scene(borderPane, WINDOW_WITH, WINDOW_HEIGHT));
-        primaryStage.setTitle("Chess");
-        primaryStage.setResizable(false);
-        primaryStage.show();
-
-        primaryStage.setOnCloseRequest(new EventHandler<>() {
-            @Override
-            public void handle(WindowEvent windowEvent) {
-               //TODO STOP ENGINE WHEN WINDOW IS CLOSED
-            }
-        });
-
+        chessBoardStage.setScene(new Scene(borderPane, WINDOW_WITH, WINDOW_HEIGHT));
+        chessBoardStage.setTitle("Chess");
+        chessBoardStage.setResizable(false);
+        chessBoardStage.setOnCloseRequest(windowEvent -> controller.stopEngine());
+        chessBoardStage.show();
 
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
             public void handle(long currentNanoTime) {
-                if(cont.mainLoop()){
+                if(controller.mainLoop()){
                     chessboard = createChessBoard(); // update new chessboard view
                     borderPane.setCenter(chessboard); // set the new chessboardView
                 }
@@ -108,7 +99,7 @@ public class ChessProgram extends Application {
 
     public GridPane createChessBoard() {
         final int size = 10;
-        GridPane gridPane = cont.cb.createBoard();
+        GridPane gridPane = controller.chessboard.createBoard();
 
         for (int i = 0; i < size; i++) {
             gridPane.getColumnConstraints().add(new ColumnConstraints(5, Control.USE_COMPUTED_SIZE,
