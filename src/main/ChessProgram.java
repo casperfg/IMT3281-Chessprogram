@@ -152,7 +152,6 @@ public class ChessProgram extends Application {
         //================== File ==================
         file.setText(messages.getString("File"));
             restartMenu.setText("Restart Game");
-            System.out.println(messages.getString("File"));
         //================== Settings ==================
         settings.setText(messages.getString("Settings")); //creating settings in menu bar
         langSubMenu.setText(messages.getString("Language")); //submenu for language
