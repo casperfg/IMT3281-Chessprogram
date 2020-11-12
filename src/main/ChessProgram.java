@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
@@ -25,6 +26,7 @@ import javafx.stage.Stage;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import javafx.stage.WindowEvent;
 
 
 public class ChessProgram extends Application {
@@ -47,6 +49,7 @@ public class ChessProgram extends Application {
     Menu help = new Menu();
     MenuItem about = new MenuItem();
     MenuItem rules = new MenuItem();
+    MenuItem restartMenu = new MenuItem();
     MenuItem Norwegian = new MenuItem(); //Norwegian as a choice
     Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg")); //fetches from res folder
     MenuItem English = new MenuItem(); //English as a choice
@@ -79,6 +82,12 @@ public class ChessProgram extends Application {
         primaryStage.setResizable(false);
         primaryStage.show();
 
+        primaryStage.setOnCloseRequest(new EventHandler<>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+               //TODO STOP ENGINE WHEN WINDOW IS CLOSED
+            }
+        });
 
 
         new AnimationTimer() { // mainloop of the program (controller??)
@@ -151,8 +160,8 @@ public class ChessProgram extends Application {
     public void setMenuBar(){ //fetches text and initialises the menu bar
         //================== File ==================
         file.setText(messages.getString("File"));
-        System.out.println(messages.getString("File"));
-
+            restartMenu.setText("Restart Game");
+            System.out.println(messages.getString("File"));
         //================== Settings ==================
         settings.setText(messages.getString("Settings")); //creating settings in menu bar
         langSubMenu.setText(messages.getString("Language")); //submenu for language
@@ -197,12 +206,17 @@ public class ChessProgram extends Application {
             }
         });
 
+        restartMenu.setOnAction(e -> {
+            //TODO RESTART BOARD FUNCTION
+        });
+
         //================== add items  ==================
         if(startUp){ //runs only when the program first starts
             startUp = false; //set to false
             help.getItems().addAll(about, rules); //adds items to help menu
             langSubMenu.getItems().addAll(Norwegian, English); //adds item to language
             settings.getItems().add(langSubMenu); //adds language under settings
+            file.getItems().add(restartMenu);
             menubar.getMenus().addAll(file, settings, help); //add all menus to menubar
         }
 
@@ -257,7 +271,5 @@ public class ChessProgram extends Application {
         text.setWrappingWidth(400); //size before wrapping
         return text; //returns text object
     }
-
-
 
 }

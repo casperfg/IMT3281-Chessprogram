@@ -13,7 +13,6 @@ public class Controller {
     public Controller() {
         cb = new Chessboard();
         eng = new EngineHandler();
-
     }
     public void startEng(){
         if (eng.checkWorker().equals("-1")) {
@@ -59,5 +58,9 @@ public class Controller {
         }
         firstRun = false;
         return change;
+    }
+
+    public void stopEngine(){
+        gameGoing = false;
     }
 }
