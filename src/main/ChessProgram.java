@@ -198,7 +198,7 @@ public class ChessProgram extends Application {
         });
 
         restartMenu.setOnAction(e -> {
-            //TODO RESTART BOARD FUNCTION
+            //TODO: Create restart function so board is reset
         });
 
         //================== add items  ==================
