@@ -81,7 +81,6 @@ public class StartMenu extends Application {
 
     void disableButtonsNotWorkingYetGeitGeitGeit(){
         btn_multi.setDisable(true);
-        btn_play.setDisable(true);
         btn_settings.setDisable(true);
     }
 

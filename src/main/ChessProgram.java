@@ -53,6 +53,7 @@ public class ChessProgram extends Application {
     MenuItem English = new MenuItem(); //English as a choice
     Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg")); //fetches from res folder
     boolean startUp = true;
+    BorderPane borderPane;
 
     //================== about window ==================
     Stage helpStage = new Stage();
@@ -69,7 +70,7 @@ public class ChessProgram extends Application {
         setLanguage(defaultLanguage,defaultCountry); //sets default language
         English.setDisable(true); //disable default language button
 
-        BorderPane borderPane = new BorderPane();
+        borderPane = new BorderPane();
         setMenuBar();
 
         chessboard = createChessBoard();
@@ -81,7 +82,11 @@ public class ChessProgram extends Application {
         chessBoardStage.setResizable(false);
         chessBoardStage.setOnCloseRequest(windowEvent -> controller.stopEngine());
         chessBoardStage.show();
-
+        if(controller.game == "e-e"){
+            animationTim();
+        }
+    }
+    public void animationTim(){ // use on engine vs engine
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
             public void handle(long currentNanoTime) {
@@ -95,9 +100,7 @@ public class ChessProgram extends Application {
                 }
             }
         }.start(); // start main animation loop
-
     }
-
     public GridPane createChessBoard() {
         final int size = 10;
         GridPane gridPane = controller.chessboard.createBoard();
@@ -198,7 +201,8 @@ public class ChessProgram extends Application {
         });
 
         restartMenu.setOnAction(e -> {
-            controller.chessboard = new Chessboard();
+            controller.stopEngine();
+            controller = new Controller();
             //TODO: Create restart function so board is reset
         });
 

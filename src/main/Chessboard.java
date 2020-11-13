@@ -243,11 +243,13 @@ public class Chessboard extends GridPane {
         square.setPrefSize(size,size);          //sets a preferred size
         squareButton.setPrefSize(50, 50);
 
-        if (squareButton.tileColorWhite)
+        if (squareButton.highLight) {
+            color = "yellow";
+        }else if (squareButton.tileColorWhite){
             color = "white";
-        else
+        }else{
             color = "gray";
-
+        }
         if(squareButton.hasPiece) { // if has piece
             piece = squareButton.chessPiece;
             ImageView pieceIcon = new ImageView(piece.icon);
