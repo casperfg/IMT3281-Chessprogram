@@ -34,9 +34,8 @@ public class ChessProgram extends Application {
     public boolean aniGoing = true;
 
     //================== Initialize internationalization ==================
-    String defaultLanguage = "en";
-    String defaultCountry = "UK";
     String currentLanguage;
+    String currentCountry;
     ResourceBundle messages; //initializing resource bundle
 
     //================== Menu-bar  ==================
@@ -65,8 +64,7 @@ public class ChessProgram extends Application {
 
     @Override
     public void start(Stage chessBoardStage) {
-        setLanguage(defaultLanguage,defaultCountry); //sets default language
-        English.setDisable(true); //disable default language button
+        setLanguage(currentLanguage,currentCountry); //sets language
 
         BorderPane borderPane = new BorderPane();
         setMenuBar();
@@ -78,7 +76,15 @@ public class ChessProgram extends Application {
         chessBoardStage.setScene(new Scene(borderPane, WINDOW_WITH, WINDOW_HEIGHT));
         chessBoardStage.setTitle("Chess");
         chessBoardStage.setResizable(false);
-        chessBoardStage.setOnCloseRequest(windowEvent -> controller.stopEngine());
+
+        chessBoardStage.setOnCloseRequest( windowEvent -> {controller.stopEngine();
+        StartMenu sm = new StartMenu();
+        Stage smStage = new Stage();
+        sm.setStartUpLanguage(currentLanguage, currentCountry);
+        sm.start(smStage);
+        });
+
+
         chessBoardStage.show();
 
         new AnimationTimer() { // mainloop of the program (controller??)
@@ -134,6 +140,7 @@ public class ChessProgram extends Application {
             default -> currentLocale = new Locale("en", "UK"); //sets language to english as default;
         }
         currentLanguage = language; //current language
+        currentCountry = country; //current country
         messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle
         setMenuBar(); //call function to update text
 
@@ -260,6 +267,12 @@ public class ChessProgram extends Application {
         text.setFont(Font.font("verdana", FontWeight.findByName(weight), FontPosture.REGULAR, fontSize)); //sets font, boldness, posture and size
         text.setWrappingWidth(400); //size before wrapping
         return text; //returns text object
+    }
+
+
+    public void setStartUpLanguage(String language, String country){
+        currentLanguage = language;
+        currentCountry = country;
     }
 
 }
