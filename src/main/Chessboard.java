@@ -12,7 +12,7 @@ public class Chessboard extends GridPane {
     public boolean whiteTurn = true;
     public boolean whiteCastle = false;
     public boolean blackCastle = false;
-    public String passantSquare = "-"; // '-' if no passantsquare
+    public String enPassantSquare = "-"; // '-' if no passantsquare
     public int moveCount = 0; // increments after black move
 
     public int repetition = 0;
@@ -76,7 +76,7 @@ public class Chessboard extends GridPane {
         }
     }
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
-        passantSquare = "-";
+        enPassantSquare = "-";
         if (fPiece.type == 'k') {
             if((x-xt) != 1){ // castleing. assumes is legal (threats from black)
                 if(!whiteCastle || !blackCastle){
@@ -96,8 +96,8 @@ public class Chessboard extends GridPane {
                 newPiece(xt, yt, (promotionTo == '-')? 'q' : promotionTo, fPiece.color);
                 promotionTo = '-';
             }else if(yt-y != 1){ // 2 squares up
-                passantSquare = board[(fPiece.color)? 5 : 2][xt].tileName;
-                System.out.println("PASSANT: "+passantSquare);
+                enPassantSquare = board[(fPiece.color)? 5 : 2][xt].tileName;
+                System.out.println("EN PASSANT: "+ enPassantSquare);
             }
         }
     }
@@ -189,7 +189,7 @@ public class Chessboard extends GridPane {
             wCastle = "-";
         }
         result = " "+turn+" "+wCastle+bCastle;
-        result += " "+passantSquare + " 0 "+ moveCount;
+        result += " "+ enPassantSquare + " 0 "+ moveCount;
 
         // board position
         for(int y = 0; y<8; y++){

@@ -1,9 +1,9 @@
 package main;
 
 
-import java.util.EventListener;
-
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -22,21 +22,32 @@ public class StartMenu extends Application {
     FlowPane flowPane = new FlowPane();
 
     Image logo = new Image(getClass().getResourceAsStream("/images/logo.png"));
-    Scene scene = new Scene(borderPane, 500, 500);
-    final int FONTSIZE = 20;
+    Scene scene = new Scene(borderPane, 600, 600);
+
     final int WIDTH = 290;
     final int HEIGHT = 50;
+
+    Button btn_play = new Button("PLAYER vs. CPU");
+    Button btn_multi = new Button("PLAYER vs. PLAYER");
+    Button btn_cpu = new Button("CPU vs. CPU");
+    Button btn_settings = new Button("SETTINGS");
+    Button btn_exit = new Button("EXIT");
 
 
 
     public void start(Stage menuStage){
         addLogo();
         createMenu();
+        disableButtonsNotWorkingYetGeitGeitGeit(); //TODO IMPLEMENT BUTTON FUNCTIONS
 
         menuStage.setTitle("Chess - Main Menu");
         menuStage.setScene(scene);
         menuStage.show();
 
+        Stage cpuStage = new Stage();
+
+        btn_cpu.setOnAction(actionEvent -> new ChessProgram().start(cpuStage));
+        btn_exit.setOnAction(actionEvent -> menuStage.close());
     }
 
     void addLogo(){
@@ -47,18 +58,11 @@ public class StartMenu extends Application {
     }
 
     void createMenu() {
-        Button btn_play = new Button("PLAYER vs. CPU");
-        Button btn_multi = new Button("PLAYER vs. PLAYER");
-        Button btn_cpu = new Button("CPU vs. CPU");
-        Button btn_settings = new Button("CPU vs. CPU");
-        Button btn_exit = new Button("EXIT");
-
         addButton(btn_play);
         addButton(btn_multi);
         addButton(btn_cpu);
         addButton(btn_settings);
         addButton(btn_exit);
-
 
         flowPane.setOrientation(Orientation.VERTICAL);
         flowPane.setAlignment(Pos.CENTER);
@@ -68,9 +72,15 @@ public class StartMenu extends Application {
     }
 
     void addButton(Button btn){
-        btn.setFont(Font.font(FONTSIZE));
+        btn.setFont(Font.font(20));
         btn.setPrefSize(WIDTH, HEIGHT);
         flowPane.getChildren().add(btn);
+    }
+
+    void disableButtonsNotWorkingYetGeitGeitGeit(){
+        btn_multi.setDisable(true);
+        btn_play.setDisable(true);
+        btn_settings.setDisable(true);
     }
 
 

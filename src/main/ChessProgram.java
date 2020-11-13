@@ -29,7 +29,7 @@ import javafx.scene.text.FontWeight;
 
 public class ChessProgram extends Application {
 
-    Controller cont = new Controller();
+    Controller controller = new Controller();
     public GridPane chessboard;
     public boolean aniGoing = true;
 
@@ -47,6 +47,7 @@ public class ChessProgram extends Application {
     Menu help = new Menu();
     MenuItem about = new MenuItem();
     MenuItem rules = new MenuItem();
+    MenuItem restartMenu = new MenuItem();
     MenuItem Norwegian = new MenuItem(); //Norwegian as a choice
     Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg")); //fetches from res folder
     MenuItem English = new MenuItem(); //English as a choice
@@ -63,7 +64,7 @@ public class ChessProgram extends Application {
 
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage chessBoardStage) {
         setLanguage(defaultLanguage,defaultCountry); //sets default language
         English.setDisable(true); //disable default language button
 
@@ -74,17 +75,16 @@ public class ChessProgram extends Application {
         borderPane.setCenter(createChessBoard());
         borderPane.setTop(menubar);
 
-        primaryStage.setScene(new Scene(borderPane, WINDOW_WITH, WINDOW_HEIGHT));
-        primaryStage.setTitle("Chess");
-        primaryStage.setResizable(false);
-        primaryStage.show();
-
-
+        chessBoardStage.setScene(new Scene(borderPane, WINDOW_WITH, WINDOW_HEIGHT));
+        chessBoardStage.setTitle("Chess");
+        chessBoardStage.setResizable(false);
+        chessBoardStage.setOnCloseRequest(windowEvent -> controller.stopEngine());
+        chessBoardStage.show();
 
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
             public void handle(long currentNanoTime) {
-                if(cont.mainLoop()){
+                if(controller.mainLoop()){
                     chessboard = createChessBoard(); // update new chessboard view
                     borderPane.setCenter(chessboard); // set the new chessboardView
                 }
@@ -99,7 +99,7 @@ public class ChessProgram extends Application {
 
     public GridPane createChessBoard() {
         final int size = 10;
-        GridPane gridPane = cont.cb.createBoard();
+        GridPane gridPane = controller.chessboard.createBoard();
 
         for (int i = 0; i < size; i++) {
             gridPane.getColumnConstraints().add(new ColumnConstraints(5, Control.USE_COMPUTED_SIZE,
@@ -151,8 +151,7 @@ public class ChessProgram extends Application {
     public void setMenuBar(){ //fetches text and initialises the menu bar
         //================== File ==================
         file.setText(messages.getString("File"));
-        System.out.println(messages.getString("File"));
-
+            restartMenu.setText("Restart Game");
         //================== Settings ==================
         settings.setText(messages.getString("Settings")); //creating settings in menu bar
         langSubMenu.setText(messages.getString("Language")); //submenu for language
@@ -197,12 +196,17 @@ public class ChessProgram extends Application {
             }
         });
 
+        restartMenu.setOnAction(e -> {
+            //TODO: Create restart function so board is reset
+        });
+
         //================== add items  ==================
         if(startUp){ //runs only when the program first starts
             startUp = false; //set to false
             help.getItems().addAll(about, rules); //adds items to help menu
             langSubMenu.getItems().addAll(Norwegian, English); //adds item to language
             settings.getItems().add(langSubMenu); //adds language under settings
+            file.getItems().add(restartMenu);
             menubar.getMenus().addAll(file, settings, help); //add all menus to menubar
         }
 
@@ -257,7 +261,5 @@ public class ChessProgram extends Application {
         text.setWrappingWidth(400); //size before wrapping
         return text; //returns text object
     }
-
-
 
 }
