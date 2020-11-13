@@ -4,7 +4,6 @@ public class Controller {
     public Chessboard chessboard;
     public String game = "e-e";
     public EngineHandler engineHandler;
-    public EngineHandler mateEngine;
     public Boolean firstRun = true;
     public Boolean engineRunning = true;
 
@@ -59,9 +58,15 @@ public class Controller {
         Boolean change = false;
         if(game.equals("e-e") && engineRunning){
             change = engVsEng();
+        } else if(game.equals("h-e") ){
+            change = humVsEng();
         }
         firstRun = false;
         return change;
+    }
+
+    private Boolean humVsEng() {
+        return false;
     }
 
 

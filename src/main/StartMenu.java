@@ -21,6 +21,7 @@ public class StartMenu extends Application {
     ImageView imageView = new ImageView();
     FlowPane flowPane = new FlowPane();
 
+
     Image logo = new Image(getClass().getResourceAsStream("/images/logo.png"));
     Scene scene = new Scene(borderPane, 600, 600);
 
@@ -46,7 +47,8 @@ public class StartMenu extends Application {
 
         Stage cpuStage = new Stage();
 
-        btn_cpu.setOnAction(actionEvent -> new ChessProgram().start(cpuStage));
+        btn_cpu.setOnAction(actionEvent -> new ChessProgram("e-e").start(cpuStage));
+        btn_play.setOnAction(actionEvent -> new ChessProgram("h-e").start(cpuStage));
         btn_exit.setOnAction(actionEvent -> menuStage.close());
     }
 

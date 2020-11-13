@@ -1,5 +1,6 @@
 package main;
 
+import javafx.scene.control.Button;
 import main.pieces.Bishop;
 import main.pieces.King;
 import main.pieces.Knight;
@@ -10,7 +11,7 @@ import main.pieces.Rook;
 
 import java.util.Arrays;
 
-public class Tile{
+public class Tile extends Button{
     boolean tileColorWhite; // tile is white
     String tileName; // name of tile: e4, e6 etc..
     String column = "abcdefgh"; // column names for tilename

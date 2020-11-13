@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 public class Chessboard extends GridPane {
     public Tile[][] board = new Tile[8][8];
+    GridPane buttonPane = new GridPane();
+
     public boolean whiteTurn = true;
     public boolean whiteCastle = false;
     public boolean blackCastle = false;
@@ -222,6 +224,7 @@ public class Chessboard extends GridPane {
         final int size = 8;
         final int squareSize = 50;
         GridPane gridPane = new GridPane();
+        buttonPane = new GridPane();
 
         for (int row = 1; row <= size; row++) {
             for (int col = 1; col <= size; col ++) {
@@ -233,27 +236,34 @@ public class Chessboard extends GridPane {
 
     public void createSquare(GridPane gridPane, int col, int row, int size) {
         StackPane square = new StackPane();     //creates new square obj
+        Tile boardTile = board[col-1][row-1];
         square.setPrefSize(size,size);          //sets a preferred size
+        boardTile.setPrefSize(size,size);          //sets a preferred size
+
         Piece piece;
         String color;
-        if (board[col-1][row-1].tileColorWhite)
+        if (boardTile.tileColorWhite)
             color = "white";
         else
             color = "gray";
 
-        if(board[col-1][row-1].hasPiece) { // if has piece
-            piece = board[col-1][row-1].chessPiece;
+        if(boardTile.hasPiece) { // if has piece
+            piece = boardTile.chessPiece;
             ImageView pieceIcon = new ImageView(piece.icon);
             pieceIcon.setFitHeight(50);
             pieceIcon.setFitWidth(50);
             square.getChildren().add(pieceIcon);
         }
-
+        boardTile.setOnAction(e->humanClick(col-1, row-1));
+        boardTile.setVisible(false);
         square.setStyle("-fx-background-color: "+color+";");
         gridPane.add(square, row, col);
+        buttonPane.add(boardTile, row, col);
     }
 
     public void humanClick(int x, int y) { // maybee possible of board should be known beforehand
+        System.out.println(x);
+        System.out.println(y);
         if (board[y][x].hasPiece) {
             if (board[y][x].chessPiece.color == whiteTurn) { // is correct turn
                 board[y][x].possible(this); // call possible WIP

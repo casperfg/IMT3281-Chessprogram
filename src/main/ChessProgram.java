@@ -61,8 +61,9 @@ public class ChessProgram extends Application {
     final int WINDOW_WITH = 600;
     final int WINDOW_HEIGHT = 600;
 
-
-
+    public ChessProgram(String game){
+        controller.game = game;
+    }
     @Override
     public void start(Stage chessBoardStage) {
         setLanguage(defaultLanguage,defaultCountry); //sets default language
@@ -72,6 +73,7 @@ public class ChessProgram extends Application {
         setMenuBar();
 
         chessboard = createChessBoard();
+        borderPane.setCenter(controller.chessboard.buttonPane);
         borderPane.setCenter(createChessBoard());
         borderPane.setTop(menubar);
 
@@ -197,6 +199,7 @@ public class ChessProgram extends Application {
         });
 
         restartMenu.setOnAction(e -> {
+            controller.chessboard = new Chessboard();
             //TODO: Create restart function so board is reset
         });
 
