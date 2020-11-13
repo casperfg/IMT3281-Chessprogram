@@ -37,7 +37,6 @@ public class Controller {
         }
         if (!ret.equals("-1")) { // is -1 when workerthread is still working
             gameCheck(ret);
-            System.out.println(chessboard.repetition);
             if(engineRunning){
                 if(chessboard.whiteTurn){
                     engineHandler.thinkTime = 1000;
@@ -68,6 +67,4 @@ public class Controller {
     private Boolean humVsEng() {
         return false;
     }
-
-
 }

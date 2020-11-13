@@ -73,7 +73,6 @@ public class ChessProgram extends Application {
         setMenuBar();
 
         chessboard = createChessBoard();
-        borderPane.setCenter(controller.chessboard.buttonPane);
         borderPane.setCenter(createChessBoard());
         borderPane.setTop(menubar);
 
