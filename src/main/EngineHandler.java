@@ -53,6 +53,7 @@ public class EngineHandler{
         }catch(Exception e){
             e.printStackTrace();
         }
+        sendCommand("setoption name UCI_LimitStrength value true");
     }
     private void sendCommand(String cmd){
         worker = new engineWorker(processReader, processWriter);
@@ -68,7 +69,6 @@ public class EngineHandler{
     }
 
     public void setElo(int Elo){
-        sendCommand("setoption name UCI_LimitStrength value true");
         sendCommand("setoption name UCI_Elo value "+String.valueOf(Elo));
     }
 

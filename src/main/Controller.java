@@ -37,7 +37,7 @@ public class Controller {
             gameCheck(ret);
             System.out.println(cb.repetition);
             if(gameGoing){
-                if(cb.whiteTurn){
+                if(!cb.whiteTurn){
                     eng.thinkTime = 1000;
                     eng.setElo(100);
                 }else{
