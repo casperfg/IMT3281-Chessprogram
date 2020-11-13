@@ -82,7 +82,7 @@ public class ChessProgram extends Application {
         chessBoardStage.setResizable(false);
         chessBoardStage.setOnCloseRequest(windowEvent -> controller.stopEngine());
         chessBoardStage.show();
-        if(controller.game == "e-e"){
+        if(controller.game == "e-e"){ // TODO: use listners as loop when game is with humanplayers.
             animationTim();
         }
     }
