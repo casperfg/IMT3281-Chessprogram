@@ -1,5 +1,6 @@
 package main;
 
+import javafx.scene.control.Button;
 import main.pieces.Bishop;
 import main.pieces.King;
 import main.pieces.Knight;
@@ -10,8 +11,9 @@ import main.pieces.Rook;
 
 import java.util.Arrays;
 
-public class Tile{
+public class Tile extends Button{
     boolean tileColorWhite; // tile is white
+    boolean highLight = false;
     String tileName; // name of tile: e4, e6 etc..
     String column = "abcdefgh"; // column names for tilename
 
@@ -58,9 +60,11 @@ public class Tile{
     }
     public void possible(Chessboard board) {
         chessPiece.possible(board);
+        int x, y;
         for(int i = 0; i < chessPiece.possibleMoves.size(); i++) {
-            System.out.println(chessPiece.possibleMoves.get(i)[0]);
-            System.out.println(chessPiece.possibleMoves.get(i)[1]);
+            x = chessPiece.possibleMoves.get(i)[0];
+            y = chessPiece.possibleMoves.get(i)[1];
+            board.board[y][x].highLight = true;
         }
     }
 }

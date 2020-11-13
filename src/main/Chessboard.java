@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class Chessboard extends GridPane {
     public Tile[][] board = new Tile[8][8];
+
     public boolean whiteTurn = true;
     public boolean whiteCastle = false;
     public boolean blackCastle = false;
@@ -97,7 +98,6 @@ public class Chessboard extends GridPane {
                 promotionTo = '-';
             }else if(yt-y != 1){ // 2 squares up
                 enPassantSquare = board[(fPiece.color)? 5 : 2][xt].tileName;
-                System.out.println("EN PASSANT: "+ enPassantSquare);
             }
         }
     }
@@ -140,7 +140,6 @@ public class Chessboard extends GridPane {
                 moveCount++;
             }
             specialMoves(x, y, xt, yt, fPiece);
-            System.out.println(moveString + " " + repetition);
             moves.add(moveString);
         }else{
             System.out.println("wrong move");
@@ -151,7 +150,11 @@ public class Chessboard extends GridPane {
     // -----------------LEGALMOVE ---------------------------
     // is blank square
     public Boolean blankSq(int xt, int yt){
-        return !board[yt][xt].hasPiece;
+        if(inside(xt, yt)) {
+            return !board[yt][xt].hasPiece;
+        }else{
+            return false;
+        }
     }
     // inside valuerange
     public Boolean inside(int xt, int yt){
@@ -233,28 +236,40 @@ public class Chessboard extends GridPane {
 
     public void createSquare(GridPane gridPane, int col, int row, int size) {
         StackPane square = new StackPane();     //creates new square obj
-        square.setPrefSize(size,size);          //sets a preferred size
+        Tile squareButton = board[col-1][row-1];
         Piece piece;
         String color;
-        if (board[col-1][row-1].tileColorWhite)
-            color = "white";
-        else
-            color = "gray";
 
-        if(board[col-1][row-1].hasPiece) { // if has piece
-            piece = board[col-1][row-1].chessPiece;
+        square.setPrefSize(size,size);          //sets a preferred size
+        squareButton.setPrefSize(50, 50);
+
+        if (squareButton.highLight) {
+            color = "yellow";
+        }else if (squareButton.tileColorWhite){
+            color = "white";
+        }else{
+            color = "gray";
+        }
+        if(squareButton.hasPiece) { // if has piece
+            piece = squareButton.chessPiece;
             ImageView pieceIcon = new ImageView(piece.icon);
-            pieceIcon.setFitHeight(50);
-            pieceIcon.setFitWidth(50);
+            pieceIcon.setFitHeight(size);
+            pieceIcon.setFitWidth(size);
             square.getChildren().add(pieceIcon);
         }
+        squareButton.setOnAction(e->humanClick(row-1,col-1));
+        squareButton.setOpacity(0);
+        square.getChildren().add(squareButton);
 
         square.setStyle("-fx-background-color: "+color+";");
         gridPane.add(square, row, col);
     }
 
     public void humanClick(int x, int y) { // maybee possible of board should be known beforehand
+        System.out.println("click");
         if (board[y][x].hasPiece) {
+            System.out.println("has piece");
+            System.out.println(board[y][x].chessPiece.type);
             if (board[y][x].chessPiece.color == whiteTurn) { // is correct turn
                 board[y][x].possible(this); // call possible WIP
             }

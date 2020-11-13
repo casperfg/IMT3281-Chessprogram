@@ -67,10 +67,17 @@ public class StartMenu extends Application {
 
         Stage cpuStage = new Stage();
 
-        btn_cpu.setOnAction(actionEvent ->{ ChessProgram cp = new ChessProgram();
-        cp.setStartUpLanguage(currentLanguage, currentCountry);      
+        btn_cpu.setOnAction(actionEvent ->{ ChessProgram cp = new ChessProgram("e-e");
+        cp.setStartUpLanguage(currentLanguage, currentCountry);
         cp.start(cpuStage);
         menuStage.close();
+        });
+      
+        btn_play.setOnAction(actionEvent -> {ChessProgram cp = new ChessProgram("h-e");
+        cp.setStartUpLanguage(currentLanguage,currentCountry);
+        cp.start(cpuStage);
+        menuStage.close();
+
         });
         btn_exit.setOnAction(actionEvent -> menuStage.close());
     }
@@ -81,7 +88,7 @@ public class StartMenu extends Application {
             case "NO" -> imageView.setImage(logo_no);
             case "EN" -> imageView.setImage(logo_en);
         }
-        
+
         borderPane.setTop(imageView);
         BorderPane.setAlignment(imageView, Pos.CENTER);
         BorderPane.setMargin(imageView, new Insets(10,10,1,1));
@@ -142,7 +149,6 @@ public class StartMenu extends Application {
 
     void disableButtonsNotWorkingYetGeitGeitGeit(){
         btn_multi.setDisable(true);
-        btn_play.setDisable(true);
         btn_settings.setDisable(true);
     }
 

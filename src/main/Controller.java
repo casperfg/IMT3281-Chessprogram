@@ -4,7 +4,6 @@ public class Controller {
     public Chessboard chessboard;
     public String game = "e-e";
     public EngineHandler engineHandler;
-    public EngineHandler mateEngine;
     public Boolean firstRun = true;
     public Boolean engineRunning = true;
 
@@ -34,11 +33,11 @@ public class Controller {
     public Boolean engVsEng(){
         String ret = engineHandler.checkWorker(); // check workerThread
         if(firstRun){
+            firstRun = false;
             startEngine();
         }
         if (!ret.equals("-1")) { // is -1 when workerthread is still working
             gameCheck(ret);
-            System.out.println(chessboard.repetition);
             if(engineRunning){
                 if(chessboard.whiteTurn){
                     engineHandler.thinkTime = 1000;
@@ -59,10 +58,35 @@ public class Controller {
         Boolean change = false;
         if(game.equals("e-e") && engineRunning){
             change = engVsEng();
+        } else if(game.equals("h-e") ){
+            change = humVsEng();
         }
-        firstRun = false;
+
         return change;
     }
 
+    private Boolean humVsEng() {
+        String ret; // check workerThread
+        Boolean thinking = false;
 
+        if(!chessboard.whiteTurn){
+            if(!thinking) {
+                engineHandler.getBest(chessboard); // calculate best move
+                thinking = true;
+            }else{ // is thinking
+                ret = engineHandler.checkWorker();
+                if(!ret.equals("-1") && engineRunning){
+                    gameCheck(ret);
+                    chessboard.move(ret); // move the best move
+                    thinking = false;
+                    return true;
+                }else{
+                    System.out.println("Thinking");
+                }
+            }
+        }else{ // humanTurn (white)
+            return true;
+        }
+        return false;
+    }
 }

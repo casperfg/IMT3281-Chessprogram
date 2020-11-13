@@ -52,6 +52,7 @@ public class ChessProgram extends Application {
     MenuItem English = new MenuItem(); //English as a choice
     Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg")); //fetches from res folder
     boolean startUp = true;
+    BorderPane borderPane;
 
     //================== about window ==================
     Stage helpStage = new Stage();
@@ -60,13 +61,14 @@ public class ChessProgram extends Application {
     final int WINDOW_WITH = 600;
     final int WINDOW_HEIGHT = 600;
 
-
-
+    public ChessProgram(String game){
+        controller.game = game;
+    }
     @Override
     public void start(Stage chessBoardStage) {
         setLanguage(currentLanguage,currentCountry); //sets language
 
-        BorderPane borderPane = new BorderPane();
+        borderPane = new BorderPane();
         setMenuBar();
 
         chessboard = createChessBoard();
@@ -86,7 +88,11 @@ public class ChessProgram extends Application {
 
 
         chessBoardStage.show();
-
+        if(controller.game.equals("e-e")){ // TODO: use listners as loop when game is with humanplayers.
+            animationTim();
+        }
+    }
+    public void animationTim(){ // use on engine vs engine
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
             public void handle(long currentNanoTime) {
@@ -100,9 +106,7 @@ public class ChessProgram extends Application {
                 }
             }
         }.start(); // start main animation loop
-
     }
-
     public GridPane createChessBoard() {
         final int size = 10;
         GridPane gridPane = controller.chessboard.createBoard();
@@ -204,6 +208,8 @@ public class ChessProgram extends Application {
         });
 
         restartMenu.setOnAction(e -> {
+            controller.stopEngine();
+            controller = new Controller();
             //TODO: Create restart function so board is reset
         });
 
