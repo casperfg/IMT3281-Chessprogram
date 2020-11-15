@@ -7,6 +7,7 @@ public class Controller{
     public Boolean firstRun = true;
     public Boolean engineRunning = true;
 
+
     public Controller() {
         chessboard = new Chessboard();
         engineHandler = new EngineHandler();

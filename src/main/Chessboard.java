@@ -286,15 +286,21 @@ public class Chessboard {
     public void humanClick(int x, int y) { // maybe possible of board should be known beforehand
         System.out.println("click");
         if(programPtr != null) { // is null if game does not contain a human player. (constructor chessprogram)
+
             if (board[y][x].hasPiece) {
                 System.out.println(board[y][x].chessPiece.type);
                 if (board[y][x].chessPiece.color == whiteTurn) { // is correct turn
+                    resetHighlight();
                     board[y][x].possible(this); // call possible WIP
                     humanPiece = new int[]{x, y};
                 } // must update board in chessprogram
             }
-            if (board[y][x].highLight) {
+            if (board[y][x].highLight) { // highlights is cleared when moved.
                 move(humanPiece[0], humanPiece[1], x, y);
+                // MACHINE OR INTERNET TURN
+
+            }else if(!board[y][x].hasPiece){ // clicks away the highlight
+                resetHighlight();
             }
             programPtr.updateBoard();
         }
