@@ -63,6 +63,7 @@ public class ChessProgram extends Application {
 
     public ChessProgram(String game){
         controller.game = game;
+        controller.chessboard.programPtr = this;
     }
     @Override
     public void start(Stage chessBoardStage) {
@@ -90,6 +91,8 @@ public class ChessProgram extends Application {
         chessBoardStage.show();
         if(controller.game.equals("e-e")){ // TODO: use listners as loop when game is with humanplayers.
             animationTim();
+        }else if (controller.game.equals("h-e")){
+            //controller = new (this);
         }
     }
     public void animationTim(){ // use on engine vs engine
@@ -97,8 +100,7 @@ public class ChessProgram extends Application {
             @Override
             public void handle(long currentNanoTime) {
                 if(controller.mainLoop()){
-                    chessboard = createChessBoard(); // update new chessboard view
-                    borderPane.setCenter(chessboard); // set the new chessboardView
+                    updateBoard();
                 }
                 if(!aniGoing){
                     aniGoing = true;
@@ -106,6 +108,10 @@ public class ChessProgram extends Application {
                 }
             }
         }.start(); // start main animation loop
+    }
+    public void updateBoard(){
+        chessboard = createChessBoard(); // update new chessboard view
+        borderPane.setCenter(chessboard); // set the new chessboardView
     }
     public GridPane createChessBoard() {
         final int size = 10;

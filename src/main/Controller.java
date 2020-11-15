@@ -1,11 +1,12 @@
 package main;
 
-public class Controller {
+public class Controller{
     public Chessboard chessboard;
     public String game = "e-e";
     public EngineHandler engineHandler;
     public Boolean firstRun = true;
     public Boolean engineRunning = true;
+    public ChessProgram programPtr;
 
     public Controller() {
         chessboard = new Chessboard();

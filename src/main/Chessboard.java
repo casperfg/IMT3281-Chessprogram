@@ -7,8 +7,9 @@ import main.pieces.Piece;
 
 import java.util.ArrayList;
 
-public class Chessboard extends GridPane {
+public class Chessboard {
     public Tile[][] board = new Tile[8][8];
+    public ChessProgram programPtr = null;
 
     public boolean whiteTurn = true;
     public boolean whiteCastle = false;
@@ -23,10 +24,16 @@ public class Chessboard extends GridPane {
     private String compMove;
 
     public int[] humanPiece = new int[2];
+
     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
     public Chessboard() {
         makeStart();
+    }
+
+    public Chessboard(ChessProgram programPtr) {
+        makeStart();
+        this.programPtr = programPtr;
     }
 
     public void makeStart() { // setup start position
@@ -267,13 +274,14 @@ public class Chessboard extends GridPane {
         gridPane.add(square, row, col);
     }
 
-    public void humanClick(int x, int y) { // maybee possible of board should be known beforehand
+    public void humanClick(int x, int y) { // maybe possible of board should be known beforehand
         System.out.println("click");
-        if (board[y][x].hasPiece) {
+        if (board[y][x].hasPiece && programPtr != null) {
             System.out.println(board[y][x].chessPiece.type);
             if (board[y][x].chessPiece.color == whiteTurn) { // is correct turn
                 board[y][x].possible(this); // call possible WIP
                 humanPiece = new int[]{x,y};
+                programPtr.updateBoard();
             } // must update board in chessprogram
         }else if (board[y][x].highLight){
             move(humanPiece[0], humanPiece[1], x, y);
