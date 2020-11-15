@@ -38,8 +38,8 @@ public class Piece{
 
             while(board.legalMove(position[0], position[1], x, y)){
                 possibleMoves.add(new int[]{x, y});
-                x = position[0]+vector[0];
-                y = position[1]+vector[1];
+                x += vector[0];
+                y += vector[1];
             }
         }
     }
@@ -52,3 +52,8 @@ public class Piece{
     public void setIcon() {  // Calls child classes
     }
 }
+/*
+- tower duplication when king moves
+- castling not in possible
+- en passant probably not in possible.
+ */

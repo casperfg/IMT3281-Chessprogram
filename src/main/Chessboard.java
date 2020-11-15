@@ -21,19 +21,15 @@ public class Chessboard {
     public String moveString;
     public ArrayList<String> moves = new ArrayList<String>();
     public char promotionTo = '-';
-    private String compMove;
+    public Controller cnt = null; // controller pointer.
 
-    public int[] humanPiece = new int[2];
+    public int[] humanPiece = new int[2]; // piece responcible for highlights.
 
     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
-    public Chessboard() {
+    public Chessboard(Controller cnt) {
         makeStart();
-    }
-
-    public Chessboard(ChessProgram programPtr) {
-        makeStart();
-        this.programPtr = programPtr;
+        this.cnt = cnt;
     }
 
     public void makeStart() { // setup start position
@@ -94,7 +90,7 @@ public class Chessboard {
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
         enPassantSquare = "-";
         if (fPiece.type == 'k') {
-            if((x-xt) != 1){ // castleing. assumes is legal (threats from black)
+            if((x-xt) != 1 && (yt-y) == 0 ){ // castleing. assumes is legal (threats from black)
                 if(!whiteCastle || !blackCastle){
                     moveString = (((xt-x) == 2)? "0-0" : "0-0-0"); // true if short castle.
                     board[y][((xt-x) == 2)? 7 : 0].removePiece(); // remove tower
@@ -275,7 +271,7 @@ public class Chessboard {
             pieceIcon.setFitWidth(size);
             square.getChildren().add(pieceIcon);
         }
-        squareButton.setOnAction(e->humanClick(row-1,col-1));
+        squareButton.setOnAction(e->cnt.click(row-1,col-1));
         squareButton.setOpacity(0);
         square.getChildren().add(squareButton);
 
@@ -283,26 +279,19 @@ public class Chessboard {
         gridPane.add(square, row, col);
     }
 
-    public void humanClick(int x, int y) { // maybe possible of board should be known beforehand
+    public boolean humanClick(int x, int y) { // maybe possible of board should be known beforehand
         System.out.println("click");
-        if(programPtr != null) { // is null if game does not contain a human player. (constructor chessprogram)
-
-            if (board[y][x].hasPiece) {
-                System.out.println(board[y][x].chessPiece.type);
-                if (board[y][x].chessPiece.color == whiteTurn) { // is correct turn
-                    resetHighlight();
-                    board[y][x].possible(this); // call possible WIP
-                    humanPiece = new int[]{x, y};
-                } // must update board in chessprogram
-            }
-            if (board[y][x].highLight) { // highlights is cleared when moved.
-                move(humanPiece[0], humanPiece[1], x, y);
-                // MACHINE OR INTERNET TURN
-
-            }else if(!board[y][x].hasPiece){ // clicks away the highlight
-                resetHighlight();
-            }
-            programPtr.updateBoard();
+        if (board[y][x].hasPiece && board[y][x].chessPiece.color == whiteTurn) {
+            resetHighlight();
+            board[y][x].possible(this); // calculate possible moves by this piece
+            humanPiece = new int[]{x, y}; // set human piece.
+            return false;
+        }else if (board[y][x].highLight) { // highlights is cleared when moved.
+            move(humanPiece[0], humanPiece[1], x, y);
+            return true;
+        }else{ // clicks away the highlight
+            resetHighlight();
+            return false;
         }
     }
 

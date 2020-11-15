@@ -6,10 +6,11 @@ public class Controller{
     public EngineHandler engineHandler;
     public Boolean firstRun = true;
     public Boolean engineRunning = true;
-
-
+    public ChessProgram programPtr = null;
+    public int thinkTime = 1000;
+    public int elo = 2500;
     public Controller() {
-        chessboard = new Chessboard();
+        chessboard = new Chessboard(this);
         engineHandler = new EngineHandler();
     }
     public void startEngine(){
@@ -41,10 +42,10 @@ public class Controller{
             gameCheck(ret);
             if(engineRunning){
                 if(chessboard.whiteTurn){
-                    engineHandler.thinkTime = 1000;
+                    engineHandler.thinkTime = thinkTime;
                     engineHandler.setElo(100);
                 }else{
-                    engineHandler.thinkTime = 1000;
+                    engineHandler.thinkTime = thinkTime;
                     engineHandler.setElo(2500);
                 }
                 chessboard.move(ret); // move the best move
@@ -59,33 +60,27 @@ public class Controller{
         Boolean change = false;
         if(game.equals("e-e") && engineRunning){
             change = engVsEng();
-        } else if(game.equals("h-e") ){
+        } else if(game.equals("h-e") && engineRunning){
             change = humVsEng();
         }
-
         return change;
     }
-
-    private Boolean humVsEng() {
-        String ret; // check workerThread
-        Boolean thinking = false;
-
-        if(!chessboard.whiteTurn){
-            if(!thinking) {
-                engineHandler.getBest(chessboard); // calculate best move
-                thinking = true;
-            }else{ // is thinking
-                ret = engineHandler.checkWorker();
-                if(!ret.equals("-1") && engineRunning){
-                    gameCheck(ret);
-                    chessboard.move(ret); // move the best move
-                    thinking = false;
-                    return true;
-                }else{
-                    System.out.println("Thinking");
-                }
+    public void click(int x, int y){ // clicked by human
+        if(programPtr != null){ // is not null when human is involved.
+            boolean change = chessboard.humanClick(x, y);
+            programPtr.updateBoard();
+            if(change){ // other player makes move.
+                engineHandler.setElo(elo);
+                engineHandler.getBest(chessboard);
+                programPtr.animationEngMove();
             }
-        }else{ // humanTurn (white)
+        }
+    }
+    private Boolean humVsEng() {
+        String ret = engineHandler.checkWorker(); // check workerThread
+        Boolean thinking = false;
+        if(!ret.equals("-1")){
+            chessboard.move(ret);
             return true;
         }
         return false;

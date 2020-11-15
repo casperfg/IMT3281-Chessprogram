@@ -64,7 +64,7 @@ public class ChessProgram extends Application {
     public ChessProgram(String game){
         controller.game = game;
         if(game.contains("h")){ // set program pointer
-            controller.chessboard.programPtr = this; // used on humanclick in chessboard
+            controller.programPtr = this; // used on humanclick in chessboard
             // to update the chessprogram board.
         }
     }
@@ -93,25 +93,31 @@ public class ChessProgram extends Application {
 
         chessBoardStage.show();
         if(controller.game.equals("e-e")){ // TODO: use listners as loop when game is with humanplayers.
-            animationTim();
-        }else if (controller.game.equals("h-e")){
-            //controller = new (this);
+            animationEngEng();
         }
     }
-    public void animationTim(){ // use on engine vs engine
+    public void animationEngEng(){ // use on engine vs engine
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
             public void handle(long currentNanoTime) {
                 if(controller.mainLoop()){
                     updateBoard();
                 }
-                if(!aniGoing){
-                    aniGoing = true;
+            }
+        }.start(); // start main animation loop
+    }
+    public void animationEngMove(){
+        new AnimationTimer() { // mainloop of the program (controller??)
+            @Override
+            public void handle(long currentNanoTime) {
+                if(controller.mainLoop()){
+                    updateBoard();
                     this.stop();
                 }
             }
         }.start(); // start main animation loop
     }
+
     public void updateBoard(){
         chessboard = createChessBoard(); // update new chessboard view
         borderPane.setCenter(chessboard); // set the new chessboardView
