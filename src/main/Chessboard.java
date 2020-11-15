@@ -21,6 +21,8 @@ public class Chessboard extends GridPane {
     public ArrayList<String> moves = new ArrayList<String>();
     public char promotionTo = '-';
     private String compMove;
+
+    public int[] humanPiece = new int[2];
     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
     public Chessboard() {
@@ -268,11 +270,13 @@ public class Chessboard extends GridPane {
     public void humanClick(int x, int y) { // maybee possible of board should be known beforehand
         System.out.println("click");
         if (board[y][x].hasPiece) {
-            System.out.println("has piece");
             System.out.println(board[y][x].chessPiece.type);
             if (board[y][x].chessPiece.color == whiteTurn) { // is correct turn
                 board[y][x].possible(this); // call possible WIP
-            }
+                humanPiece = new int[]{x,y};
+            } // must update board in chessprogram
+        }else if (board[y][x].highLight){
+            move(humanPiece[0], humanPiece[1], x, y);
         }
     }
 
