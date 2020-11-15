@@ -59,7 +59,13 @@ public class Chessboard {
         board[y][x].updatePiece(type);
         board[y][x].setProp(new int[]{x,y}, color);
     }
-
+    public void resetHighlight(){
+        for(int y = 0; y<8; y++){
+            for(int x = 0; x<8; x++){
+                board[y][x].highLight = false;
+            }
+        }
+    }
     // ------------MOVE-----------------
     // converts move to save friendly format
     public void moveStringSet(Piece fPiece, int x, int y, int xt, int yt){
@@ -132,12 +138,14 @@ public class Chessboard {
     // TODO: update king functionality (castle/check/mate)
     public void move(int x, int y, int xt, int yt) { // from x,y to xt, yt
         Piece fPiece;
+        resetHighlight();
         if(legalMove(x, y, xt, yt)) { // checks if legal
             fPiece = board[y][x].chessPiece;
             repetition(xt, yt, fPiece);
 
             fPiece.position = new int[]{xt, yt};
             fPiece.lastPosition = new int[]{x, y};
+            fPiece.possibleMoves.removeAll(fPiece.possibleMoves); // empty possible moves.
             moveStringSet(fPiece, x, y, xt, yt);
 
             board[yt][xt].chessPiece = fPiece; // move piece to new tile
@@ -149,6 +157,7 @@ public class Chessboard {
                 moveCount++;
             }
             specialMoves(x, y, xt, yt, fPiece);
+
             moves.add(moveString);
         }else{
             System.out.println("wrong move");
@@ -276,15 +285,18 @@ public class Chessboard {
 
     public void humanClick(int x, int y) { // maybe possible of board should be known beforehand
         System.out.println("click");
-        if (board[y][x].hasPiece && programPtr != null) {
-            System.out.println(board[y][x].chessPiece.type);
-            if (board[y][x].chessPiece.color == whiteTurn) { // is correct turn
-                board[y][x].possible(this); // call possible WIP
-                humanPiece = new int[]{x,y};
-                programPtr.updateBoard();
-            } // must update board in chessprogram
-        }else if (board[y][x].highLight){
-            move(humanPiece[0], humanPiece[1], x, y);
+        if(programPtr != null) { // is null if game does not contain a human player. (constructor chessprogram)
+            if (board[y][x].hasPiece) {
+                System.out.println(board[y][x].chessPiece.type);
+                if (board[y][x].chessPiece.color == whiteTurn) { // is correct turn
+                    board[y][x].possible(this); // call possible WIP
+                    humanPiece = new int[]{x, y};
+                } // must update board in chessprogram
+            }
+            if (board[y][x].highLight) {
+                move(humanPiece[0], humanPiece[1], x, y);
+            }
+            programPtr.updateBoard();
         }
     }
 

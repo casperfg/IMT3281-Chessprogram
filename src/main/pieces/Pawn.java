@@ -23,6 +23,12 @@ public class Pawn extends Piece{
                 }
             }
         }
+        if(!board.blankSq(position[0]-1, position[1]+direction)){ // pawn taking -x
+            addPoss(board, -1, direction);
+        }
+        if(!board.blankSq(position[0]+1, position[1]+direction)) { // pawn taking +x
+            addPoss(board, 1, direction);
+        }
         System.out.println("pawn");
     }
 }

@@ -63,7 +63,10 @@ public class ChessProgram extends Application {
 
     public ChessProgram(String game){
         controller.game = game;
-        controller.chessboard.programPtr = this;
+        if(game.contains("h")){ // set program pointer
+            controller.chessboard.programPtr = this; // used on humanclick in chessboard
+            // to update the chessprogram board.
+        }
     }
     @Override
     public void start(Stage chessBoardStage) {
