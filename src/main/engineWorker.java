@@ -26,7 +26,7 @@ public class engineWorker extends Thread{
     public boolean sendCommand(String command){
         try {
             processWriter.write(command + "\n");
-            processWriter.flush();
+            processWriter.flush(); // "send"
         } catch (IOException e) {
             e.printStackTrace();
         }

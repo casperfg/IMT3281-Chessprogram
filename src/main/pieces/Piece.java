@@ -53,7 +53,8 @@ public class Piece{
     }
 }
 /*
-- tower duplication when king moves
+- castles when move 1 to side
 - castling not in possible
 - en passant probably not in possible.
+- spillet kræsjer for ofte
  */

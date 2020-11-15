@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 public class Chessboard {
     public Tile[][] board = new Tile[8][8];
-    public ChessProgram programPtr = null;
 
     public boolean whiteTurn = true;
     public boolean whiteCastle = false;
@@ -19,7 +18,7 @@ public class Chessboard {
 
     public int repetition = 0;
     public String moveString;
-    public ArrayList<String> moves = new ArrayList<String>();
+    public ArrayList<String> moves = new ArrayList<>();
     public char promotionTo = '-';
     public Controller cnt = null; // controller pointer.
 
@@ -115,15 +114,20 @@ public class Chessboard {
     // computer move
     public void move(String move) { // e2e4, promotion: e6e7q
         String column = "abcdefgh";
-        int x = column.indexOf(move.charAt(0));
-        int y = Character.getNumericValue(move.charAt(1));
-        int xt = column.indexOf(move.charAt(2));
-        int yt = Character.getNumericValue(move.charAt(3));
+        if(move.length() >= 4) {
+            int x = column.indexOf(move.charAt(0));
+            int y = Character.getNumericValue(move.charAt(1));
+            int xt = column.indexOf(move.charAt(2));
+            int yt = Character.getNumericValue(move.charAt(3));
 
-        if(move.length() > 4){ // is promotion, set char
-            promotionTo = move.charAt(4); // used in SPECIALMOVE
+            if (move.length() > 4) { // is promotion, set char
+                promotionTo = move.charAt(4); // used in SPECIALMOVE
+            }
+            move(x, 8 - y, xt, 8 - yt); // internalY = 8-External
+        }else{
+            System.out.println("Engine error");
+            System.exit(1);
         }
-        move(x, 8 - y, xt, 8 - yt); // internalY = 8-External
     }
 
     // validates before moving.
