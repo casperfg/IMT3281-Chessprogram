@@ -30,7 +30,6 @@ public class engineWorker extends Thread{
             processWriter.flush(); // "send"
         } catch (IOException e) {
             e.printStackTrace();
-            fuckUp();
         }
         return true;
     }
@@ -45,9 +44,6 @@ public class engineWorker extends Thread{
             while (true) {
                 String text = processReader.readLine();
                 if(text != null) {
-                    if (text.contains("mate 0")) {
-                        return "MaTe";
-                    }
                     if(text.contains("mate 1")){
                         playerMated = true;
                     }
@@ -57,7 +53,7 @@ public class engineWorker extends Thread{
                         buffer.append(text + "\n");
                     }
                 }else{
-                    fuckUp();
+                    //fuckUp();
                     break;
                 }
             }
