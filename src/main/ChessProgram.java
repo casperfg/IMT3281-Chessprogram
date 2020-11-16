@@ -207,41 +207,6 @@ public class ChessProgram extends Application {
         addFileMenu();
         addSettingsMenu();
         addHelpMenu();
-        
-        //================== Language Item event handler ==================
-
-        Norwegian.setOnAction(e -> {
-            setLanguage("no", "NO"); //function to change language
-
-        });
-
-        English.setOnAction(e -> {
-            setLanguage("en", "UK"); //function to change language
-
-        });
-
-        about.setOnAction(e -> { //calls function to display about
-            try { getHelp("About"); //function
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        });
-
-        rules.setOnAction(e -> { //calls function to display rules
-            try {
-                getHelp("Rules"); //function
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        });
-
-        restartMenu.setOnAction(e -> {
-            confirmation.setContentText(messages.getString("sure"));
-            setConfirmation();
-
-        });
-
-
 
         //================== add items  ==================
         if(startUp){ //runs only when the program first starts
