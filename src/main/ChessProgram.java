@@ -288,7 +288,6 @@ public class ChessProgram extends Application {
     }
 
     public void setConfirmation(){ //set confirmation text and function to handle action.
-
         ButtonType cancel = new ButtonType(messages.getString("Cancel"), ButtonData.CANCEL_CLOSE);
         ButtonType ok = new ButtonType(messages.getString("OK"), ButtonData.OK_DONE);
         confirmation.setTitle(messages.getString("Confirm")); //set title text
@@ -374,10 +373,8 @@ public class ChessProgram extends Application {
         restartMenu.setText("Restart Game"); //TODO: Translate
 
         restartMenu.setOnAction(e -> {
-            controller.stopEngine();
-            controller = new Controller(eloRating);
-            controller.chessboard = new Chessboard(controller);
-            updateBoard();
+            confirmation.setContentText(messages.getString("sure"));
+            setConfirmation();
         });
     }
 
