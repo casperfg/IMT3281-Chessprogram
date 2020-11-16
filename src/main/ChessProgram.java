@@ -106,7 +106,6 @@ public class ChessProgram extends Application {
         borderPane.setTop(menubar);
 
         chessBoardStage.setScene(new Scene(borderPane, WINDOW_WITH, WINDOW_HEIGHT));
-        chessBoardStage.setTitle("Chess");
         chessBoardStage.setResizable(false);
 
         chessBoardStage.setOnCloseRequest( windowEvent -> {controller.stopEngine();
@@ -207,6 +206,7 @@ public class ChessProgram extends Application {
         addFileMenu();
         addSettingsMenu();
         addHelpMenu();
+        cb.setTitle(messages.getString("Chess")); //set title, its here because it need to update
 
         //================== add items  ==================
         if(startUp){ //runs only when the program first starts
@@ -280,7 +280,7 @@ public class ChessProgram extends Application {
 
     public void restartGame(){ //restart game by closing and creating new window.
         cb.close(); //close window
-        ChessProgram cp = new ChessProgram("h-e");
+        ChessProgram cp = new ChessProgram("h-e"); //TODO fiks restart for alle moduser
         Stage stage = new Stage();
         cp.setStartUpLanguage(currentLanguage,currentCountry);
         cp.start(stage);
@@ -325,14 +325,14 @@ public class ChessProgram extends Application {
     }
 
     public void addDifficulties(){
-        difficulty.setText("Difficulty"); //TODO: Translate
+        difficulty.setText(messages.getString("Difficulty"));
 
         diff_carlsen.setText("Magnus Carlsen");
-        diff_gm.setText("Grandmaster"); //TODO: Translate
+        diff_gm.setText(messages.getString("Grandmaster"));
         diff_lahl.setText("Hans Olav Lahlum");
-        diff_hard.setText("Hard");//TODO: Translate
-        diff_normal.setText("Normal");//TODO: Translate
-        diff_easy.setText("Easy");//TODO: Translate
+        diff_hard.setText(messages.getString("Hard"));
+        diff_normal.setText(messages.getString("Normal"));
+        diff_easy.setText(messages.getString("Easy"));
 
         diff_carlsen.setOnAction(e -> setDifficulty(CARLSEN));
         diff_gm.setOnAction(e -> setDifficulty(GRANDMASTER));
@@ -370,7 +370,7 @@ public class ChessProgram extends Application {
 
     public  void addFileMenu(){
         file.setText(messages.getString("File"));
-        restartMenu.setText("Restart Game"); //TODO: Translate
+        restartMenu.setText(messages.getString("Restart"));
 
         restartMenu.setOnAction(e -> {
             confirmation.setContentText(messages.getString("sure"));

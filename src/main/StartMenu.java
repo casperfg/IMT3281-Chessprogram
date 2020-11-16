@@ -24,6 +24,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class StartMenu extends Application {
+    Stage mm = new Stage(); //main menu stage
     BorderPane borderPane = new BorderPane();
     ImageView imageView = new ImageView();
     FlowPane flowPane = new FlowPane();
@@ -56,12 +57,12 @@ public class StartMenu extends Application {
     ResourceBundle messages; //initializing resource bundle
 
     public void start(Stage menuStage){
+        mm = menuStage;
         setLanguage(defaultLanguage, defaultCountry);
         createMenu();
         addLogo();
         disableButtonsNotWorkingYetGeitGeitGeit(); //TODO IMPLEMENT BUTTON FUNCTIONS
 
-        menuStage.setTitle("Chess - Main Menu");
         menuStage.setScene(scene);
         menuStage.show();
 
@@ -173,6 +174,7 @@ public class StartMenu extends Application {
     }
 
     void updateButton(){
+        mm.setTitle(messages.getString("Chess")); //updates title
         btn_play.setText(messages.getString("Pvc"));
         btn_multi.setText(messages.getString("Pvp"));
         btn_cpu.setText(messages.getString("Cvc"));
