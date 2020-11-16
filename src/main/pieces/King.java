@@ -31,18 +31,27 @@ public class King extends Piece{
         return (!board.whiteCastle && color) || (!board.blackCastle && !color);
     }
     public boolean shortCastle(Chessboard board){
-        towerPiece = board.board[position[1]][position[0]+3].chessPiece;
-        return board.blankSq(position[0]+1, position[1])
-                && board.blankSq(position[0]+2, position[1])
-                && !towerPiece.rookMoved;
+        if(!board.blankSq(position[0]+3, position[1])) {
+            towerPiece = board.board[position[1]][position[0] + 3].chessPiece;
+            return board.blankSq(position[0] + 1, position[1])
+                    && board.blankSq(position[0] + 2, position[1])
+                    && !towerPiece.rookMoved;
+        }else{
+            return false;
+        }
     }
     public boolean longCastle(Chessboard board){
-        towerPiece = board.board[position[1]][position[0]-4].chessPiece;
+        if(!board.blankSq(position[0]-4, position[1])) {
+            towerPiece = board.board[position[1]][position[0] - 4].chessPiece;
+            if(towerPiece.lastPosition == null);
+            return board.blankSq(position[0] - 1, position[1]) // blank x+1
+                    && board.blankSq(position[0] - 2, position[1]) // blank x+2
+                    && board.blankSq(position[0] - 3, position[1])
+                    && !towerPiece.rookMoved; // blank x+3
+        }else{
+            return false;
+        }
 
-        return board.blankSq(position[0]-1, position[1]) // blank x+1
-                && board.blankSq(position[0]-2, position[1]) // blank x+2
-                && board.blankSq(position[0]-3, position[1])
-                && !towerPiece.rookMoved; // blank x+3
 
     }
 }

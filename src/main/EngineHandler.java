@@ -11,6 +11,7 @@ public class EngineHandler{
     private OutputStreamWriter processWriter;
     public int eloRating = 2500;
     public int thinkTime = 1000; // ms
+    public Chessboard cboard;
 
     private engineWorker worker; // workThread that lets engine wait and calculate
     private static String PATH = "./res/stockfishWin.exe"; // path for window
@@ -24,6 +25,7 @@ public class EngineHandler{
         startEngine();
     }
     public void getBest(Chessboard cboard){ // get best move
+        this.cboard = cboard;
         worker = new engineWorker(processReader, processWriter, thinkTime, cboard);
         worker.start(); // make new Workerthread and start it
     }
@@ -31,7 +33,12 @@ public class EngineHandler{
         if(worker != null) {
             if (worker.done) {
                 worker.done = false;
-                return worker.Best;
+                if(!worker.equals("broken")) {
+                    return worker.Best;
+                }else{
+                    startEngine();
+                    getBest(cboard);
+                }
             }
         }
         return "-1";

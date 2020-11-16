@@ -89,7 +89,6 @@ public class Chessboard {
         }
     }
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
-
         if(board[yt][xt].tileName.equals(enPassantSquare)){ // is taking enpassant
             board[pawnPassant[1]][pawnPassant[0]].removePiece();
         }
@@ -108,7 +107,7 @@ public class Chessboard {
                 blackCastle = false;
             }
         }
-        if(fPiece.type == 't'){
+        if(fPiece.type == 'r'){
             board[yt][xt].chessPiece.rookMoved = true;
         }
 

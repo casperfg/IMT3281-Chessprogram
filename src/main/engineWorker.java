@@ -39,13 +39,19 @@ public class engineWorker extends Thread{
             sendCommand("isready");
             while (true) {
                 String text = processReader.readLine();
-                if(text.contains("mate 0")){
-                    return "MaTe";
-                }
-                if (text.equals("readyok"))
+                if(text != null) {
+                    if (text.contains("mate 0")) {
+                        return "MaTe";
+                    }
+                    if (text.equals("readyok")) {
+                        break;
+                    } else {
+                        buffer.append(text + "\n");
+                    }
+                }else{
+                    Best = "broken"; done = true;
                     break;
-                else
-                    buffer.append(text + "\n");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
