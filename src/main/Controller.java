@@ -5,8 +5,8 @@ public class Controller{
     public String game = "e-e";
     public EngineHandler engineHandler;
     public Boolean firstRun = true;
-    public Boolean engineRunning = true;
-    public ChessProgram programPtr = null;
+    public Boolean engineRunning = true; // wether engine is running or not
+    public ChessProgram programPtr = null; // has pointer to chessprogram for board updation. IF there is a human involved
     public int thinkTime = 1000;
     public int elo = 2500;
 
@@ -29,7 +29,13 @@ public class Controller{
     public void gameCheck(String ret){
         if(ret.equals("MaTe") || chessboard.repetition == 4) {
             System.out.println("Game Finished: ");
-            engineRunning = false;
+            stopEngine();
+        }
+    }
+    public void gameCheck(){
+        if(engineHandler.checkMate() || chessboard.repetition == 4) {
+            System.out.println("Game Finished: ");
+            stopEngine();
         }
     }
     // FOOLS MATE:
@@ -43,13 +49,6 @@ public class Controller{
         if (!ret.equals("-1")) { // is -1 when workerthread is still working
             gameCheck(ret);
             if(engineRunning){
-                if(chessboard.whiteTurn){
-                    engineHandler.thinkTime = thinkTime;
-                    engineHandler.setElo(100);
-                }else{
-                    engineHandler.thinkTime = thinkTime;
-                    engineHandler.setElo(2500);
-                }
                 chessboard.move(ret); // move the best move
                 engineHandler.getBest(chessboard); // start new
             }
@@ -60,15 +59,20 @@ public class Controller{
 
     public boolean mainLoop(){
         Boolean change = false;
-        if(game.equals("e-e") && engineRunning){
-            change = engVsEng();
-        } else if(game.equals("h-e") && engineRunning){
-            change = humVsEng();
+        if(engineRunning) {
+            if (game.equals("e-e")) {
+                change = engVsEng();
+                gameCheck(); // check if the player was mated
+            } else if (game.equals("h-e")) {
+                change = humVsEng();
+                gameCheck(); // check if the player was mated
+                System.out.println(chessboard.toFen());
+            }
         }
         return change;
     }
     public void click(int x, int y){ // clicked by human
-        if(programPtr != null){ // is not null when human is involved.
+        if(programPtr != null && engineRunning){ // is not null when human is involved.
             boolean change = chessboard.humanClick(x, y);
             programPtr.updateBoard();
             if(change){ // other player makes move.
@@ -82,7 +86,10 @@ public class Controller{
         String ret = engineHandler.checkWorker(); // check workerThread
         Boolean thinking = false;
         if(!ret.equals("-1")){
-            chessboard.move(ret);
+            gameCheck(ret);
+            if(engineRunning) {
+                chessboard.move(ret);
+            }
             return true;
         }
         return false;

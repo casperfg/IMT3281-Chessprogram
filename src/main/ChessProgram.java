@@ -93,9 +93,8 @@ public class ChessProgram extends Application {
         sm.start(smStage);
         });
 
-
         chessBoardStage.show();
-        if(controller.game.equals("e-e")){ // TODO: use listners as loop when game is with humanplayers.
+        if(controller.game.equals("e-e")){
             animationEngEng();
         }
     }

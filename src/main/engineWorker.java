@@ -7,9 +7,10 @@ import java.io.OutputStreamWriter;
 public class engineWorker extends Thread{
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
-    Chessboard cb;
-    Boolean done = false;
-    String Best;
+    Chessboard cb; // board to calculate on
+    Boolean done = false; // true if the calculation of bestmove is done
+    String Best; // bestmove
+    Boolean playerMated = false; // if the move done by engine mates the player
     private int thinkTime = 1000;
 
     public engineWorker(BufferedReader pr, OutputStreamWriter pw, int thTime, Chessboard cboard){
@@ -29,8 +30,12 @@ public class engineWorker extends Thread{
             processWriter.flush(); // "send"
         } catch (IOException e) {
             e.printStackTrace();
+            fuckUp();
         }
         return true;
+    }
+    public void fuckUp(){
+        Best = "broken"; done = true;
     }
     public String getOutput(int waitTime) {
         StringBuffer buffer = new StringBuffer();
@@ -43,13 +48,16 @@ public class engineWorker extends Thread{
                     if (text.contains("mate 0")) {
                         return "MaTe";
                     }
+                    if(text.contains("mate 1")){
+                        playerMated = true;
+                    }
                     if (text.equals("readyok")) {
                         break;
                     } else {
                         buffer.append(text + "\n");
                     }
                 }else{
-                    Best = "broken"; done = true;
+                    fuckUp();
                     break;
                 }
             }

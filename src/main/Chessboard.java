@@ -94,7 +94,7 @@ public class Chessboard {
         }
         enPassantSquare = "-";
         if (fPiece.type == 'k') {
-            if((x-xt) != 1 && (yt-y) == 0 ){ // castleing. assumes is legal (threats from black)
+            if(Math.abs(x-xt) != 1 && Math.abs(yt-y) == 0 ){ // castleing. assumes is legal (threats from black)
                 if(!whiteCastle || !blackCastle){
                     moveString = (((xt-x) == 2)? "0-0" : "0-0-0"); // true if short castle.
                     board[y][((xt-x) == 2)? 7 : 0].removePiece(); // remove tower
