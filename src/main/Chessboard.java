@@ -102,9 +102,9 @@ public class Chessboard {
                 }
             }
             if(fPiece.color){ // king or tower moved. no castle
-                whiteCastle = false;
+                whiteCastle = true;
             }else{
-                blackCastle = false;
+                blackCastle = true;
             }
         }
         if(fPiece.type == 'r'){

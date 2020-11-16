@@ -32,25 +32,29 @@ public class King extends Piece{
     }
     public boolean shortCastle(Chessboard board){ // if shortCastle is possible.
         if(!board.blankSq(position[0]+3, position[1])) {
-            towerPiece = board.board[position[1]][position[0] + 3].chessPiece;
-            return board.blankSq(position[0] + 1, position[1]) // blank +1x
-                    && board.blankSq(position[0] + 2, position[1]) // blank +2x
-                    && !towerPiece.rookMoved && towerPiece.type == 'r'; // rook has not moved
-        }else{
+            towerPiece = board.board[position[1]][position[0] + 3].chessPiece; // tower piece
+            if(towerPiece.type == 'r'){
+                towerPiece = board.board[position[1]][position[0] + 3].chessPiece;
+                return board.blankSq(position[0] + 1, position[1]) // blank +1x
+                        && board.blankSq(position[0] + 2, position[1]) // blank +2x
+                        && !towerPiece.rookMoved; // rook has not moved
+            }
             return false;
+
         }
+        return false;
     }
     public boolean longCastle(Chessboard board){
         if(!board.blankSq(position[0]-4, position[1])) {
             towerPiece = board.board[position[1]][position[0] - 4].chessPiece; // tower piece
-            return board.blankSq(position[0] - 1, position[1]) // blank x+1
-                    && board.blankSq(position[0] - 2, position[1]) // blank x+2
-                    && board.blankSq(position[0] - 3, position[1]) // blank x+3
-                    && !towerPiece.rookMoved && towerPiece.type == 'r'; // rook as not moved
-        }else{
+            if(towerPiece.type == 'r'){
+                return board.blankSq(position[0] - 1, position[1]) // blank x+1
+                        && board.blankSq(position[0] - 2, position[1]) // blank x+2
+                        && board.blankSq(position[0] - 3, position[1]) // blank x+3
+                        && !towerPiece.rookMoved; // rook as not moved
+            }
             return false;
         }
-
-
+        return false;
     }
 }

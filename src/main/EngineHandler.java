@@ -9,7 +9,7 @@ public class EngineHandler{
     private Process engine;
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
-    public int eloRating = 2500;
+    public int eloRating = 300;
     public int thinkTime = 1000; // ms
     public Chessboard cboard;
 
@@ -61,6 +61,7 @@ public class EngineHandler{
         }
         // set the option that makes elo possible
         sendCommand("setoption name UCI_LimitStrength value true");
+        setElo(eloRating);
     }
     private void sendCommand(String cmd){ // send command to worker.
         worker = new engineWorker(processReader, processWriter);

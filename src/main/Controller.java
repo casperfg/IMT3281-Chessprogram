@@ -66,7 +66,6 @@ public class Controller{
             } else if (game.equals("h-e")) {
                 change = humVsEng();
                 gameCheck(); // check if the player was mated
-                System.out.println(chessboard.toFen());
             }
         }
         return change;
