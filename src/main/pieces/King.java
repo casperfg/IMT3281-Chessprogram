@@ -17,7 +17,6 @@ public class King extends Piece{
     }
     public void possible(Chessboard board) {
         nonRepeat(moveVector, board);
-        Piece towerPiece;
         if(canCastle(board)){
             if(shortCastle(board)){
                 addPoss(board, 2, 0);

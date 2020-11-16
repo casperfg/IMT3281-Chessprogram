@@ -39,6 +39,9 @@ public class Piece{
 
             while(board.legalMove(position[0], position[1], x, y)){
                 possibleMoves.add(new int[]{x, y});
+                if(!board.blankSq(x,y)){
+                    break;
+                }
                 x += vector[0];
                 y += vector[1];
             }
@@ -54,8 +57,6 @@ public class Piece{
     }
 }
 /*
-- castles when move 1 to side
-- castling not in possible
 - en passant probably not in possible.
 - spillet kræsjer for ofte
  */

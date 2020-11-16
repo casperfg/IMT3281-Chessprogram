@@ -13,7 +13,9 @@ public class Chessboard {
     public boolean whiteTurn = true;
     public boolean whiteCastle = false;
     public boolean blackCastle = false;
+
     public String enPassantSquare = "-"; // '-' if no passantsquare
+    public int[] pawnPassant;
     public int moveCount = 0; // increments after black move
 
     public int repetition = 0;
@@ -87,6 +89,10 @@ public class Chessboard {
         }
     }
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
+
+        if(board[yt][xt].tileName.equals(enPassantSquare)){ // is taking enpassant
+            board[pawnPassant[1]][pawnPassant[0]].removePiece();
+        }
         enPassantSquare = "-";
         if (fPiece.type == 'k') {
             if((x-xt) != 1 && (yt-y) == 0 ){ // castleing. assumes is legal (threats from black)
@@ -105,12 +111,14 @@ public class Chessboard {
         if(fPiece.type == 't'){
             board[yt][xt].chessPiece.rookMoved = true;
         }
+
         if(fPiece.type == 'p'){
             if((fPiece.color && yt == 0) || (!fPiece.color && yt == 7)){ // PROMOTION
                 newPiece(xt, yt, (promotionTo == '-')? 'q' : promotionTo, fPiece.color);
                 promotionTo = '-';
             }else if(yt-y != 1){ // 2 squares up
                 enPassantSquare = board[(fPiece.color)? 5 : 2][xt].tileName;
+                pawnPassant = new int[]{xt, yt};
             }
         }
     }
