@@ -177,7 +177,7 @@ public class ChessProgram extends Application {
     public void setMenuBar(){ //fetches text and initialises the menu bar
         //================== File ==================
         file.setText(messages.getString("File"));
-            restartMenu.setText("Restart Game");
+        restartMenu.setText("Restart Game");
         //================== Settings ==================
         settings.setText(messages.getString("Settings")); //creating settings in menu bar
         langSubMenu.setText(messages.getString("Language")); //submenu for language
@@ -224,7 +224,8 @@ public class ChessProgram extends Application {
         restartMenu.setOnAction(e -> {
             controller.stopEngine();
             controller = new Controller();
-            //TODO: Create restart function so board is reset
+            controller.chessboard = new Chessboard(controller);
+            updateBoard();
         });
 
         //================== add items  ==================
