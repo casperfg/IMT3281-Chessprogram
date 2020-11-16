@@ -126,6 +126,9 @@ public class Chessboard {
             move(x, 8 - y, xt, 8 - yt); // internalY = 8-External
         }else{
             System.out.println("Engine error");
+            if(move.isEmpty()){
+                System.out.println("Den er tom");
+            }
             System.exit(1);
         }
     }

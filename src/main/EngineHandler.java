@@ -59,9 +59,10 @@ public class EngineHandler{
         worker = new engineWorker(processReader, processWriter);
         worker.sendCommand(cmd);
     }
-    private void stopEngine() {
+    public void stopEngine() {
         try {
             sendCommand("quit");
+            worker.stop();
             processReader.close();
             processWriter.close();
         } catch (IOException ignored) {

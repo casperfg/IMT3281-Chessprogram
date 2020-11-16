@@ -21,6 +21,7 @@ public class Controller{
     }
     public void stopEngine(){
         engineRunning = false;
+        engineHandler.stopEngine();
         System.out.println("Engine stopped...");
     }
 

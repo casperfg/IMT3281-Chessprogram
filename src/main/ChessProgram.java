@@ -52,6 +52,7 @@ public class ChessProgram extends Application {
     MenuItem English = new MenuItem(); //English as a choice
     Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg")); //fetches from res folder
     boolean startUp = true;
+    public String game;
     BorderPane borderPane;
 
     //================== about window ==================
@@ -62,7 +63,9 @@ public class ChessProgram extends Application {
     final int WINDOW_HEIGHT = 600;
 
     public ChessProgram(String game){
+        System.out.println(game);
         controller.game = game;
+        this.game = game;
         if(game.contains("h")){ // set program pointer
             controller.programPtr = this; // used on humanclick in chessboard
             // to update the chessprogram board.
@@ -223,10 +226,8 @@ public class ChessProgram extends Application {
         });
 
         restartMenu.setOnAction(e -> {
-            controller.stopEngine();
-            controller = new Controller();
-            controller.chessboard = new Chessboard(controller);
-            updateBoard();
+            restartGame();
+
         });
 
         //================== add items  ==================
@@ -296,5 +297,21 @@ public class ChessProgram extends Application {
         currentLanguage = language;
         currentCountry = country;
     }
+
+
+    public void restartGame(){
+        System.out.println("reset: ");
+        controller.stopEngine();
+        controller = new Controller(); // also calles startengine in engineHandler
+        //controller.startEngine();
+        if(game.contains("h")){ // set program pointer
+            controller.programPtr = this; // used on humanclick in chessboard
+            // to update the chessprogram board.
+        }
+        updateBoard();
+    }
+
+
+
 
 }
