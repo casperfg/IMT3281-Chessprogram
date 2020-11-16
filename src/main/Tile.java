@@ -18,7 +18,7 @@ public class Tile extends Button{
     String column = "abcdefgh"; // column names for tilename
 
     Boolean hasPiece = false; // has a piece on it
-    Piece chessPiece; // piece pointer
+    public Piece chessPiece; // piece pointer
 
     public void updatePiece(char type){ // set a piece (INITIAL)
         hasPiece = true;

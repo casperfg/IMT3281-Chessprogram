@@ -1,12 +1,12 @@
 package main.pieces;
 
 import main.Chessboard;
-import main.Tile;
 
-import java.util.ArrayList;
 import javafx.scene.image.Image;
 public class King extends Piece{
     // movevector same as queen, but not reating vector.
+    public boolean castled = false;
+    public Piece towerPiece;
     public int[][] moveVector = new int[][]{{0,1},{0, -1},{1,0},{-1, 0}, {1,-1},{1, 1},{-1,1},{-1, -1}};
     public void setIcon(){
         if(color){
@@ -17,6 +17,33 @@ public class King extends Piece{
     }
     public void possible(Chessboard board) {
         nonRepeat(moveVector, board);
+        Piece towerPiece;
+        if(canCastle(board)){
+            if(shortCastle(board)){
+                addPoss(board, 2, 0);
+            }
+            if(longCastle(board)){
+                addPoss(board, -2, 0);
+            }
+        }
         System.out.println("King");
+    }
+    public boolean canCastle(Chessboard board){
+        return (!board.whiteCastle && color) || (!board.blackCastle && !color);
+    }
+    public boolean shortCastle(Chessboard board){
+        towerPiece = board.board[position[1]][position[0]+3].chessPiece;
+        return board.blankSq(position[0]+1, position[1])
+                && board.blankSq(position[0]+2, position[1])
+                && !towerPiece.rookMoved;
+    }
+    public boolean longCastle(Chessboard board){
+        towerPiece = board.board[position[1]][position[0]-4].chessPiece;
+
+        return board.blankSq(position[0]-1, position[1]) // blank x+1
+                && board.blankSq(position[0]-2, position[1]) // blank x+2
+                && board.blankSq(position[0]-3, position[1])
+                && !towerPiece.rookMoved; // blank x+3
+
     }
 }

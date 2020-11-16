@@ -11,8 +11,9 @@ public class Piece{
     public int[] lastPosition = new int[2]; // x, y
     public boolean color; // color of piece, true=white
     public char type; // knbr osv..
+    public boolean rookMoved = false; // set to true if tower and has moved (Castle not allowed)
     public Image icon; // image icon.
-    public ArrayList<int[]> possibleMoves = new ArrayList<int[]>(); // moves possible, coordinates in internal form.
+    public ArrayList<int[]> possibleMoves = new ArrayList<>(); // moves possible, coordinates in internal form.
 
     public void possible(Chessboard board){
         System.out.println("piece");
