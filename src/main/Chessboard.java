@@ -96,11 +96,14 @@ public class Chessboard {
                     newPiece((xt+x)/2, y, 'r', fPiece.color); // place new tower
                 }
             }
-            if (fPiece.color) { // king moved, no castling
-                whiteCastle = true; // has castled or moved king
-            } else {
-                blackCastle = true;
+            if(fPiece.color){ // king or tower moved. no castle
+                whiteCastle = false;
+            }else{
+                blackCastle = false;
             }
+        }
+        if(fPiece.type == 't'){
+            board[yt][xt].chessPiece.rookMoved = true;
         }
         if(fPiece.type == 'p'){
             if((fPiece.color && yt == 0) || (!fPiece.color && yt == 7)){ // PROMOTION
@@ -149,7 +152,7 @@ public class Chessboard {
             fPiece.position = new int[]{xt, yt};
             fPiece.lastPosition = new int[]{x, y};
             fPiece.possibleMoves.removeAll(fPiece.possibleMoves); // empty possible moves.
-            moveStringSet(fPiece, x, y, xt, yt);
+            moveStringSet(fPiece, x, y, xt, yt); // update movelist
 
             board[yt][xt].chessPiece = fPiece; // move piece to new tile
             board[yt][xt].hasPiece = true;
@@ -159,7 +162,7 @@ public class Chessboard {
             if (whiteTurn) {
                 moveCount++;
             }
-            specialMoves(x, y, xt, yt, fPiece);
+            specialMoves(x, y, xt, yt, fPiece); // OBS! fpiece is not added afterwards.
 
             moves.add(moveString);
         }else{
@@ -288,13 +291,17 @@ public class Chessboard {
 
     public boolean humanClick(int x, int y) { // maybe possible of board should be known beforehand
         System.out.println("click");
-        if (board[y][x].hasPiece && board[y][x].chessPiece.color == whiteTurn) {
+        if(x == humanPiece[0] && y == humanPiece[1]) { // clicks on piece again, reset.
+            humanPiece[0] = -1; humanPiece[1] = -1; // should be able to click on this piece again
             resetHighlight();
+            return false;
+        } else if (board[y][x].hasPiece && board[y][x].chessPiece.color == whiteTurn) { // clicks on piece with correct turn.
+            resetHighlight(); // reset previous highlight.
             board[y][x].possible(this); // calculate possible moves by this piece
             humanPiece = new int[]{x, y}; // set human piece.
             return false;
-        }else if (board[y][x].highLight) { // highlights is cleared when moved.
-            move(humanPiece[0], humanPiece[1], x, y);
+        } else if (board[y][x].highLight) { // clicks on highlight, move piece
+            move(humanPiece[0], humanPiece[1], x, y); // removes highlight/possible
             return true;
         }else{ // clicks away the highlight
             resetHighlight();

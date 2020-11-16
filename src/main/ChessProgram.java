@@ -214,7 +214,6 @@ public class ChessProgram extends Application {
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
-
         });
 
         rules.setOnAction(e -> { //calls function to display rules

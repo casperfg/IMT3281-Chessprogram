@@ -9,6 +9,7 @@ public class Controller{
     public ChessProgram programPtr = null;
     public int thinkTime = 1000;
     public int elo = 2500;
+
     public Controller() {
         chessboard = new Chessboard(this);
         engineHandler = new EngineHandler();
