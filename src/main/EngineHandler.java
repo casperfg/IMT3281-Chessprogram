@@ -9,7 +9,7 @@ public class EngineHandler{
     private Process engine;
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
-    public int eloRating = 2500;
+    public int eloRating;
     public int thinkTime = 1000; // ms
 
     private engineWorker worker; // workThread that lets engine wait and calculate

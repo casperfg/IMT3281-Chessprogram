@@ -8,10 +8,14 @@ public class Controller{
     public Boolean engineRunning = true;
     public ChessProgram programPtr = null;
     public int thinkTime = 1000;
-    public int elo = 2500;
-    public Controller() {
+    public int elo;
+    //public int elo;
+
+    public Controller(int elo) {
+        this.elo = elo;
         chessboard = new Chessboard(this);
         engineHandler = new EngineHandler();
+        System.out.println("Elo rating: " + this.elo);
     }
     public void startEngine(){
         System.out.println("Engine starting...");
