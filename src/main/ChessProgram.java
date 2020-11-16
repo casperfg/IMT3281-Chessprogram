@@ -12,11 +12,7 @@ import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
-import javafx.scene.control.Control;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -26,6 +22,9 @@ import javafx.stage.Stage;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import javafx.scene.control.Alert.AlertType;
+import java.util.Optional;
+import javafx.scene.control.ButtonBar.ButtonData;
 
 public class ChessProgram extends Application {
     public GridPane chessboard;
@@ -62,6 +61,12 @@ public class ChessProgram extends Application {
     boolean startUp = true;
     public String game;
     BorderPane borderPane;
+    Stage cb = new Stage(); //main chessboard stage
+
+
+    //================== Confirmation-dialogue ==================
+    Alert confirmation = new Alert(AlertType.CONFIRMATION); //alert object type confirmation
+
 
     //================== about window ==================
     Stage helpStage = new Stage();
@@ -91,6 +96,7 @@ public class ChessProgram extends Application {
     @Override
     public void start(Stage chessBoardStage) {
         setLanguage(currentLanguage,currentCountry); //sets language
+        cb = chessBoardStage;
 
         borderPane = new BorderPane();
         setMenuBar();
@@ -115,7 +121,10 @@ public class ChessProgram extends Application {
         if(controller.game.equals("e-e")){ // TODO: use listners as loop when game is with humanplayers.
             animationEngEng();
         }
+
+
     }
+
     public void animationEngEng(){ // use on engine vs engine
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
@@ -198,6 +207,41 @@ public class ChessProgram extends Application {
         addFileMenu();
         addSettingsMenu();
         addHelpMenu();
+        
+        //================== Language Item event handler ==================
+
+        Norwegian.setOnAction(e -> {
+            setLanguage("no", "NO"); //function to change language
+
+        });
+
+        English.setOnAction(e -> {
+            setLanguage("en", "UK"); //function to change language
+
+        });
+
+        about.setOnAction(e -> { //calls function to display about
+            try { getHelp("About"); //function
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+
+        rules.setOnAction(e -> { //calls function to display rules
+            try {
+                getHelp("Rules"); //function
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+
+        restartMenu.setOnAction(e -> {
+            confirmation.setContentText(messages.getString("sure"));
+            setConfirmation();
+
+        });
+
+
 
         //================== add items  ==================
         if(startUp){ //runs only when the program first starts
@@ -268,18 +312,32 @@ public class ChessProgram extends Application {
         currentCountry = country;
     }
 
-    public void restartGame(){
-        System.out.println("reset: ");
-        controller.stopEngine();
-        controller = new Controller(eloRating); // also calles startengine in engineHandler
-        //controller.startEngine();
-        if(game.contains("h")){ // set program pointer
-            controller.programPtr = this; // used on humanclick in chessboard
-            // to update the chessprogram board.
-        }
-        updateBoard();
+
+    public void restartGame(){ //restart game by closing and creating new window.
+        cb.close(); //close window
+        ChessProgram cp = new ChessProgram("h-e");
+        Stage stage = new Stage();
+        cp.setStartUpLanguage(currentLanguage,currentCountry);
+        cp.start(stage);
+
     }
 
+    public void setConfirmation(){ //set confirmation text and function to handle action.
+
+        ButtonType cancel = new ButtonType(messages.getString("Cancel"), ButtonData.CANCEL_CLOSE);
+        ButtonType ok = new ButtonType(messages.getString("OK"), ButtonData.OK_DONE);
+        confirmation.setTitle(messages.getString("Confirm")); //set title text
+        confirmation.setHeaderText(messages.getString("RestartMessage")); //set header text
+
+        confirmation.getButtonTypes().setAll(ok, cancel); //add buttons
+
+        Optional<ButtonType> result = confirmation.showAndWait(); //display dialogue and wait for input
+        if (result.get() == ok){ //if presses, calls restart function and closes message.
+            confirmation.close();
+            restartGame();
+        }
+        confirmation.close();
+    }
 
 
 
