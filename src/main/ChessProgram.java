@@ -2,29 +2,42 @@ package main;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import javafx.scene.control.Alert.AlertType;
-import java.util.Optional;
-import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
 
 public class ChessProgram extends Application {
     public GridPane chessboard;
@@ -43,6 +56,8 @@ public class ChessProgram extends Application {
     MenuItem about = new MenuItem();
     MenuItem rules = new MenuItem();
 
+    Menu currentDiff = new Menu();
+
     //================== Difficulties ==================
     Menu difficulty = new Menu();
     MenuItem diff_carlsen = new MenuItem();
@@ -51,6 +66,7 @@ public class ChessProgram extends Application {
     MenuItem diff_hard = new MenuItem();
     MenuItem diff_normal = new MenuItem();
     MenuItem diff_easy = new MenuItem();
+
 
 
     MenuItem restartMenu = new MenuItem();
@@ -81,11 +97,10 @@ public class ChessProgram extends Application {
     final int HARD = 1200;
     final int NORMAL = 900;
     final int EASY = 300;
-    int eloRating = NORMAL;
 
-    Controller controller = new Controller(eloRating);
+    Controller controller = new Controller();
 
-    public ChessProgram(String game) {
+    public ChessProgram(String game) throws IOException {
         controller.game = game;
         this.game = game;
         if(game.contains("h")){ // set program pointer
@@ -97,8 +112,8 @@ public class ChessProgram extends Application {
     public void start(Stage chessBoardStage) {
         setLanguage(currentLanguage,currentCountry); //sets language
         cb = chessBoardStage;
-
         borderPane = new BorderPane();
+        currentDiff.setText("ELO rating: " + controller.elo);
         setMenuBar();
 
         chessboard = createChessBoard();
@@ -220,7 +235,7 @@ public class ChessProgram extends Application {
             difficulty.getItems().addAll(diff_carlsen, diff_gm, diff_lahl, diff_hard, diff_normal, diff_easy);
 
             file.getItems().add(restartMenu);
-            menubar.getMenus().addAll(file, settings, help); //add all menus to menubar
+            menubar.getMenus().addAll(file, settings, help,currentDiff); //add all menus to menubar
         }
     }
 
@@ -278,7 +293,7 @@ public class ChessProgram extends Application {
     }
 
 
-    public void restartGame(){ //restart game by closing and creating new window.
+    public void restartGame() throws IOException { //restart game by closing and creating new window.
         cb.close(); //close window
         ChessProgram cp = new ChessProgram("h-e"); //TODO fiks restart for alle moduser
         Stage stage = new Stage();
@@ -287,7 +302,7 @@ public class ChessProgram extends Application {
 
     }
 
-    public void setConfirmation(){ //set confirmation text and function to handle action.
+    public void setConfirmation() throws IOException { //set confirmation text and function to handle action.
         ButtonType cancel = new ButtonType(messages.getString("Cancel"), ButtonData.CANCEL_CLOSE);
         ButtonType ok = new ButtonType(messages.getString("OK"), ButtonData.OK_DONE);
         confirmation.setTitle(messages.getString("Confirm")); //set title text
@@ -334,12 +349,48 @@ public class ChessProgram extends Application {
         diff_normal.setText(messages.getString("Normal"));
         diff_easy.setText(messages.getString("Easy"));
 
-        diff_carlsen.setOnAction(e -> setDifficulty(CARLSEN));
-        diff_gm.setOnAction(e -> setDifficulty(GRANDMASTER));
-        diff_lahl.setOnAction(e -> setDifficulty(LAHLUM));
-        diff_hard.setOnAction(e -> setDifficulty(HARD));
-        diff_normal.setOnAction(e -> setDifficulty(NORMAL));
-        diff_easy.setOnAction(e -> setDifficulty(EASY));
+        diff_carlsen.setOnAction(e -> {
+            try {
+                setDifficulty(CARLSEN);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+        diff_gm.setOnAction(e -> {
+            try {
+                setDifficulty(GRANDMASTER);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+        diff_lahl.setOnAction(e -> {
+            try {
+                setDifficulty(LAHLUM);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+        diff_hard.setOnAction(e -> {
+            try {
+                setDifficulty(HARD);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+        diff_normal.setOnAction(e -> {
+            try {
+                setDifficulty(NORMAL);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+        diff_easy.setOnAction(e -> {
+            try {
+                setDifficulty(EASY);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
     }
 
     public void addHelpMenu(){
@@ -374,15 +425,17 @@ public class ChessProgram extends Application {
 
         restartMenu.setOnAction(e -> {
             confirmation.setContentText(messages.getString("sure"));
-            setConfirmation();
+            try {
+                setConfirmation();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         });
     }
 
-    public void setDifficulty(int elo){
-        eloRating = elo;
-        controller.stopEngine();
-        controller = new Controller(eloRating);
-        controller.chessboard = new Chessboard(controller);
-        updateBoard();
+    public void setDifficulty(int elo) throws IOException {
+        controller.writeEloRatingToFile(elo);
+        restartGame();
     }
+
 }
