@@ -146,7 +146,7 @@ public class ChessProgram extends Application {
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
             public void handle(long currentNanoTime) {
-                if(currentNanoTime%refreshRate == 0) {
+                if(currentNanoTime%refreshRate == 0) { // different refreshrate for windows and mac
                     if (controller.mainLoop()) {
                         updateBoard();
                     }
@@ -298,7 +298,7 @@ public class ChessProgram extends Application {
     }
 
 
-    public void restartGame() throws IOException { //restart game by closing and creating new window.
+    public void restartGame() { //restart game by closing and creating new window.
         controller.stopEngine();
         controller.chessboard = new Chessboard(controller);
         controller.engineHandler = new EngineHandler(controller.elo, controller.thinkTime);
@@ -353,48 +353,12 @@ public class ChessProgram extends Application {
         diff_normal.setText(messages.getString("Normal"));
         diff_easy.setText(messages.getString("Easy"));
 
-        diff_carlsen.setOnAction(e -> {
-            try {
-                setDifficulty(CARLSEN);
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        });
-        diff_gm.setOnAction(e -> {
-            try {
-                setDifficulty(GRANDMASTER);
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        });
-        diff_lahl.setOnAction(e -> {
-            try {
-                setDifficulty(LAHLUM);
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        });
-        diff_hard.setOnAction(e -> {
-            try {
-                setDifficulty(HARD);
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        });
-        diff_normal.setOnAction(e -> {
-            try {
-                setDifficulty(NORMAL);
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        });
-        diff_easy.setOnAction(e -> {
-            try {
-                setDifficulty(EASY);
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        });
+        diff_carlsen.setOnAction(e -> setDifficulty(CARLSEN));
+        diff_gm.setOnAction(e -> setDifficulty(GRANDMASTER));
+        diff_lahl.setOnAction(e -> setDifficulty(LAHLUM));
+        diff_hard.setOnAction(e -> setDifficulty(HARD));
+        diff_normal.setOnAction(e -> setDifficulty(NORMAL));
+        diff_easy.setOnAction(e -> setDifficulty(EASY));
     }
 
     public void addHelpMenu(){
@@ -437,9 +401,10 @@ public class ChessProgram extends Application {
         });
     }
 
-    public void setDifficulty(int elo) throws IOException {
-        controller.writeEloRatingToFile(elo);
-        restartGame();
+    public void setDifficulty(int elo) {
+        controller.elo = elo;
+        currentDiff.setText("ELO rating: " + controller.elo);
+        System.out.println("Elo rating  " + controller.elo);
     }
 
 }
