@@ -99,13 +99,17 @@ public class ChessProgram extends Application {
     final int EASY = 300;
 
     Controller controller = new Controller();
-
+    int refreshRate = 5000;
     public ChessProgram(String game) throws IOException {
         controller.game = game;
         this.game = game;
         if(game.contains("h")){ // set program pointer
             controller.programPtr = this; // used on humanclick in chessboard
             // to update the chessprogram board.
+        }
+        String os = System.getProperty("os.name"); // get operatingsystem name
+        if(!os.contains("Windows")){
+            refreshRate = 500;
         }
     }
     @Override
@@ -142,7 +146,7 @@ public class ChessProgram extends Application {
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
             public void handle(long currentNanoTime) {
-                if(currentNanoTime%10000 == 0) {
+                if(currentNanoTime%refreshRate == 0) {
                     if (controller.mainLoop()) {
                         updateBoard();
                     }

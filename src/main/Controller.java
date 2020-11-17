@@ -22,11 +22,11 @@ public class Controller{
     public int elo = 1000;
 
     File difficultyFile = new File("./res/text/difficulty.txt");
-    //public int elo;
 
     public Controller() throws IOException {
         readEloRating();                            //Reads saved difficulty rating from file
         chessboard = new Chessboard(this);      //Creates a new chessboard
+        chessboard.move("f2f3"); chessboard.move("e7e5"); chessboard.move("g2g4");
         engineHandler = new EngineHandler(elo, thinkTime);
         System.out.println("Controller's elo rating: " + elo + "\n");
     }
@@ -89,6 +89,7 @@ public class Controller{
             } else if (game.equals("h-e")) {
                 change = humVsEng();
             }
+            //gameCheck();
             if(!engineRunning){
                 return true;
             }
