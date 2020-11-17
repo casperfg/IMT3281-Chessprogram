@@ -26,8 +26,7 @@ public class Chessboard {
     public Controller cnt = null; // controller pointer.
 
     public String piecesLeftIndex = "rnbkqp";
-    public int[] piecesLeftWhite = new int[]{2,2,2,1,1,8};
-    public int[] piecesLeftBlack = new int[]{2,2,2,1,1,8};
+    public int[] piecesLeft = new int[]{4,4,4,2,2,16};
     public int[] humanPiece = new int[2]; // piece responcible for highlights.
 
     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
@@ -59,9 +58,6 @@ public class Chessboard {
     public void newPiece(int x, int y, char type, boolean color){
         board[y][x].updatePiece(type);
         board[y][x].setProp(new int[]{x,y}, color);
-    }
-    public void isStaleMate(){
-        if()
     }
     public void resetHighlight(){
         for(int y = 0; y<8; y++){
@@ -199,30 +195,44 @@ public class Chessboard {
     public void updatePieceLeft(Piece piece) {
         try{
             int index = piecesLeftIndex.indexOf(piece.type);
-            if(piece.color){
-                piecesLeftWhite[index] -= 1;
-            }else{
-                piecesLeftBlack[index] -= 1;
-            }
+            piecesLeft[index] -= 1;
         } catch (Exception ignored){
         }
 
     }
-    public boolean checkStaleMate(){
-        if(piecesLeftWhite[5] + piecesLeftBlack[5] == 0){ // no pawns left on board
-            if(Arrays.equals(piecesLeftWhite, new int[]{0,0,0,1,0,0})){
-                if(Arrays.equals(piecesLeftWhite, new int[]{0,0,0,1,0,0})){ // King vs King
-                    System.out.println("king vs king = stalemate");
-                    return true;
-                }
+    public boolean checkStaleMate(){ // takes care of automatic draws.
+        // "rnbkqp";
+        if(piecesLeft[5] == 0){ // no pawns left on board
+            if(Arrays.equals(piecesLeft, new int[]{0,0,0,2,0,0})){ // tests if arrays are equal
+                System.out.println("king vs king = stalemate");
+                return true;
             }
-            if(Arrays.equals(piecesLeftWhite, new int[]{0,0,0,1,0,0})){
-                if(Arrays.equals(piecesLeftWhite, new int[]{0,0,0,1,0,0})){ // King vs King
-                    System.out.println("king vs king = stalemate");
-                    return true;
+            if(Arrays.equals(piecesLeft, new int[]{0,1,0,2,0,0})){
+                System.out.println("king vs bishop & king = stalemate");
+                return true;
+            }
+            if(Arrays.equals(piecesLeft, new int[]{0,1,0,2,0,0})){
+                System.out.println("king vs bishop & king = stalemate");
+                return true;
+            }
+            if(Arrays.equals(piecesLeft, new int[]{0,0,2,2,0,0})){
+                // tests if the bishops are different colors.
+                int i = 0;
+                Boolean[] ab = new Boolean[2];
+                for(int y = 0; y<8; y++){
+                    for(int x = 0; x<8; x++){
+                        if(board[y][x].hasPiece){
+                            if(board[y][x].chessPiece.type == 'b'){
+                               ab[i] = board[y][x].tileColorWhite;
+                               i += 1;
+                            }
+                        }
+                    }
                 }
+                return (ab[0] && ab[1]) || (!ab[0] && !ab[1]);
             }
         }
+        return false;
     }
 
     // -----------------LEGALMOVE ---------------------------
@@ -246,7 +256,15 @@ public class Chessboard {
             boolean isBlank = blankSq(xt, yt);
             boolean isOpposite = false;
             if (!isBlank) { // landing on piece
-                isOpposite = tPiece.color != fPiece.color;
+                try {
+                    isOpposite = tPiece.color != fPiece.color;
+                }catch(Exception e){
+                    System.out.println(x);
+                    System.out.println(y);
+                    System.out.println(xt);
+                    System.out.println(yt);
+                    isBlank = false;
+                }
             }
             return board[y][x].hasPiece && (isBlank || isOpposite);
         }else{

@@ -42,6 +42,7 @@ public class engineWorker extends Thread{
             while (true) {
                 String text = processReader.readLine();
                 if(text != null) {
+                    System.out.println(text);
                     if(text.contains("mate 0")){ // is in mate.
                         return "MaTe";
                     }
@@ -87,7 +88,6 @@ public class engineWorker extends Thread{
         }
         Best = out;
         System.out.println(Best);
-        System.out.println(playerMated);
         done = true;
     }
 }

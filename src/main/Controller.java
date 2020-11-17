@@ -26,16 +26,18 @@ public class Controller{
         System.out.println("Engine stopped...");
     }
     public void gameCheck(String ret){ // Computerplayer is mated.
-        if(ret.equals("MaTe") || chessboard.repetition == 4) {
+        if(ret.equals("MaTe") || chessboard.repetition == 4 || chessboard.checkStaleMate()) {
             System.out.println("Game Finished");
             stopEngine();
         }
     }
-    public void gameCheck(){ // this move mates the other player
-        if((engineHandler.checkMate() || chessboard.repetition == 4) && engineRunning) {
+    public boolean gameCheck(){ // this move mates the other player
+        if((engineHandler.checkMate() || chessboard.repetition == 4 || chessboard.checkStaleMate()) && engineRunning) {
             System.out.println("Game Finished");
             stopEngine();
+            return true;
         }
+        return false;
     }
     // FOOLS MATE:
     // chessboard.move("f2f3"); chessboard.move("e7e5");
@@ -60,7 +62,7 @@ public class Controller{
 
     public boolean mainLoop(){
         Boolean change = false;
-        //gameCheck();
+
         if(engineRunning) {
             if (game.equals("e-e")){
                 change = engVsEng();
@@ -68,9 +70,9 @@ public class Controller{
             } else if (game.equals("h-e")) {
                 change = humVsEng();
             }
-            gameCheck();
-        }else{
-            return true;
+            if(!engineRunning){
+                return true;
+            }
         }
         return change;
     }

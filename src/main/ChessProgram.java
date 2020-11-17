@@ -63,7 +63,6 @@ public class ChessProgram extends Application {
     final int WINDOW_HEIGHT = 600;
 
     public ChessProgram(String game){
-        System.out.println(game);
         controller.game = game;
         this.game = game;
         if(game.contains("h")){ // set program pointer
@@ -103,16 +102,10 @@ public class ChessProgram extends Application {
             @Override
             public void handle(long currentNanoTime) {
                 if(currentNanoTime%10000 == 0) {
-                    System.out.println("here");
                     if (controller.mainLoop()) {
                         updateBoard();
                     }
                 }
-/*                try {
-                    Thread.sleep(5);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }*/
             }
         }.start(); // start main animation loop
     }
