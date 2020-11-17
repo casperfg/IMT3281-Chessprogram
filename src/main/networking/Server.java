@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 
 public class Server extends NetworkConnection {
 
-    private int port;
+    private final int port;
 
     public Server(int port, Consumer<Serializable> callOnReceive) {
         super(callOnReceive);

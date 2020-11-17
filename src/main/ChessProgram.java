@@ -1,39 +1,43 @@
 package main;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
+import javafx.scene.text.*;
 import javafx.stage.Stage;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
-import javafx.scene.control.Alert.AlertType;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Locale;
 import java.util.Optional;
-import javafx.scene.control.ButtonBar.ButtonData;
+import java.util.ResourceBundle;
 
 public class ChessProgram extends Application {
+    //================== final variables ==================
+    final int WINDOW_WITH = 600;
+    final int WINDOW_HEIGHT = 600;
+    final int CARLSEN = 2862;
+    final int GRANDMASTER = 2500;
+    final int LAHLUM = 2192;
+    final int HARD = 1200;
+    final int NORMAL = 900;
+    final int EASY = 300;
     public GridPane chessboard;
     public boolean aniGoing = true;
+    public String game;
     //================== Initialize internationalization ==================
     String currentLanguage;
     String currentCountry;
     ResourceBundle messages; //initializing resource bundle
-
     //================== Menu-bar  ==================
     MenuBar menubar = new MenuBar(); //creates menubar
     Menu file = new Menu(); //creating file in menu bar
@@ -42,7 +46,7 @@ public class ChessProgram extends Application {
     Menu help = new Menu();
     MenuItem about = new MenuItem();
     MenuItem rules = new MenuItem();
-
+    Menu currentDiff = new Menu();
     //================== Difficulties ==================
     Menu difficulty = new Menu();
     MenuItem diff_carlsen = new MenuItem();
@@ -51,56 +55,44 @@ public class ChessProgram extends Application {
     MenuItem diff_hard = new MenuItem();
     MenuItem diff_normal = new MenuItem();
     MenuItem diff_easy = new MenuItem();
-
-
     MenuItem restartMenu = new MenuItem();
     MenuItem Norwegian = new MenuItem(); //Norwegian as a choice
     Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg")); //fetches from res folder
     MenuItem English = new MenuItem(); //English as a choice
     Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg")); //fetches from res folder
     boolean startUp = true;
-    public String game;
     BorderPane borderPane;
     Stage cb = new Stage(); //main chessboard stage
-
-
     //================== Confirmation-dialogue ==================
     Alert confirmation = new Alert(AlertType.CONFIRMATION); //alert object type confirmation
-
-
     //================== about window ==================
     Stage helpStage = new Stage();
+    Controller controller;
+    int refreshRate = 5000;
 
-    //================== final variables ==================
-    final int WINDOW_WITH = 600;
-    final int WINDOW_HEIGHT = 600;
 
-    final int CARLSEN = 2862;
-    final int GRANDMASTER = 2500;
-    final int LAHLUM = 2192;
-    final int HARD = 1200;
-    final int NORMAL = 900;
-    final int EASY = 300;
     int eloRating = NORMAL;
 
-    Controller controller;
-
-    public ChessProgram(String game, boolean isServer) {
-        controller = new Controller(eloRating, isServer);
-
+    public ChessProgram(String game, boolean isServer) throws IOException {
+        controller = new Controller(isServer);
         controller.game = game;
         this.game = game;
-        if(game.contains("h")){ // set program pointer
+        if (game.contains("h")) { // set program pointer
             controller.programPtr = this; // used on humanclick in chessboard
             // to update the chessprogram board.
         }
+        String os = System.getProperty("os.name"); // get operatingsystem name
+        if (!os.contains("Windows")) {
+            refreshRate = 100;
+        }
     }
+
     @Override
     public void start(Stage chessBoardStage) {
-        setLanguage(currentLanguage,currentCountry); //sets language
+        setLanguage(currentLanguage, currentCountry); //sets language
         cb = chessBoardStage;
-
         borderPane = new BorderPane();
+        currentDiff.setText("ELO rating: " + controller.elo);
         setMenuBar();
 
         chessboard = createChessBoard();
@@ -128,30 +120,30 @@ public class ChessProgram extends Application {
             }
         });
 
-
         chessBoardStage.show();
-        if(controller.game.equals("e-e")){ // TODO: use listners as loop when game is with humanplayers.
+        if (controller.game.equals("e-e")) {
             animationEngEng();
         }
-
-
     }
 
-    public void animationEngEng(){ // use on engine vs engine
+    public void animationEngEng() { // use on engine vs engine
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
             public void handle(long currentNanoTime) {
-                if(controller.mainLoop()){
-                    updateBoard();
+                if (currentNanoTime % refreshRate == 0) { // different refreshrate for windows and mac
+                    if (controller.mainLoop()) {
+                        updateBoard();
+                    }
                 }
             }
         }.start(); // start main animation loop
     }
-    public void animationEngMove(){
+
+    public void animationEngMove() {
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
             public void handle(long currentNanoTime) {
-                if(controller.mainLoop()){
+                if (controller.mainLoop()) {
                     updateBoard();
                     this.stop();
                 }
@@ -170,10 +162,11 @@ public class ChessProgram extends Application {
         }.start(); // start main animation loop
     }
 
-    public void updateBoard(){
+    public void updateBoard() {
         chessboard = createChessBoard(); // update new chessboard view
         borderPane.setCenter(chessboard); // set the new chessboardView
     }
+
     public GridPane createChessBoard() {
         final int size = 10;
         GridPane gridPane = controller.chessboard.createBoard();
@@ -201,13 +194,21 @@ public class ChessProgram extends Application {
     }
 
 
-    public void setLanguage(String language, String country){  //set language for program
+    public void setLanguage(String language, String country) {  //set language for program
         language = language.toUpperCase(); //makes uppercase
         country = country.toUpperCase(); //makes uppercase
         Locale currentLocale; //defines locale variable
         switch (language) { //switch for different languages.
-            case "EN" -> { English.setDisable(true); Norwegian.setDisable(false); currentLocale = new Locale(language, country); }//sets language to english.
-            case "NO" -> { Norwegian.setDisable(true); English.setDisable(false); currentLocale = new Locale(language, country);} //sets language to norwegian.
+            case "EN" -> {
+                English.setDisable(true);
+                Norwegian.setDisable(false);
+                currentLocale = new Locale(language, country);
+            }//sets language to english.
+            case "NO" -> {
+                Norwegian.setDisable(true);
+                English.setDisable(false);
+                currentLocale = new Locale(language, country);
+            } //sets language to norwegian.
             default -> currentLocale = new Locale("en", "UK"); //sets language to english as default;
         }
         currentLanguage = language; //current language
@@ -226,13 +227,14 @@ public class ChessProgram extends Application {
     }
 
 
-    public void setMenuBar(){ //fetches text and initialises the menu bar
+    public void setMenuBar() { //fetches text and initialises the menu bar
         addFileMenu();
         addSettingsMenu();
         addHelpMenu();
+        cb.setTitle(messages.getString("Chess")); //set title, its here because it need to update
 
         //================== add items  ==================
-        if(startUp){ //runs only when the program first starts
+        if (startUp) { //runs only when the program first starts
             startUp = false; //set to false
             help.getItems().addAll(about, rules); //adds items to help menu
             langSubMenu.getItems().addAll(Norwegian, English); //adds item to language
@@ -243,7 +245,7 @@ public class ChessProgram extends Application {
             difficulty.getItems().addAll(diff_carlsen, diff_gm, diff_lahl, diff_hard, diff_normal, diff_easy);
 
             file.getItems().add(restartMenu);
-            menubar.getMenus().addAll(file, settings, help); //add all menus to menubar
+            menubar.getMenus().addAll(file, settings, help, currentDiff); //add all menus to menubar
         }
     }
 
@@ -260,7 +262,6 @@ public class ChessProgram extends Application {
         BufferedReader txtReader; //creates BufferedReader object
 
 
-
         //================== Read text from file ==================
         switch (type) { //switch for different languages.
             case "ABOUT" -> txtReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/text/about_" + currentLanguage.toUpperCase() + ".txt")));
@@ -270,15 +271,15 @@ public class ChessProgram extends Application {
 
         String title = txtReader.readLine(); //reads first line
         String date = txtReader.readLine(); //reads date
-        while(txtReader.ready()) { //while there still is text to ready
+        while (txtReader.ready()) { //while there still is text to ready
             input = input.concat(txtReader.readLine()); //read line and add text to string
         }
         txtReader.close(); //closes the reader
 
         //================== Set styling to text ==================
-        titleText = setStyling(titleText,title,30, "BOLD"); //defines styling parameters
-        inputText = setStyling(inputText,input, 15, "NORMAL"); //not good practice hardcoding in values
-        dateText = setStyling(dateText,date,20, "SEMI-BOLD"); //but the textfile is static
+        titleText = setStyling(titleText, title, 30, "BOLD"); //defines styling parameters
+        inputText = setStyling(inputText, input, 15, "NORMAL"); //not good practice hardcoding in values
+        dateText = setStyling(dateText, date, 20, "SEMI-BOLD"); //but the textfile is static
 
         layout.getChildren().addAll(titleText, inputText, dateText); //adds all text objects to layout
 
@@ -287,7 +288,7 @@ public class ChessProgram extends Application {
     }
 
 
-    public Text setStyling(Text text, String input,  int fontSize, String weight){ //sets styling to text
+    public Text setStyling(Text text, String input, int fontSize, String weight) { //sets styling to text
         text.setText(input + "\n"); //create seperator
         text.setTextAlignment(TextAlignment.CENTER); //center text
         text.setFont(Font.font("verdana", FontWeight.findByName(weight), FontPosture.REGULAR, fontSize)); //sets font, boldness, posture and size
@@ -295,23 +296,22 @@ public class ChessProgram extends Application {
         return text; //returns text object
     }
 
-    public void setStartUpLanguage(String language, String country){
+    public void setStartUpLanguage(String language, String country) {
         currentLanguage = language;
         currentCountry = country;
     }
 
 
-    public void restartGame(){ //restart game by closing and creating new window.
-        cb.close(); //close window
-        ChessProgram cp = new ChessProgram("h-e", true);
-        Stage stage = new Stage();
-        cp.setStartUpLanguage(currentLanguage,currentCountry);
-        cp.start(stage);
 
+    public void restartGame() { //restart game by closing and creating new window.
+        controller.stopEngine();
+        controller.chessboard = new Chessboard(controller);
+        controller.engineHandler = new EngineHandler(controller.elo, controller.thinkTime);
+        controller.engineRunning = true;
+        updateBoard();
     }
 
-    public void setConfirmation(){ //set confirmation text and function to handle action.
-
+    public void setConfirmation() throws IOException { //set confirmation text and function to handle action.
         ButtonType cancel = new ButtonType(messages.getString("Cancel"), ButtonData.CANCEL_CLOSE);
         ButtonType ok = new ButtonType(messages.getString("OK"), ButtonData.OK_DONE);
         confirmation.setTitle(messages.getString("Confirm")); //set title text
@@ -320,7 +320,7 @@ public class ChessProgram extends Application {
         confirmation.getButtonTypes().setAll(ok, cancel); //add buttons
 
         Optional<ButtonType> result = confirmation.showAndWait(); //display dialogue and wait for input
-        if (result.get() == ok){ //if presses, calls restart function and closes message.
+        if (result.get() == ok) { //if presses, calls restart function and closes message.
             confirmation.close();
             restartGame();
         }
@@ -328,8 +328,7 @@ public class ChessProgram extends Application {
     }
 
 
-
-    public void addLanguageMenu(){
+    public void addLanguageMenu() {
         settings.setText(messages.getString("Settings")); //creating settings in menu bar
         langSubMenu.setText(messages.getString("Language")); //submenu for language
 
@@ -348,15 +347,15 @@ public class ChessProgram extends Application {
         });
     }
 
-    public void addDifficulties(){
-        difficulty.setText("Difficulty"); //TODO: Translate
+    public void addDifficulties() {
+        difficulty.setText(messages.getString("Difficulty"));
 
         diff_carlsen.setText("Magnus Carlsen");
-        diff_gm.setText("Grandmaster"); //TODO: Translate
+        diff_gm.setText(messages.getString("Grandmaster"));
         diff_lahl.setText("Hans Olav Lahlum");
-        diff_hard.setText("Hard");//TODO: Translate
-        diff_normal.setText("Normal");//TODO: Translate
-        diff_easy.setText("Easy");//TODO: Translate
+        diff_hard.setText(messages.getString("Hard"));
+        diff_normal.setText(messages.getString("Normal"));
+        diff_easy.setText(messages.getString("Easy"));
 
         diff_carlsen.setOnAction(e -> setDifficulty(CARLSEN));
         diff_gm.setOnAction(e -> setDifficulty(GRANDMASTER));
@@ -366,13 +365,14 @@ public class ChessProgram extends Application {
         diff_easy.setOnAction(e -> setDifficulty(EASY));
     }
 
-    public void addHelpMenu(){
+    public void addHelpMenu() {
         help.setText(messages.getString("Help"));
         rules.setText(messages.getString("Rules"));
         about.setText(messages.getString("About"));
 
         about.setOnAction(e -> { //calls function to display about
-            try { getHelp("About"); //function
+            try {
+                getHelp("About"); //function
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
@@ -387,28 +387,29 @@ public class ChessProgram extends Application {
         });
     }
 
-    public void addSettingsMenu(){
+    public void addSettingsMenu() {
         addLanguageMenu();
         addDifficulties();
     }
 
-    public void addFileMenu(){
+    public void addFileMenu() {
         file.setText(messages.getString("File"));
-        restartMenu.setText("Restart Game"); //TODO: Translate
+        restartMenu.setText(messages.getString("Restart"));
 
         restartMenu.setOnAction(e -> {
-            controller.stopEngine();
-            controller = new Controller(eloRating, controller.isServer);
-            controller.chessboard = new Chessboard(controller);
-            updateBoard();
+            confirmation.setContentText(messages.getString("sure"));
+            try {
+                setConfirmation();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         });
     }
 
-    public void setDifficulty(int elo){
-        eloRating = elo;
-        controller.stopEngine();
-        controller = new Controller(eloRating, controller.isServer);
-        controller.chessboard = new Chessboard(controller);
-        updateBoard();
+    public void setDifficulty(int elo) {
+        controller.elo = elo;
+        currentDiff.setText("ELO rating: " + controller.elo);
+        System.out.println("Elo rating  " + controller.elo);
     }
+
 }

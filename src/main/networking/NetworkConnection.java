@@ -9,12 +9,7 @@ import java.util.function.Consumer;
 
 public abstract class NetworkConnection {
 
-    protected abstract boolean isServer();  // true if creating a server
-    protected abstract String getIP();
-    protected abstract int getPort();
-
     private final ConnectionThread thread;
-
     // Consumer function will be called when receiving data.
     // Use Platform.runLater() to prevent GUI problems
     private final Consumer<Serializable> callOnReceive;
@@ -26,6 +21,12 @@ public abstract class NetworkConnection {
 
         thread.setDaemon(true);  // Background thread
     }
+
+    protected abstract boolean isServer();  // true if creating a server
+
+    protected abstract String getIP();
+
+    protected abstract int getPort();
 
     public void start() {
         thread.start();  // Thread class will start the thread and call run()
