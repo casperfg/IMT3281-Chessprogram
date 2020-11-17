@@ -142,8 +142,10 @@ public class ChessProgram extends Application {
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
             public void handle(long currentNanoTime) {
-                if(currentNanoTime%10000 == 0) {
+                if(currentNanoTime%100 == 0) {
+                    System.out.println(currentNanoTime);
                     if (controller.mainLoop()) {
+                        System.out.println("update");
                         updateBoard();
                     }
                 }
