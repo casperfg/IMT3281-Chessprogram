@@ -9,9 +9,14 @@ public class EngineHandler{
     private Process engine;
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
+<<<<<<< HEAD
     public int eloRating = 2800;
     public int thinkTime = 100; // ms
     public Chessboard cboard;
+=======
+    public int eloRating;
+    public int thinkTime = 1000; // ms
+>>>>>>> 666fb20793c6458a1de4dcf78eb805e428ebc0c9
 
     private engineWorker worker; // workThread that lets engine wait and calculate
     private static String PATH = "./res/stockfishWin.exe"; // path for window

@@ -20,10 +20,12 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundSize;
 
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class StartMenu extends Application {
+    Stage mm = new Stage(); //main menu stage
     BorderPane borderPane = new BorderPane();
     ImageView imageView = new ImageView();
     FlowPane flowPane = new FlowPane();
@@ -56,25 +58,37 @@ public class StartMenu extends Application {
     ResourceBundle messages; //initializing resource bundle
 
     public void start(Stage menuStage){
+        mm = menuStage;
         setLanguage(defaultLanguage, defaultCountry);
         createMenu();
         addLogo();
         disableButtonsNotWorkingYetGeitGeitGeit(); //TODO IMPLEMENT BUTTON FUNCTIONS
 
-        menuStage.setTitle("Chess - Main Menu");
         menuStage.setScene(scene);
         menuStage.show();
 
         Stage cpuStage = new Stage();
 
-        btn_cpu.setOnAction(actionEvent ->{ ChessProgram cp = new ChessProgram("e-e");
-        cp.setStartUpLanguage(currentLanguage, currentCountry);
+        btn_cpu.setOnAction(actionEvent ->{
+            ChessProgram cp = null;
+            try {
+                cp = new ChessProgram("e-e");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            cp.setStartUpLanguage(currentLanguage, currentCountry);
         cp.start(cpuStage);
         menuStage.close();
         });
       
-        btn_play.setOnAction(actionEvent -> {ChessProgram cp = new ChessProgram("h-e");
-        cp.setStartUpLanguage(currentLanguage,currentCountry);
+        btn_play.setOnAction(actionEvent -> {
+            ChessProgram cp = null;
+            try {
+                cp = new ChessProgram("h-e");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            cp.setStartUpLanguage(currentLanguage,currentCountry);
         cp.start(cpuStage);
         menuStage.close();
 
@@ -173,6 +187,7 @@ public class StartMenu extends Application {
     }
 
     void updateButton(){
+        mm.setTitle(messages.getString("Chess")); //updates title
         btn_play.setText(messages.getString("Pvc"));
         btn_multi.setText(messages.getString("Pvp"));
         btn_cpu.setText(messages.getString("Cvc"));

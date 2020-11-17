@@ -1,5 +1,16 @@
 package main;
 
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.Buffer;
+import java.util.Scanner;
+
+
 public class Controller{
     public Chessboard chessboard;
     public String game = "e-e";
@@ -8,11 +19,16 @@ public class Controller{
     public Boolean engineRunning = true; // wether engine is running or not
     public ChessProgram programPtr = null; // has pointer to chessprogram for board updation. IF there is a human involved
     public int thinkTime = 1000;
-    public int elo = 2500;
+    public int elo;
 
-    public Controller() {
-        chessboard = new Chessboard(this);
+    File difficultyFile = new File("./res/text/difficulty.txt");
+    //public int elo;
+
+    public Controller() throws IOException {
+        readEloRating();                            //Reads saved difficulty rating from file
+        chessboard = new Chessboard(this);      //Creates a new chessboard
         engineHandler = new EngineHandler();
+        System.out.println("Controller's elo rating: " + elo + "\n");
     }
     public void startEngine(){
         System.out.println("Engine starting...");
@@ -97,5 +113,25 @@ public class Controller{
             return true;
         }
         return false;
+    }
+
+    public void readEloRating() throws IOException {
+        System.out.println("Reading from file difficulty.txt...\n");
+        Scanner scanner = new Scanner(difficultyFile);
+        elo = scanner.nextInt();
+        System.out.println("Elo rating after file is read: " + elo + "\n");
+    }
+
+    public void writeEloRatingToFile(int elo) throws IOException {
+        System.out.println("Writing to file difficulty.txt...");
+        FileWriter fileWriter = new FileWriter(difficultyFile.getAbsoluteFile());
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+        String rating = String.valueOf(elo);
+
+        bufferedWriter.write(rating);
+        bufferedWriter.close();
+
+        System.out.println("Done... | Rating = " + rating + "\n");
     }
 }

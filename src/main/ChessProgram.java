@@ -4,35 +4,44 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
 
 public class ChessProgram extends Application {
-
-    Controller controller = new Controller();
     public GridPane chessboard;
     public boolean aniGoing = true;
-
     //================== Initialize internationalization ==================
     String currentLanguage;
     String currentCountry;
@@ -46,6 +55,20 @@ public class ChessProgram extends Application {
     Menu help = new Menu();
     MenuItem about = new MenuItem();
     MenuItem rules = new MenuItem();
+
+    Menu currentDiff = new Menu();
+
+    //================== Difficulties ==================
+    Menu difficulty = new Menu();
+    MenuItem diff_carlsen = new MenuItem();
+    MenuItem diff_gm = new MenuItem();
+    MenuItem diff_lahl = new MenuItem();
+    MenuItem diff_hard = new MenuItem();
+    MenuItem diff_normal = new MenuItem();
+    MenuItem diff_easy = new MenuItem();
+
+
+
     MenuItem restartMenu = new MenuItem();
     MenuItem Norwegian = new MenuItem(); //Norwegian as a choice
     Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg")); //fetches from res folder
@@ -54,6 +77,12 @@ public class ChessProgram extends Application {
     boolean startUp = true;
     public String game;
     BorderPane borderPane;
+    Stage cb = new Stage(); //main chessboard stage
+
+
+    //================== Confirmation-dialogue ==================
+    Alert confirmation = new Alert(AlertType.CONFIRMATION); //alert object type confirmation
+
 
     //================== about window ==================
     Stage helpStage = new Stage();
@@ -62,7 +91,16 @@ public class ChessProgram extends Application {
     final int WINDOW_WITH = 600;
     final int WINDOW_HEIGHT = 600;
 
-    public ChessProgram(String game){
+    final int CARLSEN = 2862;
+    final int GRANDMASTER = 2500;
+    final int LAHLUM = 2192;
+    final int HARD = 1200;
+    final int NORMAL = 900;
+    final int EASY = 300;
+
+    Controller controller = new Controller();
+
+    public ChessProgram(String game) throws IOException {
         controller.game = game;
         this.game = game;
         if(game.contains("h")){ // set program pointer
@@ -73,8 +111,9 @@ public class ChessProgram extends Application {
     @Override
     public void start(Stage chessBoardStage) {
         setLanguage(currentLanguage,currentCountry); //sets language
-
+        cb = chessBoardStage;
         borderPane = new BorderPane();
+        currentDiff.setText("ELO rating: " + controller.elo);
         setMenuBar();
 
         chessboard = createChessBoard();
@@ -82,7 +121,6 @@ public class ChessProgram extends Application {
         borderPane.setTop(menubar);
 
         chessBoardStage.setScene(new Scene(borderPane, WINDOW_WITH, WINDOW_HEIGHT));
-        chessBoardStage.setTitle("Chess");
         chessBoardStage.setResizable(false);
 
         chessBoardStage.setOnCloseRequest( windowEvent -> {controller.stopEngine();
@@ -96,7 +134,10 @@ public class ChessProgram extends Application {
         if(controller.game.equals("e-e")){
             animationEngEng();
         }
+
+
     }
+
     public void animationEngEng(){ // use on engine vs engine
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
@@ -178,69 +219,25 @@ public class ChessProgram extends Application {
 
 
     public void setMenuBar(){ //fetches text and initialises the menu bar
-        //================== File ==================
-        file.setText(messages.getString("File"));
-        restartMenu.setText("Restart Game");
-        //================== Settings ==================
-        settings.setText(messages.getString("Settings")); //creating settings in menu bar
-        langSubMenu.setText(messages.getString("Language")); //submenu for language
-
-        //================== Language Item + Icons ==================
-        Norwegian.setText(messages.getString("Norwegian")); //Norwegian as a choice
-        Norwegian.setGraphic(setIcon(norFlag)); //set icon
-
-        English.setText(messages.getString("English")); //English as a choice
-        English.setGraphic(setIcon(UKFlag)); //set icon
-
-        //================== Help ==================
-        help.setText(messages.getString("Help"));
-        rules.setText(messages.getString("Rules"));
-        about.setText(messages.getString("About"));
-
-        //================== Language Item event handler ==================
-
-        Norwegian.setOnAction(e -> {
-            setLanguage("no", "NO"); //function to change language
-
-        });
-
-        English.setOnAction(e -> {
-            setLanguage("en", "UK"); //function to change language
-
-        });
-
-        about.setOnAction(e -> { //calls function to display about
-            try { getHelp("About"); //function
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        });
-
-        rules.setOnAction(e -> { //calls function to display rules
-            try {
-                getHelp("Rules"); //function 
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        });
-
-        restartMenu.setOnAction(e -> {
-            restartGame();
-
-        });
+        addFileMenu();
+        addSettingsMenu();
+        addHelpMenu();
+        cb.setTitle(messages.getString("Chess")); //set title, its here because it need to update
 
         //================== add items  ==================
         if(startUp){ //runs only when the program first starts
             startUp = false; //set to false
             help.getItems().addAll(about, rules); //adds items to help menu
             langSubMenu.getItems().addAll(Norwegian, English); //adds item to language
+
             settings.getItems().add(langSubMenu); //adds language under settings
+            settings.getItems().add(difficulty);
+
+            difficulty.getItems().addAll(diff_carlsen, diff_gm, diff_lahl, diff_hard, diff_normal, diff_easy);
+
             file.getItems().add(restartMenu);
-            menubar.getMenus().addAll(file, settings, help); //add all menus to menubar
+            menubar.getMenus().addAll(file, settings, help,currentDiff); //add all menus to menubar
         }
-
-
-
     }
 
     private void getHelp(String type) throws IOException {
@@ -291,26 +288,155 @@ public class ChessProgram extends Application {
         return text; //returns text object
     }
 
-
     public void setStartUpLanguage(String language, String country){
         currentLanguage = language;
         currentCountry = country;
     }
 
 
-    public void restartGame(){
-        System.out.println("reset: ");
-        controller.stopEngine();
-        controller = new Controller(); // also calles startengine in engineHandler
-        //controller.startEngine();
-        if(game.contains("h")){ // set program pointer
-            controller.programPtr = this; // used on humanclick in chessboard
-            // to update the chessprogram board.
+    public void restartGame() throws IOException { //restart game by closing and creating new window.
+        cb.close(); //close window
+        ChessProgram cp = new ChessProgram("h-e"); //TODO fiks restart for alle moduser
+        Stage stage = new Stage();
+        cp.setStartUpLanguage(currentLanguage,currentCountry);
+        cp.start(stage);
+
+    }
+
+    public void setConfirmation() throws IOException { //set confirmation text and function to handle action.
+        ButtonType cancel = new ButtonType(messages.getString("Cancel"), ButtonData.CANCEL_CLOSE);
+        ButtonType ok = new ButtonType(messages.getString("OK"), ButtonData.OK_DONE);
+        confirmation.setTitle(messages.getString("Confirm")); //set title text
+        confirmation.setHeaderText(messages.getString("RestartMessage")); //set header text
+
+        confirmation.getButtonTypes().setAll(ok, cancel); //add buttons
+
+        Optional<ButtonType> result = confirmation.showAndWait(); //display dialogue and wait for input
+        if (result.get() == ok){ //if presses, calls restart function and closes message.
+            confirmation.close();
+            restartGame();
         }
-        updateBoard();
+        confirmation.close();
     }
 
 
 
+    public void addLanguageMenu(){
+        settings.setText(messages.getString("Settings")); //creating settings in menu bar
+        langSubMenu.setText(messages.getString("Language")); //submenu for language
+
+        Norwegian.setText(messages.getString("Norwegian")); //Norwegian as a choice
+        Norwegian.setGraphic(setIcon(norFlag)); //set icon
+
+        English.setText(messages.getString("English")); //English as a choice
+        English.setGraphic(setIcon(UKFlag)); //set icon
+
+        Norwegian.setOnAction(e -> {
+            setLanguage("no", "NO"); //function to change language
+        });
+
+        English.setOnAction(e -> {
+            setLanguage("en", "UK"); //function to change language
+        });
+    }
+
+    public void addDifficulties(){
+        difficulty.setText(messages.getString("Difficulty"));
+
+        diff_carlsen.setText("Magnus Carlsen");
+        diff_gm.setText(messages.getString("Grandmaster"));
+        diff_lahl.setText("Hans Olav Lahlum");
+        diff_hard.setText(messages.getString("Hard"));
+        diff_normal.setText(messages.getString("Normal"));
+        diff_easy.setText(messages.getString("Easy"));
+
+        diff_carlsen.setOnAction(e -> {
+            try {
+                setDifficulty(CARLSEN);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+        diff_gm.setOnAction(e -> {
+            try {
+                setDifficulty(GRANDMASTER);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+        diff_lahl.setOnAction(e -> {
+            try {
+                setDifficulty(LAHLUM);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+        diff_hard.setOnAction(e -> {
+            try {
+                setDifficulty(HARD);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+        diff_normal.setOnAction(e -> {
+            try {
+                setDifficulty(NORMAL);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+        diff_easy.setOnAction(e -> {
+            try {
+                setDifficulty(EASY);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+    }
+
+    public void addHelpMenu(){
+        help.setText(messages.getString("Help"));
+        rules.setText(messages.getString("Rules"));
+        about.setText(messages.getString("About"));
+
+        about.setOnAction(e -> { //calls function to display about
+            try { getHelp("About"); //function
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+
+        rules.setOnAction(e -> { //calls function to display rules
+            try {
+                getHelp("Rules"); //function
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+    }
+
+    public void addSettingsMenu(){
+        addLanguageMenu();
+        addDifficulties();
+    }
+
+    public  void addFileMenu(){
+        file.setText(messages.getString("File"));
+        restartMenu.setText(messages.getString("Restart"));
+
+        restartMenu.setOnAction(e -> {
+            confirmation.setContentText(messages.getString("sure"));
+            try {
+                setConfirmation();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+    }
+
+    public void setDifficulty(int elo) throws IOException {
+        controller.writeEloRatingToFile(elo);
+        restartGame();
+    }
 
 }
