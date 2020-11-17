@@ -14,8 +14,8 @@ public class EngineHandler{
     public int thinkTime = 1000; // ms
 
     private engineWorker worker; // workThread that lets engine wait and calculate
-    private static String PATH = "./res/stockfishWin.exe"; // path for window
-    private static final String PATHmac = "./res/stockfish"; // path max
+    private static String PATH = "stockfishWin.exe"; // path for window
+    private static final String PATHmac = "stockfish"; // path max
 
     public EngineHandler(){ // start the engine
         startEngine();
