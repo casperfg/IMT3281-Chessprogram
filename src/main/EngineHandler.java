@@ -7,8 +7,6 @@ import java.io.OutputStreamWriter;
 
 // https://github.com/rahular/chess-misc/blob/master/JavaStockfish/src/com/rahul/stockfish/Stockfish.java
 public class EngineHandler {
-    private static final String PATHmac = "./res/stockfish"; // path max
-    private static String PATH = "./res/stockfishWin.exe"; // path for window
     public int eloRating;
     public int thinkTime = 1000; // ms
     private Process engine;

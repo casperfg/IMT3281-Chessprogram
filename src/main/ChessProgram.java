@@ -79,7 +79,7 @@ public class ChessProgram extends Application {
         }
         String os = System.getProperty("os.name"); // get operatingsystem name
         if (!os.contains("Windows")) {
-            refreshRate = 500;
+            refreshRate = 100;
         }
     }
 

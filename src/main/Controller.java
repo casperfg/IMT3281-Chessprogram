@@ -21,9 +21,6 @@ public class Controller {
 
     public Controller() throws IOException {
         chessboard = new Chessboard(this);      //Creates a new chessboard
-        chessboard.move("f2f3");
-        chessboard.move("e7e5");
-        chessboard.move("g2g4");
         engineHandler = new EngineHandler(elo, thinkTime);
     }
 
