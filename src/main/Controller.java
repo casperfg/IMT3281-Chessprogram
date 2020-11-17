@@ -19,7 +19,7 @@ public class Controller{
     public Boolean engineRunning = true; // wether engine is running or not
     public ChessProgram programPtr = null; // has pointer to chessprogram for board updation. IF there is a human involved
     public int thinkTime = 1000;
-    public int elo;
+    public int elo = 1000;
 
     File difficultyFile = new File("./res/text/difficulty.txt");
     //public int elo;
@@ -27,11 +27,14 @@ public class Controller{
     public Controller() throws IOException {
         readEloRating();                            //Reads saved difficulty rating from file
         chessboard = new Chessboard(this);      //Creates a new chessboard
-        engineHandler = new EngineHandler();
+        engineHandler = new EngineHandler(elo, thinkTime);
         System.out.println("Controller's elo rating: " + elo + "\n");
     }
     public void startEngine(){
         System.out.println("Engine starting...");
+        if(!engineRunning){
+            engineRunning = true;
+        }
         if (engineHandler.checkWorker().equals("-1")) {
             engineHandler.getBest(chessboard);
         }

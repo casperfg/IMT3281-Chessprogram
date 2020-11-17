@@ -295,12 +295,11 @@ public class ChessProgram extends Application {
 
 
     public void restartGame() throws IOException { //restart game by closing and creating new window.
-        cb.close(); //close window
-        ChessProgram cp = new ChessProgram("h-e"); //TODO fiks restart for alle moduser
-        Stage stage = new Stage();
-        cp.setStartUpLanguage(currentLanguage,currentCountry);
-        cp.start(stage);
-
+        controller.stopEngine();
+        controller.chessboard = new Chessboard(controller);
+        controller.engineHandler = new EngineHandler(controller.elo, controller.thinkTime);
+        controller.engineRunning = true;
+        updateBoard();
     }
 
     public void setConfirmation() throws IOException { //set confirmation text and function to handle action.

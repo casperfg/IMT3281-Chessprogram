@@ -30,7 +30,7 @@ public class engineWorker extends Thread{
             processWriter.write(command + "\n");
             processWriter.flush(); // "send"
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return true;
     }
