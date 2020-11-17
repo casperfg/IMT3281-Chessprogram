@@ -83,9 +83,11 @@ public class ChessProgram extends Application {
     final int EASY = 300;
     int eloRating = NORMAL;
 
-    Controller controller = new Controller(eloRating);
+    Controller controller;
 
-    public ChessProgram(String game) {
+    public ChessProgram(String game, boolean isServer) {
+        controller = new Controller(eloRating, isServer);
+
         controller.game = game;
         this.game = game;
         if(game.contains("h")){ // set program pointer
@@ -106,14 +108,24 @@ public class ChessProgram extends Application {
         borderPane.setTop(menubar);
 
         chessBoardStage.setScene(new Scene(borderPane, WINDOW_WITH, WINDOW_HEIGHT));
-        chessBoardStage.setTitle("Chess");
+        //TODO: remove, used for testing
+        chessBoardStage.setTitle("Chess - " + (controller.isServer ? "server" : "client"));
         chessBoardStage.setResizable(false);
 
-        chessBoardStage.setOnCloseRequest( windowEvent -> {controller.stopEngine();
-        StartMenu sm = new StartMenu();
-        Stage smStage = new Stage();
-        sm.setStartUpLanguage(currentLanguage, currentCountry);
-        sm.start(smStage);
+        chessBoardStage.setOnCloseRequest( windowEvent -> {
+            controller.stopEngine();
+            StartMenu sm = new StartMenu();
+            Stage smStage = new Stage();
+            sm.setStartUpLanguage(currentLanguage, currentCountry);
+            sm.start(smStage);
+            controller.cfg.saveProps();
+            if (game.equals("h-h")) {
+                try {
+                    controller.connection.close();
+                } catch (Exception e) {
+                    System.out.println("Couldnt close connection");
+                }
+            }
         });
 
 
@@ -136,6 +148,17 @@ public class ChessProgram extends Application {
         }.start(); // start main animation loop
     }
     public void animationEngMove(){
+        new AnimationTimer() { // mainloop of the program (controller??)
+            @Override
+            public void handle(long currentNanoTime) {
+                if(controller.mainLoop()){
+                    updateBoard();
+                    this.stop();
+                }
+            }
+        }.start(); // start main animation loop
+    }
+    public void animationHumHum() {
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
             public void handle(long currentNanoTime) {
@@ -280,7 +303,7 @@ public class ChessProgram extends Application {
 
     public void restartGame(){ //restart game by closing and creating new window.
         cb.close(); //close window
-        ChessProgram cp = new ChessProgram("h-e");
+        ChessProgram cp = new ChessProgram("h-e", true);
         Stage stage = new Stage();
         cp.setStartUpLanguage(currentLanguage,currentCountry);
         cp.start(stage);
@@ -369,13 +392,13 @@ public class ChessProgram extends Application {
         addDifficulties();
     }
 
-    public  void addFileMenu(){
+    public void addFileMenu(){
         file.setText(messages.getString("File"));
         restartMenu.setText("Restart Game"); //TODO: Translate
 
         restartMenu.setOnAction(e -> {
             controller.stopEngine();
-            controller = new Controller(eloRating);
+            controller = new Controller(eloRating, controller.isServer);
             controller.chessboard = new Chessboard(controller);
             updateBoard();
         });
@@ -384,7 +407,7 @@ public class ChessProgram extends Application {
     public void setDifficulty(int elo){
         eloRating = elo;
         controller.stopEngine();
-        controller = new Controller(eloRating);
+        controller = new Controller(eloRating, controller.isServer);
         controller.chessboard = new Chessboard(controller);
         updateBoard();
     }

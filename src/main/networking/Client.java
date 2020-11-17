@@ -5,12 +5,12 @@ import java.util.function.Consumer;
 
 public class Client extends NetworkConnection {
 
-    private String IP;
+    private String ip;
     private int port;
 
-    public Client(String IP, int port, Consumer<Serializable> callOnReceive) {
+    public Client(String ip, int port, Consumer<Serializable> callOnReceive) {
         super(callOnReceive);
-        this.IP = IP;
+        this.ip = ip;
         this.port = port;
     }
 
@@ -21,7 +21,7 @@ public class Client extends NetworkConnection {
 
     @Override
     protected String getIP() {
-        return IP;
+        return ip;
     }
 
     @Override

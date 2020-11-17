@@ -5,6 +5,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import main.pieces.Piece;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Chessboard {
@@ -165,6 +166,20 @@ public class Chessboard {
             specialMoves(x, y, xt, yt, fPiece); // OBS! fpiece is not added afterwards.
 
             moves.add(moveString);
+
+            if (cnt.game.equals("h-h") && !cnt.waitingForMove) {
+                Move move = new Move(x, y, xt, yt);
+                move.moveString = moves.get(moves.size() - 1);
+                try {
+                    System.out.println((cnt.isServer ? "Server" : "Client") +
+                                        " is trying to send move " + move.moveString);
+                    cnt.connection.send(move);
+                } catch (Exception e) {
+                    System.out.println("Failed to send");
+                }
+            }
+            cnt.waitingForMove = !cnt.waitingForMove;
+
         }else{
             System.out.println("wrong move");
             System.out.println(toFen()+" "+moveString);

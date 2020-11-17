@@ -45,31 +45,31 @@ public abstract class NetworkConnection {
 
         @Override
         public void run() {
-            try (
-                    // Only initiate new server socket if isServer() is true
-                    ServerSocket server = (isServer() ? new ServerSocket(getPort()) : null);
+            // Only initiate new server socket if isServer() is true
+            // Accept socket if server, create socket if client
+            try (ServerSocket server = (isServer() ? new ServerSocket(getPort()) : null)) {
+                try (Socket socket = (isServer() ? server.accept() : new Socket(getIP(), getPort()))) {
+                    try (ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+                        try (ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
 
-                    // Accept socket if server, create socket if client
-                    Socket socket = (isServer() ? server.accept() : new Socket(getIP(), getPort()));
+                            this.socket = socket;
+                            this.out = out;
 
-                    ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-                    ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-                    ) {
+                            // Lower latency by disabling Nagle's algorithm. We're only using small sets of data
+                            socket.setTcpNoDelay(true);
 
-                this.socket = socket;
-                this.out = out;
+                            System.out.println("ip: " + getIP() + ", port: " + getPort());
 
-                // Lower latency by disabling Nagle's algorithm. We're only using small sets of data
-                socket.setTcpNoDelay(true);
-
-                // Wait for data to be received
-                while (true) {
-                    Serializable data = (Serializable) in.readObject();
-                    callOnReceive.accept(data);
+                            // Wait for data to be received
+                            while (true) {
+                                Serializable data = (Serializable) in.readObject();
+                                callOnReceive.accept(data);
+                            }
+                        }
+                    }
                 }
-            }
-            catch (Exception e) {
-                callOnReceive.accept("Closed");
+            } catch (Exception e) {
+                System.out.println("Connection with " + (isServer() ? "client" : "server") + " closed");
             }
         }
     }

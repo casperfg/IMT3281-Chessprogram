@@ -7,6 +7,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -44,6 +45,9 @@ public class StartMenu extends Application {
     Button btn_no = new Button();
     Button btn_en = new Button();
 
+    //TODO: remove, temporary for testing
+    CheckBox serverCheckbox = new CheckBox("Server");
+
     //================== Fetching icons ==================
     Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg"),30, 20, false, true); //fetches from res folder
     Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg"),30, 20, false, true); //fetches from res folder
@@ -67,18 +71,25 @@ public class StartMenu extends Application {
 
         Stage cpuStage = new Stage();
 
-        btn_cpu.setOnAction(actionEvent ->{ ChessProgram cp = new ChessProgram("e-e");
+        btn_cpu.setOnAction(actionEvent ->{ ChessProgram cp = new ChessProgram("e-e", true);
         cp.setStartUpLanguage(currentLanguage, currentCountry);
         cp.start(cpuStage);
         menuStage.close();
         });
       
-        btn_play.setOnAction(actionEvent -> {ChessProgram cp = new ChessProgram("h-e");
+        btn_play.setOnAction(actionEvent -> {ChessProgram cp = new ChessProgram("h-e", true);
         cp.setStartUpLanguage(currentLanguage,currentCountry);
         cp.start(cpuStage);
         menuStage.close();
-
         });
+
+        btn_multi.setOnAction(actionEvent -> {
+            ChessProgram cp = new ChessProgram("h-h", serverCheckbox.isSelected());
+            cp.setStartUpLanguage(currentLanguage,currentCountry);
+            cp.start(cpuStage);
+            menuStage.close();
+        });
+
         btn_exit.setOnAction(actionEvent -> menuStage.close());
     }
 
@@ -120,7 +131,7 @@ public class StartMenu extends Application {
         flowPane.setOrientation(Orientation.VERTICAL);
         flowPane.setAlignment(Pos.CENTER);
         flowPane.setVgap(30);
-        flowPane.getChildren().addAll(btn_play, btn_multi ,btn_cpu ,btn_settings ,btn_exit);
+        flowPane.getChildren().addAll(btn_play, btn_multi ,btn_cpu ,btn_settings ,btn_exit, serverCheckbox);
 
         borderPane.setCenter(flowPane);
         borderPane.setBottom(langPane);
@@ -148,7 +159,6 @@ public class StartMenu extends Application {
     }
 
     void disableButtonsNotWorkingYetGeitGeitGeit(){
-        btn_multi.setDisable(true);
         btn_settings.setDisable(true);
     }
 
