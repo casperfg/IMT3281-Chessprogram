@@ -25,10 +25,8 @@ public class Controller{
     //public int elo;
 
     public Controller() throws IOException {
-        readEloRating();                            //Reads saved difficulty rating from file
         chessboard = new Chessboard(this);      //Creates a new chessboard
         engineHandler = new EngineHandler(elo, thinkTime);
-        System.out.println("Controller's elo rating: " + elo + "\n");
     }
     public void startEngine(){
         System.out.println("Engine starting...");
