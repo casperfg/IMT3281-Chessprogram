@@ -6,6 +6,7 @@ import javafx.scene.layout.StackPane;
 import main.pieces.Piece;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Chessboard {
     public Tile[][] board = new Tile[8][8];
@@ -24,6 +25,9 @@ public class Chessboard {
     public char promotionTo = '-';
     public Controller cnt = null; // controller pointer.
 
+    public String piecesLeftIndex = "rnbkqp";
+    public int[] piecesLeftWhite = new int[]{2,2,2,1,1,8};
+    public int[] piecesLeftBlack = new int[]{2,2,2,1,1,8};
     public int[] humanPiece = new int[2]; // piece responcible for highlights.
 
     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
@@ -55,6 +59,9 @@ public class Chessboard {
     public void newPiece(int x, int y, char type, boolean color){
         board[y][x].updatePiece(type);
         board[y][x].setProp(new int[]{x,y}, color);
+    }
+    public void isStaleMate(){
+        if()
     }
     public void resetHighlight(){
         for(int y = 0; y<8; y++){
@@ -150,11 +157,20 @@ public class Chessboard {
     }
     // TODO: update king functionality (castle/check/mate)
     public void move(int x, int y, int xt, int yt) { // from x,y to xt, yt
-        Piece fPiece;
+        Piece fPiece; // piece from
+        Piece tPiece; // pice to
+
+        Boolean taking;
         resetHighlight();
         if(legalMove(x, y, xt, yt)) { // checks if legal
             fPiece = board[y][x].chessPiece;
-            repetition(xt, yt, fPiece);
+            taking = board[yt][xt].hasPiece;
+
+            repetition(xt, yt, fPiece); // count repetition of moves
+            if(taking){ // update number of officers left.
+                tPiece = board[yt][xt].chessPiece;
+                updatePieceLeft(tPiece);
+            }
 
             fPiece.position = new int[]{xt, yt};
             fPiece.lastPosition = new int[]{x, y};
@@ -165,11 +181,12 @@ public class Chessboard {
             board[yt][xt].hasPiece = true;
             board[y][x].removePiece();
 
-            whiteTurn = !whiteTurn;
+            whiteTurn = !whiteTurn; // change turn/count moves
             if (whiteTurn) {
                 moveCount++;
             }
             specialMoves(x, y, xt, yt, fPiece); // OBS! fpiece is not added afterwards.
+
 
             moves.add(moveString);
         }else{
@@ -178,6 +195,36 @@ public class Chessboard {
             //System.exit(1);
         }
     }
+
+    public void updatePieceLeft(Piece piece) {
+        try{
+            int index = piecesLeftIndex.indexOf(piece.type);
+            if(piece.color){
+                piecesLeftWhite[index] -= 1;
+            }else{
+                piecesLeftBlack[index] -= 1;
+            }
+        } catch (Exception ignored){
+        }
+
+    }
+    public boolean checkStaleMate(){
+        if(piecesLeftWhite[5] + piecesLeftBlack[5] == 0){ // no pawns left on board
+            if(Arrays.equals(piecesLeftWhite, new int[]{0,0,0,1,0,0})){
+                if(Arrays.equals(piecesLeftWhite, new int[]{0,0,0,1,0,0})){ // King vs King
+                    System.out.println("king vs king = stalemate");
+                    return true;
+                }
+            }
+            if(Arrays.equals(piecesLeftWhite, new int[]{0,0,0,1,0,0})){
+                if(Arrays.equals(piecesLeftWhite, new int[]{0,0,0,1,0,0})){ // King vs King
+                    System.out.println("king vs king = stalemate");
+                    return true;
+                }
+            }
+        }
+    }
+
     // -----------------LEGALMOVE ---------------------------
     // is blank square
     public Boolean blankSq(int xt, int yt){

@@ -102,9 +102,17 @@ public class ChessProgram extends Application {
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
             public void handle(long currentNanoTime) {
-                if(controller.mainLoop()){
-                    updateBoard();
+                if(currentNanoTime%10000 == 0) {
+                    System.out.println("here");
+                    if (controller.mainLoop()) {
+                        updateBoard();
+                    }
                 }
+/*                try {
+                    Thread.sleep(5);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }*/
             }
         }.start(); // start main animation loop
     }

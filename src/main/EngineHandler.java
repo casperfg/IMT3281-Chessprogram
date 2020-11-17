@@ -9,8 +9,8 @@ public class EngineHandler{
     private Process engine;
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
-    public int eloRating = 300;
-    public int thinkTime = 1000; // ms
+    public int eloRating = 2800;
+    public int thinkTime = 100; // ms
     public Chessboard cboard;
 
     private engineWorker worker; // workThread that lets engine wait and calculate
@@ -33,12 +33,7 @@ public class EngineHandler{
         if(worker != null) {
             if (worker.done) { // worker is done calculating
                 worker.done = false; // reset done
-                if(!worker.Best.equals("broken")) { // everything is ok
-                    return worker.Best;
-                }else{
-                    startEngine(); // should not happentry to restart the engine.
-                    getBest(cboard); // send last command. also resets best=broken
-                }
+                return worker.Best;
             }
         }
         return "-1"; // still not done
