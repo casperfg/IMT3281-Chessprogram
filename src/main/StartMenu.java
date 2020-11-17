@@ -9,35 +9,25 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundSize;
-
 
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class StartMenu extends Application {
+    final int WIDTH = 290;
+    final int HEIGHT = 50;
     Stage mm = new Stage(); //main menu stage
     BorderPane borderPane = new BorderPane();
     ImageView imageView = new ImageView();
     FlowPane flowPane = new FlowPane();
     FlowPane langPane = new FlowPane();
-
     Image logo_en = new Image(getClass().getResourceAsStream("/images/logo_en.png"));
     Image logo_no = new Image(getClass().getResourceAsStream("/images/logo_no.png"));
     Scene scene = new Scene(borderPane, 600, 600);
-
-    final int WIDTH = 290;
-    final int HEIGHT = 50;
-
     Button btn_play = new Button();
     Button btn_multi = new Button();
     Button btn_cpu = new Button();
@@ -47,8 +37,8 @@ public class StartMenu extends Application {
     Button btn_en = new Button();
 
     //================== Fetching icons ==================
-    Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg"),30, 20, false, true); //fetches from res folder
-    Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg"),30, 20, false, true); //fetches from res folder
+    Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg"), 30, 20, false, true); //fetches from res folder
+    Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg"), 30, 20, false, true); //fetches from res folder
 
     //================== Initialize internationalization ==================
     String defaultLanguage = "en";
@@ -57,7 +47,7 @@ public class StartMenu extends Application {
     String currentCountry;
     ResourceBundle messages; //initializing resource bundle
 
-    public void start(Stage menuStage){
+    public void start(Stage menuStage) {
         mm = menuStage;
         setLanguage(defaultLanguage, defaultCountry);
         createMenu();
@@ -69,7 +59,7 @@ public class StartMenu extends Application {
 
         Stage cpuStage = new Stage();
 
-        btn_cpu.setOnAction(actionEvent ->{
+        btn_cpu.setOnAction(actionEvent -> {
             ChessProgram cp = null;
             try {
                 cp = new ChessProgram("e-e");
@@ -77,10 +67,10 @@ public class StartMenu extends Application {
                 ioException.printStackTrace();
             }
             cp.setStartUpLanguage(currentLanguage, currentCountry);
-        cp.start(cpuStage);
-        menuStage.close();
+            cp.start(cpuStage);
+            menuStage.close();
         });
-      
+
         btn_play.setOnAction(actionEvent -> {
             ChessProgram cp = null;
             try {
@@ -88,31 +78,31 @@ public class StartMenu extends Application {
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
-            cp.setStartUpLanguage(currentLanguage,currentCountry);
-        cp.start(cpuStage);
-        menuStage.close();
+            cp.setStartUpLanguage(currentLanguage, currentCountry);
+            cp.start(cpuStage);
+            menuStage.close();
 
         });
         btn_exit.setOnAction(actionEvent -> menuStage.close());
     }
 
-    void addLogo(){
+    void addLogo() {
         String language = currentLanguage.toUpperCase();
-        switch (language){
+        switch (language) {
             case "NO" -> imageView.setImage(logo_no);
             case "EN" -> imageView.setImage(logo_en);
         }
 
         borderPane.setTop(imageView);
         BorderPane.setAlignment(imageView, Pos.CENTER);
-        BorderPane.setMargin(imageView, new Insets(10,10,1,1));
+        BorderPane.setMargin(imageView, new Insets(10, 10, 1, 1));
     }
 
     void createMenu() {
         setButton(btn_play, WIDTH, HEIGHT, "Pvc");
         setButton(btn_multi, WIDTH, HEIGHT, "Pvp");
         setButton(btn_cpu, WIDTH, HEIGHT, "Cvc");
-        setButton(btn_settings, WIDTH, HEIGHT ,"Settings");
+        setButton(btn_settings, WIDTH, HEIGHT, "Settings");
         setButton(btn_exit, WIDTH, HEIGHT, "Exit");
 
         //================== Language Buttons  ==================
@@ -128,13 +118,13 @@ public class StartMenu extends Application {
         langPane.setOrientation(Orientation.HORIZONTAL);
         langPane.setAlignment(Pos.CENTER);
         langPane.setHgap(10);
-        langPane.getChildren().addAll(btn_no ,btn_en);
+        langPane.getChildren().addAll(btn_no, btn_en);
 
 
         flowPane.setOrientation(Orientation.VERTICAL);
         flowPane.setAlignment(Pos.CENTER);
         flowPane.setVgap(30);
-        flowPane.getChildren().addAll(btn_play, btn_multi ,btn_cpu ,btn_settings ,btn_exit);
+        flowPane.getChildren().addAll(btn_play, btn_multi, btn_cpu, btn_settings, btn_exit);
 
         borderPane.setCenter(flowPane);
         borderPane.setBottom(langPane);
@@ -147,33 +137,33 @@ public class StartMenu extends Application {
         });
 
         btn_en.setOnAction(e -> {
-             setLanguage("en", "UK"); //function to change language
-             updateButton();
+            setLanguage("en", "UK"); //function to change language
+            updateButton();
         });
 
     }
 
-    void setButton(Button btn, int width, int height, String input){
-        if(!input.isEmpty()) {
+    void setButton(Button btn, int width, int height, String input) {
+        if (!input.isEmpty()) {
             btn.setText(messages.getString(input));
         }
         btn.setFont(Font.font(20));
         btn.setPrefSize(width, height);
     }
 
-    void disableButtonsNotWorkingYetGeitGeitGeit(){
+    void disableButtonsNotWorkingYetGeitGeitGeit() {
         btn_multi.setDisable(true);
         btn_settings.setDisable(true);
     }
 
 
-    public Background setBackgroundImage(Image flag){
+    public Background setBackgroundImage(Image flag) {
         BackgroundImage backgroundImage = new BackgroundImage(flag, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
         Background background = new Background(backgroundImage);
         return background;
     }
 
-    public void setLanguage(String language, String country){  //set language for program
+    public void setLanguage(String language, String country) {  //set language for program
         language = language.toUpperCase(); //makes uppercase
         country = country.toUpperCase(); //makes uppercase
         Locale currentLocale; //defines locale variable
@@ -186,7 +176,7 @@ public class StartMenu extends Application {
 
     }
 
-    void updateButton(){
+    void updateButton() {
         mm.setTitle(messages.getString("Chess")); //updates title
         btn_play.setText(messages.getString("Pvc"));
         btn_multi.setText(messages.getString("Pvp"));
@@ -196,8 +186,8 @@ public class StartMenu extends Application {
         addLogo();
     }
 
-    public void setStartUpLanguage(String language, String country){
-            defaultLanguage = language;
-            defaultCountry = country;
-        }
+    public void setStartUpLanguage(String language, String country) {
+        defaultLanguage = language;
+        defaultCountry = country;
+    }
 }

@@ -5,8 +5,8 @@ import java.util.function.Consumer;
 
 public class Client extends NetworkConnection {
 
-    private String IP;
-    private int port;
+    private final String IP;
+    private final int port;
 
     public Client(String IP, int port, Consumer<Serializable> callOnReceive) {
         super(callOnReceive);
