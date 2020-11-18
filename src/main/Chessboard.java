@@ -189,6 +189,7 @@ public class Chessboard {
 
         if (fPiece.type == 'p') {
             if ((fPiece.color && yt == 0) || (!fPiece.color && yt == 7)) { // PROMOTION
+
                 newPiece(xt, yt, (promotionTo == '-') ? 'q' : promotionTo, fPiece.color);
                 promotionTo = '-';
             } else if (yt - y != 1) { // 2 squares up

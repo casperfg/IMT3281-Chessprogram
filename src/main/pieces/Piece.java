@@ -22,7 +22,6 @@ public class Piece{
         possibleMoves.remove(i);
     }
     public void possible(Chessboard board){ // continues to children (polymorphism)
-        System.out.println("piece");
     }
 
     // add position with movevector to possibleMoves, if legal.

@@ -25,7 +25,6 @@ public class King extends Piece{
                 addPoss(board, -2, 0);
             }
         }
-        System.out.println("King");
     }
     public boolean canCastle(Chessboard board){
         return (!board.whiteCastle && color) || (!board.blackCastle && !color);

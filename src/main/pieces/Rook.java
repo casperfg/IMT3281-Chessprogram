@@ -14,6 +14,5 @@ public class Rook extends Piece {
     }
     public void possible(Chessboard board) {
         repeat(moveVector, board);
-        System.out.println("ROOK");
     }
 }

@@ -15,6 +15,5 @@ public class Knight extends Piece { // Hest
     }
     public void possible(Chessboard board) {
         nonRepeat(moveVector, board);
-        System.out.println("Knight");
     }
 }
