@@ -60,12 +60,7 @@ public class Tile extends Button {
         chessPiece.removePossible();
         chessPiece.possible(chBoard);
         if(setHighlight) {
-            int x, y;
-            for (int i = 0; i < chessPiece.possibleMoves.size(); i++) {
-                x = chessPiece.possibleMoves.get(i)[0];
-                y = chessPiece.possibleMoves.get(i)[1];
-                chBoard.board[y][x].highLight = true;
-            }
+            setHighlight(chBoard);
         }
     }
     public ArrayList<int[]> retPossible(){
@@ -87,5 +82,14 @@ public class Tile extends Button {
         }
         chessPiece.removePossible();
         return false;
+    }
+
+    public void setHighlight(Chessboard chBoard) {
+        int x, y;
+        for (int i = 0; i < chessPiece.possibleMoves.size(); i++) {
+            x = chessPiece.possibleMoves.get(i)[0];
+            y = chessPiece.possibleMoves.get(i)[1];
+            chBoard.board[y][x].highLight = true;
+        }
     }
 }

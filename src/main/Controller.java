@@ -193,4 +193,8 @@ public class Controller {
 
         System.out.println("Done... | Rating = " + rating + "\n");
     }
+
+    public void ISMATE() {
+        System.out.println("MATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    }
 }

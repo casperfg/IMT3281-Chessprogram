@@ -5,6 +5,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import main.pieces.Piece;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -126,19 +127,19 @@ public class Chessboard {
         return false;
     }
     public void calcCheckAvoid(){
-        long time = System.nanoTime();
         Chessboard tmpBoard = new Chessboard(cnt); // make a copy of the board.
-        tmpBoard.checkForChecks = false;
-        tmpBoard.board = board;
+        tmpBoard.checkForChecks = false; // has sto the tmpBoard for calling this function
 
         Tile thisTile;
         ArrayList<int[]> tmpPossible;
         Piece cp;
         boolean avoided = false;
-        String fen = this.toFen();
+        String fen = this.toFen(); // save the fen
         int xt, yt;
+        checkAvoid.removeAll(checkAvoid);
 
 
+        System.out.println(toFen());
         for (int y = 0; y<8; y++){
             for(int x = 0; x<8; x++){
                 avoided = false;
@@ -151,19 +152,16 @@ public class Chessboard {
 
                         for(int i = 0; i<tmpPossible.size(); i++){
                             // move from piece position to possible
-                            tmpBoard.setFen(fen); // resets board position.
-
+                            tmpBoard.setFen(fen); // resets board position. to original position
                             xt = tmpPossible.get(i)[0];
                             yt = tmpPossible.get(i)[1];
 
                             tmpBoard.move(cp.position[0], cp.position[1], xt, yt);
                             if(!tmpBoard.kingAttack(!whiteTurn)){ // avoided the check given
-                                System.out.println(tmpBoard.toFen());
                                 avoided = true; // keep the possible move if it avoids check.
                             }else{
                                 cp.removePossible(i); // remove the possible move from the actual list in this piece.
                             }
-                            //tmpBoard.move(xt, yt, cp.position[0], cp.position[1]);
 
                         }
                         if(avoided){
@@ -174,7 +172,9 @@ public class Chessboard {
                 }
             }
         }
-        System.out.println(System.nanoTime()-time);
+        if(checkAvoid.isEmpty()){
+            cnt.ISMATE();
+        }
     }
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
         if (board[yt][xt].tileName.equals(enPassantSquare)) { // is taking enpassant
@@ -528,6 +528,13 @@ public class Chessboard {
             if(!check){
                 board[y][x].possible(this, true); // calculate possible moves by this piece
                 humanPiece = new int[]{x, y}; // set human piece. piece responsible for current highlight
+            }else{ // is in a check. and clicks piece that avoids
+                checkAvoid.forEach( n -> {
+                    if(n[0] == x && n[1] == y){
+                        board[y][x].setHighlight(this);
+                        humanPiece = new int[]{x, y}; // set human piece. piece responsible for current highlight
+                    }
+                });
             }
             return false;
         } else if (board[y][x].highLight) { // clicks on highlight, move piece
