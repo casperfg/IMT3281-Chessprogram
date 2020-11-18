@@ -575,9 +575,4 @@ public class ChessProgram extends Application {
         infoscreen.setText(messages.getString("Infoscreen"));
 
     }
-
-
-
-
-
 }
