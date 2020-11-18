@@ -37,9 +37,6 @@ public class StartMenu extends Application {
     Button btn_no = new Button();
     Button btn_en = new Button();
 
-    //TODO: remove, temporary for testing
-    CheckBox serverCheckbox = new CheckBox("Server");
-
     //================== Fetching icons ==================
     Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg"), 30, 20, false, true); //fetches from res folder
     Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg"), 30, 20, false, true); //fetches from res folder
@@ -66,7 +63,7 @@ public class StartMenu extends Application {
         btn_cpu.setOnAction(actionEvent -> {
             ChessProgram cp = null;
             try {
-                cp = new ChessProgram("e-e", true);
+                cp = new ChessProgram("e-e");
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
@@ -78,7 +75,7 @@ public class StartMenu extends Application {
         btn_play.setOnAction(actionEvent -> {
             ChessProgram cp = null;
             try {
-                cp = new ChessProgram("h-e", true);
+                cp = new ChessProgram("h-e");
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
@@ -90,7 +87,7 @@ public class StartMenu extends Application {
         btn_multi.setOnAction(actionEvent -> {
             ChessProgram cp = null;
             try {
-                cp = new ChessProgram("h-h", serverCheckbox.isSelected());
+                cp = new ChessProgram("h-h");
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
@@ -140,7 +137,7 @@ public class StartMenu extends Application {
         flowPane.setOrientation(Orientation.VERTICAL);
         flowPane.setAlignment(Pos.CENTER);
         flowPane.setVgap(30);
-        flowPane.getChildren().addAll(btn_play, btn_multi ,btn_cpu ,btn_settings ,btn_exit, serverCheckbox);
+        flowPane.getChildren().addAll(btn_play, btn_multi ,btn_cpu ,btn_settings ,btn_exit);
 
         borderPane.setCenter(flowPane);
         borderPane.setBottom(langPane);

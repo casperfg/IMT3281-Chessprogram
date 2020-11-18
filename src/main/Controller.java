@@ -27,8 +27,8 @@ public class Controller {
     public int port;
     public boolean waitingForMove;
 
-    public Controller(boolean isSer) {
-        this.isServer = isSer;
+    public Controller() {
+        this.isServer = true;
         chessboard = new Chessboard(this);
         engineHandler = new EngineHandler(elo, thinkTime);
         System.out.println("Elo rating: " + this.elo);
@@ -37,13 +37,15 @@ public class Controller {
 
         ip = cfg.props.getProperty("ip");
         port = Integer.parseInt(cfg.props.getProperty("port"));
-
-        connection = (isServer ? createServer() : createClient());
-        connection.start();
-        waitingForMove = !isServer;
     }
 
     File difficultyFile = new File("./res/text/difficulty.txt");
+
+    public void startConnection() {
+        connection = (isServer ? createServer() : createClient());
+        waitingForMove = !isServer;
+        connection.start();
+    }
 
     public void startEngine() {
         System.out.println("Engine starting...");

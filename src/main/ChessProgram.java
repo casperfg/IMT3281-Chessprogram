@@ -2,18 +2,35 @@ package main;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Callback;
+import javafx.util.Pair;
 
+import java.awt.*;
+import java.awt.Button;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -73,8 +90,8 @@ public class ChessProgram extends Application {
 
     int eloRating = NORMAL;
 
-    public ChessProgram(String game, boolean isServer) throws IOException {
-        controller = new Controller(isServer);
+    public ChessProgram(String game) throws IOException {
+        controller = new Controller();
         controller.game = game;
         this.game = game;
         if (game.contains("h")) { // set program pointer
@@ -100,29 +117,36 @@ public class ChessProgram extends Application {
         borderPane.setTop(menubar);
 
         chessBoardStage.setScene(new Scene(borderPane, WINDOW_WITH, WINDOW_HEIGHT));
-        //TODO: remove, used for testing
-        chessBoardStage.setTitle("Chess - " + (controller.isServer ? "server" : "client"));
+        chessBoardStage.setTitle("Chess");
         chessBoardStage.setResizable(false);
 
         chessBoardStage.setOnCloseRequest( windowEvent -> {
-            controller.stopEngine();
-            StartMenu sm = new StartMenu();
-            Stage smStage = new Stage();
-            sm.setStartUpLanguage(currentLanguage, currentCountry);
-            sm.start(smStage);
-            controller.cfg.saveProps();
-            if (game.equals("h-h")) {
-                try {
-                    controller.connection.close();
-                } catch (Exception e) {
-                    System.out.println("Couldnt close connection");
-                }
-            }
+            close();
         });
 
         chessBoardStage.show();
         if (controller.game.equals("e-e")) {
             animationEngEng();
+        }
+
+        if(game.equals("h-h")) {
+            connectionDialog();
+        }
+    }
+
+    public void close() {
+        controller.stopEngine();
+        StartMenu sm = new StartMenu();
+        Stage smStage = new Stage();
+        sm.setStartUpLanguage(currentLanguage, currentCountry);
+        sm.start(smStage);
+        controller.cfg.saveProps();
+        if (game.equals("h-h")) {
+            try {
+                controller.connection.close();
+            } catch (Exception e) {
+                System.out.println("Couldnt close connection");
+            }
         }
     }
 
@@ -327,6 +351,74 @@ public class ChessProgram extends Application {
         confirmation.close();
     }
 
+    //TODO: internationalisation
+    public void connectionDialog() {
+        class connectionCfg {
+            public final String ip;
+            public final int port;
+            public final boolean host;
+
+            public connectionCfg(String ip, int port, boolean host) {
+                this.ip = ip;
+                this.port = port;
+                this.host = host;
+            }
+        }
+
+        Dialog<connectionCfg> connectionDialog = new Dialog<>();
+        connectionDialog.setTitle(messages.getString("ConnectionTitle"));
+
+        ButtonType connect = new ButtonType(messages.getString("Connect"), ButtonData.OK_DONE);
+        ButtonType cancel = new ButtonType(messages.getString("Cancel"), ButtonData.CANCEL_CLOSE);
+        connectionDialog.getDialogPane().getButtonTypes().addAll(connect, cancel);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 40, 10, 10));
+
+        TextField ipField = new TextField();
+        ipField.setText(controller.cfg.props.getProperty("ip"));
+
+        TextField portField = new TextField();
+        portField.setText(controller.cfg.props.getProperty("port"));
+
+        CheckBox host = new CheckBox(messages.getString("Host"));
+
+        grid.add(new Label("IP"), 0, 0);
+        grid.add(ipField, 1, 0);
+
+        grid.add(new Label("Port"), 0, 1);
+        grid.add(portField, 1, 1);
+
+        grid.add(host, 0, 2);
+
+        connectionDialog.getDialogPane().setContent(grid);
+
+        connectionDialog.initStyle(StageStyle.UTILITY);
+
+        connectionDialog.setResultConverter(new Callback<ButtonType, connectionCfg>() {
+            @Override
+            public connectionCfg call(ButtonType buttonType) {
+                if (buttonType == connect) {
+                    return new connectionCfg(ipField.getText(),
+                                             Integer.parseInt(portField.getText()),
+                                             host.isSelected());
+                }
+                return null;
+            }
+        });
+
+        Optional<connectionCfg> result = connectionDialog.showAndWait();
+
+        if (result.isPresent()) {
+            controller.ip = result.get().ip;
+            controller.port = result.get().port;
+            controller.isServer = result.get().host;
+            controller.startConnection();
+            System.out.println(controller.ip + " " + controller.port + " " + controller.isServer);
+        }
+    }
 
     public void addLanguageMenu() {
         settings.setText(messages.getString("Settings")); //creating settings in menu bar
