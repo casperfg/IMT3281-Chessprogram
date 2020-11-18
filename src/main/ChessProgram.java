@@ -91,17 +91,18 @@ public class ChessProgram extends Application {
     int refreshRate = 5000;
 
     //================== info panel ==================
-    TextArea moveLog = new TextArea();
-    Text title = new Text();
-    Text infoscreen = new Text();
-    GridPane layout = new GridPane();
-    TextArea info = new TextArea();
-    RowConstraints row1 = new RowConstraints();
+    GridPane infoLayout = new GridPane(); //grid layout for infoscreen
+    TextArea moveLog = new TextArea(); //show moves
+    TextArea info = new TextArea(); //info panel
+    Text moveLogTitle = new Text();  //title of move log
+    Text infoscreen = new Text(); //info panel
+
+    RowConstraints row1 = new RowConstraints(); //row constraints
     RowConstraints row2 = new RowConstraints();
     RowConstraints row3 = new RowConstraints();
     RowConstraints row4 = new RowConstraints();
-    ColumnConstraints column1 = new ColumnConstraints();
-    Insets inset = new Insets(10, 20, 20, 20);
+    ColumnConstraints column1 = new ColumnConstraints(); //column constraint
+    Insets inset = new Insets(10, 20, 20, 20); //padding around the infopanel
 
 
 
@@ -530,48 +531,45 @@ public class ChessProgram extends Application {
     }
 
 
-    public void setInfoScreen(){
-        moveLog.setEditable(false);
+    public void setInfoScreen(){ //set info screen
+        moveLog.setEditable(false); //can not edit
         info.setEditable(false);
-        updateInfoScreen();
-        info.setText("ELO rating: " + controller.elo);
+        updateInfoScreen(); //calls function to set text
+        info.setText("ELO rating: " + controller.elo); //set elo rating in information
 
-        title = setStyling(title,title.getText(), 13, "BOLD", false);
+        moveLogTitle = setStyling(moveLogTitle,moveLogTitle.getText(), 13, "BOLD", false); //set styling
         infoscreen = setStyling(infoscreen, infoscreen.getText(), 13, "BOLD", false);
 
-
-        //Kolonne er den som linjen som går vertikalt
-        //rad er hver "boks" som går ned på kolonnen
-        column1.setMaxWidth(200);
-        layout.getColumnConstraints().add(column1); // column 0 is 100 wide
-        layout.setPadding(inset); //top, right, bottom,left
-
-
-        row1.setPercentHeight(5);
+        moveLog.setFocusTraversable(false); //when program start, the textarea doesnt get focused
+        info.setFocusTraversable(false);
+        
+        column1.setMaxWidth(200); //max width of column
+        row1.setPercentHeight(5); //set percentage of height
         row2.setPercentHeight(65);
         row3.setPercentHeight(5);
         row4.setPercentHeight(25);
 
-        layout.getRowConstraints().addAll(row1,row2,row3, row4);
+        infoLayout.getColumnConstraints().add(column1); //add constraint to layout
+        infoLayout.getRowConstraints().addAll(row1,row2,row3, row4); //add constraints to layout
 
-        layout.setVgap(5);
+        infoLayout.setPadding(inset); //top, right, bottom,left
+        infoLayout.setVgap(5); //vertical gap between boxes
 
-        layout.add(title, 0, 0);
-        layout.add(moveLog, 0, 1);
-        layout.add(infoscreen, 0, 2);
-        layout.add(info, 0, 3);
+        infoLayout.add(moveLogTitle, 0, 0); //adding text to layout
+        infoLayout.add(moveLog, 0, 1);
+        infoLayout.add(infoscreen, 0, 2); //adding textarea to layout
+        infoLayout.add(info, 0, 3);
 
 
-        layout.setGridLinesVisible(false);
-        layout.setHalignment(title, HPos.CENTER);
-        layout.setHalignment(infoscreen, HPos.CENTER);
+        infoLayout.setHalignment(moveLogTitle, HPos.CENTER); //alignment of title
+        infoLayout.setHalignment(infoscreen, HPos.CENTER); //alignment of information
 
-        borderPane.setLeft(layout);
+        borderPane.setLeft(infoLayout); //set layout to left side of borderpane
 
     }
 
     public void updateInfoScreen(){
-        title.setText(messages.getString("Movelog"));
+        moveLogTitle.setText(messages.getString("Movelog"));
         infoscreen.setText(messages.getString("Infoscreen"));
 
     }
