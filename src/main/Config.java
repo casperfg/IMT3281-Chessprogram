@@ -53,7 +53,7 @@ public class Config {
     public void saveProps() {
         try {
             FileOutputStream out = new FileOutputStream(CONFIG_PATH);
-            props.store(out, "Saving properties");
+            props.store(out, "Custom properties");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

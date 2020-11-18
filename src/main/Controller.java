@@ -120,7 +120,7 @@ public class Controller {
     }
 
     public void click(int x, int y) { // clicked by human
-        if (programPtr != null && engineRunning) { // is not null when human is involved.
+        if (programPtr != null && engineRunning && !waitingForMove) { // is not null when human is involved.
             boolean change = chessboard.humanClick(x, y);
             programPtr.updateBoard(); // update the board
             if (change) { // other player makes move.
