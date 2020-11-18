@@ -232,7 +232,6 @@ public class Chessboard {
     public void move(int x, int y, int xt, int yt) { // from x,y to xt, yt
         Piece fPiece; // piece from
         Piece tPiece; // pice to
-
         Boolean taking;
         resetHighlight();
         if (legalMove(x, y, xt, yt)) { // checks if legal
@@ -493,8 +492,6 @@ public class Chessboard {
             return false;
         }
     }
-
-
 }
 /*
 MATT:

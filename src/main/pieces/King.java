@@ -8,6 +8,13 @@ public class King extends Piece{
     public boolean castled = false;
     public Piece towerPiece;
     public int[][] moveVector = new int[][]{{0,1},{0, -1},{1,0},{-1, 0}, {1,-1},{1, 1},{-1,1},{-1, -1}};
+    public King(boolean color){
+        super(color, "king");
+    }
+
+    public King(){
+
+    }
     public void setIcon(){
         if(color){
             icon = new Image(getClass().getResourceAsStream("/images/white_king.png"));

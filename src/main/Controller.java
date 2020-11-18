@@ -30,6 +30,10 @@ public class Controller {
     public Controller(boolean isSer) {
         this.isServer = isSer;
         chessboard = new Chessboard(this);
+        chessboard.move("d2d4");
+        chessboard.move("e7e6");
+        chessboard.move("e2e4");
+        chessboard.move("f8b4");
 
         engineHandler = new EngineHandler(elo, thinkTime);
         System.out.println("Elo rating: " + this.elo);
@@ -121,7 +125,7 @@ public class Controller {
     }
 
     public void click(int x, int y) { // clicked by human
-        if (programPtr != null && engineRunning) { // is not null when human is involved.
+        if (programPtr != null && engineRunning && !waitingForMove) { // is not null when human is involved.
             boolean change = chessboard.humanClick(x, y);
             programPtr.updateBoard(); // update the board
             if (change) { // other player makes move.

@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import main.pieces.Pawn;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -157,6 +158,9 @@ public class StartMenu extends Application {
             updateButton();
         });
 
+        Pawn pawn = new Pawn();
+        pawn.color = true;
+        btn_settings.setOnAction(actionEvent -> new PromotionDialog(pawn).show());
     }
 
     void setButton(Button btn, int width, int height, String input) {
@@ -168,7 +172,7 @@ public class StartMenu extends Application {
     }
 
     void disableButtonsNotWorkingYetGeitGeitGeit(){
-        btn_settings.setDisable(true);
+        //btn_settings.setDisable(true);
     }
 
 

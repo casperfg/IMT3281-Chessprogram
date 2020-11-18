@@ -10,6 +10,7 @@ public class Piece{
     public int[] position; // internal position of tile (x,y) 0-7
     public int[] lastPosition = new int[2]; // x, y
     public boolean color; // color of piece, true=white
+    public String name;
     public char type = '-'; // knbr osv..
     public boolean rookMoved = false; // set to true if tower and has moved (Castle not allowed)
     public Image icon; // image icon.
@@ -21,7 +22,17 @@ public class Piece{
     public void removePossible(int i) { // remove i element of possible.
         possibleMoves.remove(i);
     }
-    public void possible(Chessboard board){ // continues to children (polymorphism)
+
+    Piece(boolean color, String name){
+        this.color = color;
+        this.name = name;
+    }
+
+    Piece(){
+
+    }
+
+    public void possible(Chessboard board){ // calls children (polumorphism)
     }
 
     // add position with movevector to possibleMoves, if legal.
@@ -61,5 +72,7 @@ public class Piece{
     public void setIcon() {  // Calls child classes
     }
 
-
+    public boolean getColor(){
+        return color;
+    }
 }
