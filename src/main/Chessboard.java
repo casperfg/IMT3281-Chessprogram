@@ -492,6 +492,34 @@ public class Chessboard {
             return false;
         }
     }
+<<<<<<< HEAD
+=======
+
+
+    public String displayMoves(){ //display all moves
+        String move = new String();
+        String allMoves = new String();
+        int moveNr = 1;
+        int lastMove = 1;
+
+        for(int i = 0; i < moves.size(); i++){ //loops through move arraylist
+            if(i % 2 == 0 && i != 0){ //is true every other move
+                moveNr++;
+                allMoves = allMoves.concat("\n");
+            }
+            if(lastMove == moveNr){
+                lastMove++;
+                move = String.format("%o. %s \t",moveNr, moves.get(i)); //first move for that "round"
+            }else {
+                move = String.format("%s \t", moves.get(i)); //countermove
+            }
+            allMoves = allMoves.concat(move); //add move to string
+        }
+        return allMoves; //retur  string
+    }
+
+
+>>>>>>> madsBranch
 }
 /*
 MATT:
