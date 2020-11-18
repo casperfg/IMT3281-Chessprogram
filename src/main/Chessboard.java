@@ -149,6 +149,7 @@ public class Chessboard {
                     if(cp.color == whiteTurn) {// is right color
                         thisTile.possible(this, false);
                         tmpPossible = (ArrayList<int[]>) thisTile.retPossible().clone();
+                        cp.removePossible();
 
                         for(int i = 0; i<tmpPossible.size(); i++){
                             // move from piece position to possible
@@ -159,10 +160,8 @@ public class Chessboard {
                             tmpBoard.move(cp.position[0], cp.position[1], xt, yt);
                             if(!tmpBoard.kingAttack(!whiteTurn)){ // avoided the check given
                                 avoided = true; // keep the possible move if it avoids check.
-                            }else{
-                                cp.removePossible(i); // remove the possible move from the actual list in this piece.
+                                cp.possibleMoves.add(new int[]{xt,yt}); // remove the possible move from the actual list in this piece.
                             }
-
                         }
                         if(avoided){
                             System.out.println(cp.type);
