@@ -8,6 +8,8 @@ import main.pieces.Piece;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static java.lang.Character.isDigit;
+
 public class Chessboard {
     public Tile[][] board = new Tile[8][8];
     public boolean checkForChecks = true;
@@ -124,6 +126,7 @@ public class Chessboard {
         return false;
     }
     public void calcCheckAvoid(){
+        long time = System.nanoTime();
         Chessboard tmpBoard = new Chessboard(cnt); // make a copy of the board.
         tmpBoard.checkForChecks = false;
         tmpBoard.board = board;
@@ -132,29 +135,30 @@ public class Chessboard {
         ArrayList<int[]> tmpPossible;
         Piece cp;
         boolean avoided = false;
-        boolean promotion = false;
+        String fen = this.toFen();
         int xt, yt;
+
+
         for (int y = 0; y<8; y++){
             for(int x = 0; x<8; x++){
                 avoided = false;
                 thisTile = board[y][x];
                 if(thisTile.hasPiece){
                     cp = thisTile.chessPiece;
-                    if(cp.color == whiteTurn) {// is opposite color of the color that set the check
+                    if(cp.color == whiteTurn) {// is right color
                         thisTile.possible(this, false);
                         tmpPossible = (ArrayList<int[]>) thisTile.retPossible().clone();
 
                         for(int i = 0; i<tmpPossible.size(); i++){
                             // move from piece position to possible
-                            tmpBoard.board = this.board.clone(); // reset board
-                            tmpBoard.whiteCastle = true;
+                            tmpBoard.setFen(fen); // resets board position.
 
                             xt = tmpPossible.get(i)[0];
                             yt = tmpPossible.get(i)[1];
 
                             tmpBoard.move(cp.position[0], cp.position[1], xt, yt);
-                            System.out.println(tmpBoard.toFen());
                             if(!tmpBoard.kingAttack(!whiteTurn)){ // avoided the check given
+                                System.out.println(tmpBoard.toFen());
                                 avoided = true; // keep the possible move if it avoids check.
                             }else{
                                 cp.removePossible(i); // remove the possible move from the actual list in this piece.
@@ -170,6 +174,7 @@ public class Chessboard {
                 }
             }
         }
+        System.out.println(System.nanoTime()-time);
     }
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
         if (board[yt][xt].tileName.equals(enPassantSquare)) { // is taking enpassant
@@ -421,6 +426,37 @@ public class Chessboard {
             } // add
         }
         return fen.toString() + result;
+    }
+    public void setFen(String fen){ // piecesLeftIndex
+        int i = -1;
+        String part;
+        char partC;
+        whiteTurn = fen.contains("w");
+        whiteCastle = fen.contains("KQ");
+        blackCastle = fen.contains("kq");
+
+        for(int y = 0; y<8; y++){
+            for(int x = 0; x<8; x++){
+                i++;
+                part = fen.substring(i, i+1);
+
+                while(part.equals("/")){
+                    i++;
+                    part = fen.substring(i, i+1);
+                }
+                partC = fen.charAt(i);
+                if(!isDigit(partC)){
+                    newPiece(x,y, Character.toLowerCase(partC), Character.isUpperCase(partC));
+
+                }else{
+                    for(int j = x; j<x+Character.getNumericValue(partC); j++){
+                        board[y][j].removePiece();
+                    }
+                    x += Character.getNumericValue(partC)-1;
+                }
+
+            }
+        }
     }
 
     public GridPane createBoard() {
