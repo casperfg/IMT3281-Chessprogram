@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 public class Chessboard {
     public Tile[][] board = new Tile[8][8];
+    public boolean checkForChecks = true;
 
     public boolean whiteTurn = true;
     public boolean check = false;
@@ -124,33 +125,46 @@ public class Chessboard {
     }
     public void calcCheckAvoid(){
         Chessboard tmpBoard = new Chessboard(cnt); // make a copy of the board.
+        tmpBoard.checkForChecks = false;
         tmpBoard.board = board;
 
         Tile thisTile;
         ArrayList<int[]> tmpPossible;
         Piece cp;
         boolean avoided = false;
+        boolean promotion = false;
+        int xt, yt;
         for (int y = 0; y<8; y++){
             for(int x = 0; x<8; x++){
                 avoided = false;
                 thisTile = board[y][x];
                 if(thisTile.hasPiece){
                     cp = thisTile.chessPiece;
-                    if(cp.color == !whiteTurn) {// is opposite color of the color that set the check
+                    if(cp.color == whiteTurn) {// is opposite color of the color that set the check
                         thisTile.possible(this, false);
-                        tmpPossible = thisTile.retPossible();
+                        tmpPossible = (ArrayList<int[]>) thisTile.retPossible().clone();
 
                         for(int i = 0; i<tmpPossible.size(); i++){
                             // move from piece position to possible
-                            tmpBoard.move(cp.position[0], cp.position[1], tmpPossible.get(i)[0], tmpPossible.get(i)[1]);
-                            if(!tmpBoard.kingAttack(whiteTurn)){ // avoided the check given
-                                avoided = true;
+                            tmpBoard.board = this.board.clone(); // reset board
+                            tmpBoard.whiteCastle = true;
+
+                            xt = tmpPossible.get(i)[0];
+                            yt = tmpPossible.get(i)[1];
+
+                            tmpBoard.move(cp.position[0], cp.position[1], xt, yt);
+                            System.out.println(tmpBoard.toFen());
+                            if(!tmpBoard.kingAttack(!whiteTurn)){ // avoided the check given
+                                avoided = true; // keep the possible move if it avoids check.
                             }else{
                                 cp.removePossible(i); // remove the possible move from the actual list in this piece.
                             }
+                            //tmpBoard.move(xt, yt, cp.position[0], cp.position[1]);
+
                         }
                         if(avoided){
-                            checkAvoid.add(new int[]{x,y});
+                            System.out.println(cp.type);
+                            checkAvoid.add(new int[]{x,y}); // save the pieces that avoids this check
                         }
                     }
                 }
@@ -163,10 +177,10 @@ public class Chessboard {
             board[pawnPassant[1]][pawnPassant[0]].removePiece();
         }
         enPassantSquare = "-"; // reset enpassant.
-        if(cnt.game.contains("h")) { // is human involved. stockfish handels for computer involvement.
+        if(cnt.game.contains("h") && checkForChecks) { // is human involved. stockfish handels for computer involvement.
             check = kingAttack(fPiece.color); // checks if check. cleans possible afterwards
             if(check){ // calculate avoidment moves.
-
+                calcCheckAvoid();
             }
         }
 
@@ -246,7 +260,7 @@ public class Chessboard {
 
             fPiece.position = new int[]{xt, yt};
             fPiece.lastPosition = new int[]{x, y};
-            fPiece.possibleMoves.removeAll(fPiece.possibleMoves); // empty possible moves.
+            fPiece.removePossible();
             moveStringSet(fPiece, x, y, xt, yt); // update movelist
 
             board[yt][xt].chessPiece = fPiece; // move piece to new tile
@@ -276,7 +290,6 @@ public class Chessboard {
 
         } else {
             System.out.println("wrong move");
-            System.out.println(toFen() + " " + moveString);
             //System.exit(1);
         }
     }

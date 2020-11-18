@@ -27,9 +27,11 @@ public class Controller {
     public int port;
     public boolean waitingForMove;
 
-    public Controller(boolean isSer) {
+    public Controller(boolean isSer, String game) {
         this.isServer = isSer;
+        this.game = game;
         chessboard = new Chessboard(this);
+
         chessboard.move("d2d4");
         chessboard.move("e7e6");
         chessboard.move("e2e4");

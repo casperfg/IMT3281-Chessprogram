@@ -42,7 +42,6 @@ public class King extends Piece{
         if(!board.blankSq(x, y)) {
             towerPiece = board.board[color? 7 : 0][7].chessPiece; // tower piece
             if(towerPiece.type == 'r'){
-                towerPiece = board.board[position[1]][position[0] + 3].chessPiece;
                 return board.blankSq(position[0] + 1, position[1]) // blank +1x
                         && board.blankSq(position[0] + 2, position[1]) // blank +2x
                         && !towerPiece.rookMoved; // rook has not moved

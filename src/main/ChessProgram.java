@@ -74,8 +74,7 @@ public class ChessProgram extends Application {
     int eloRating = NORMAL;
 
     public ChessProgram(String game, boolean isServer) throws IOException {
-        controller = new Controller(isServer);
-        controller.game = game;
+        controller = new Controller(isServer, game);
         this.game = game;
         if (game.contains("h")) { // set program pointer
             controller.programPtr = this; // used on humanclick in chessboard

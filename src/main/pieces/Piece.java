@@ -20,7 +20,9 @@ public class Piece{
         possibleMoves.removeAll(possibleMoves);
     }
     public void removePossible(int i) { // remove i element of possible.
-        possibleMoves.remove(i);
+        if (possibleMoves.size() > i){
+            possibleMoves.remove(i);
+        }
     }
 
     Piece(boolean color, String name){
