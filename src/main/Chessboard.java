@@ -90,7 +90,9 @@ public class Chessboard {
         if (promotionTo != '-') { // pawn promotion
             moveString += Character.toString(promotionTo).toUpperCase();
         }
-
+        if(check){
+            moveString += "+";
+        }
     }
 
     public void repetition(int xt, int yt, Piece fPiece) {
@@ -188,8 +190,7 @@ public class Chessboard {
         }
 
         if (fPiece.type == 'p') {
-            if ((fPiece.color && yt == 0) || (!fPiece.color && yt == 7)) { // PROMOTION
-
+            if (isPromotion(x,y,xt,yt)) { // PROMOTION
                 newPiece(xt, yt, (promotionTo == '-') ? 'q' : promotionTo, fPiece.color);
                 promotionTo = '-';
             } else if (yt - y != 1) { // 2 squares up
@@ -453,6 +454,19 @@ public class Chessboard {
         square.setStyle("-fx-background-color: " + color + ";");
         gridPane.add(square, row, col);
     }
+    // tests if move is promotion
+    // x,y = from position
+    // xt, yt = to position
+    public boolean isPromotion(int x, int y, int xt, int yt){
+        Tile tile = board[y][x];
+        Piece cp;
+        if(tile.hasPiece){
+            cp = tile.chessPiece;
+            return (cp.type == 'p' && ((yt == 0 && cp.color) || (yt == 7 && !cp.color)));
+        }else{
+            return false;
+        }
+    }
 
     public boolean humanClick(int x, int y) { // maybe possible of board should be known beforehand
         System.out.println("click");
@@ -469,6 +483,9 @@ public class Chessboard {
             }
             return false;
         } else if (board[y][x].highLight) { // clicks on highlight, move piece
+            if(isPromotion(humanPiece[0], humanPiece[1], x, y)){
+                // TODO: open promotion window, set (char) promotionTo variable to corresponding type
+            }
             move(humanPiece[0], humanPiece[1], x, y); // removes highlight/possible
             return true;
         } else { // clicks away the highlight

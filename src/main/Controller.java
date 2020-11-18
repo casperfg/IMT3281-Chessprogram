@@ -30,6 +30,11 @@ public class Controller {
     public Controller(boolean isSer) {
         this.isServer = isSer;
         chessboard = new Chessboard(this);
+        chessboard.move("d2d4");
+        chessboard.move("e7e6");
+        chessboard.move("e2e4");
+        chessboard.move("f8b4");
+
         engineHandler = new EngineHandler(elo, thinkTime);
         System.out.println("Elo rating: " + this.elo);
 
