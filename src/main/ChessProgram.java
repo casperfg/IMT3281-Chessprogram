@@ -305,6 +305,7 @@ public class ChessProgram extends Application {
         layout.getChildren().addAll(titleText, inputText, dateText); //adds all text objects to layout
 
         helpStage.setScene(aboutScene); //add scene to stage(frame)
+        helpStage.setResizable(false);
         helpStage.show(); //display the stage
     }
 
@@ -312,7 +313,7 @@ public class ChessProgram extends Application {
     public Text setStyling(Text text, String input, int fontSize, String weight, boolean seperator) { //sets styling to text
         if(seperator){
             text.setText(input + "\n"); //create seperator
-            text.setWrappingWidth(400); //size before wrapping
+            text.setWrappingWidth(500); //size before wrapping
         }
         text.setTextAlignment(TextAlignment.CENTER); //center text
         text.setFont(Font.font("verdana", FontWeight.findByName(weight), FontPosture.REGULAR, fontSize)); //sets font, boldness, posture and size
