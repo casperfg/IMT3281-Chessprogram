@@ -20,3 +20,4 @@ out/
 *.iws
 
 .DS_Store
+config.properties

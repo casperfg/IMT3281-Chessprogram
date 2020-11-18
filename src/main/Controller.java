@@ -30,6 +30,8 @@ public class Controller {
     public Controller() {
         this.isServer = true;
         chessboard = new Chessboard(this);
+
+
         engineHandler = new EngineHandler(elo, thinkTime);
         System.out.println("Elo rating: " + this.elo);
 

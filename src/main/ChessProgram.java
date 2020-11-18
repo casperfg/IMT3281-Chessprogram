@@ -1,5 +1,6 @@
 package main;
 
+import com.sun.javafx.scene.control.LabeledText;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.Event;
@@ -7,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -18,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -40,7 +43,7 @@ import java.util.ResourceBundle;
 
 public class ChessProgram extends Application {
     //================== final variables ==================
-    final int WINDOW_WITH = 600;
+    final int WINDOW_WITH = 800;
     final int WINDOW_HEIGHT = 600;
     final int CARLSEN = 2862;
     final int GRANDMASTER = 2500;
@@ -87,6 +90,20 @@ public class ChessProgram extends Application {
     Controller controller;
     int refreshRate = 5000;
 
+    //================== info panel ==================
+    TextArea moveLog = new TextArea();
+    Text title = new Text();
+    Text infoscreen = new Text();
+    GridPane layout = new GridPane();
+    TextArea info = new TextArea();
+    RowConstraints row1 = new RowConstraints();
+    RowConstraints row2 = new RowConstraints();
+    RowConstraints row3 = new RowConstraints();
+    RowConstraints row4 = new RowConstraints();
+    ColumnConstraints column1 = new ColumnConstraints();
+    Insets inset = new Insets(10, 20, 20, 20);
+
+
 
     int eloRating = NORMAL;
 
@@ -109,8 +126,10 @@ public class ChessProgram extends Application {
         setLanguage(currentLanguage, currentCountry); //sets language
         cb = chessBoardStage;
         borderPane = new BorderPane();
-        currentDiff.setText("ELO rating: " + controller.elo);
+
+        //currentDiff.setText("ELO rating: " + controller.elo);
         setMenuBar();
+        setInfoScreen();
 
         chessboard = createChessBoard();
         borderPane.setCenter(createChessBoard());
@@ -189,6 +208,7 @@ public class ChessProgram extends Application {
     public void updateBoard() {
         chessboard = createChessBoard(); // update new chessboard view
         borderPane.setCenter(chessboard); // set the new chessboardView
+        moveLog.setText(controller.chessboard.displayMoves());
     }
 
     public GridPane createChessBoard() {
@@ -239,6 +259,7 @@ public class ChessProgram extends Application {
         currentCountry = country; //current country
         messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle
         setMenuBar(); //call function to update text
+        updateInfoScreen();
 
     }
 
@@ -301,22 +322,25 @@ public class ChessProgram extends Application {
         txtReader.close(); //closes the reader
 
         //================== Set styling to text ==================
-        titleText = setStyling(titleText, title, 30, "BOLD"); //defines styling parameters
-        inputText = setStyling(inputText, input, 15, "NORMAL"); //not good practice hardcoding in values
-        dateText = setStyling(dateText, date, 20, "SEMI-BOLD"); //but the textfile is static
+        titleText = setStyling(titleText, title, 30, "BOLD",true); //defines styling parameters
+        inputText = setStyling(inputText, input, 15, "NORMAL",true); //not good practice hardcoding in values
+        dateText = setStyling(dateText, date, 20, "SEMI-BOLD", true); //but the textfile is static
 
         layout.getChildren().addAll(titleText, inputText, dateText); //adds all text objects to layout
 
         helpStage.setScene(aboutScene); //add scene to stage(frame)
+        helpStage.setResizable(false);
         helpStage.show(); //display the stage
     }
 
 
-    public Text setStyling(Text text, String input, int fontSize, String weight) { //sets styling to text
-        text.setText(input + "\n"); //create seperator
+    public Text setStyling(Text text, String input, int fontSize, String weight, boolean seperator) { //sets styling to text
+        if(seperator){
+            text.setText(input + "\n"); //create seperator
+            text.setWrappingWidth(500); //size before wrapping
+        }
         text.setTextAlignment(TextAlignment.CENTER); //center text
         text.setFont(Font.font("verdana", FontWeight.findByName(weight), FontPosture.REGULAR, fontSize)); //sets font, boldness, posture and size
-        text.setWrappingWidth(400); //size before wrapping
         return text; //returns text object
     }
 
@@ -500,8 +524,60 @@ public class ChessProgram extends Application {
 
     public void setDifficulty(int elo) {
         controller.elo = elo;
-        currentDiff.setText("ELO rating: " + controller.elo);
+        controller.engineHandler.setElo(elo);
+        info.setText("ELO rating: " + controller.elo);
         System.out.println("Elo rating  " + controller.elo);
     }
+
+
+    public void setInfoScreen(){
+        moveLog.setEditable(false);
+        info.setEditable(false);
+        updateInfoScreen();
+        info.setText("ELO rating: " + controller.elo);
+
+        title = setStyling(title,title.getText(), 13, "BOLD", false);
+        infoscreen = setStyling(infoscreen, infoscreen.getText(), 13, "BOLD", false);
+
+
+        //Kolonne er den som linjen som går vertikalt
+        //rad er hver "boks" som går ned på kolonnen
+        column1.setMaxWidth(200);
+        layout.getColumnConstraints().add(column1); // column 0 is 100 wide
+        layout.setPadding(inset); //top, right, bottom,left
+
+
+        row1.setPercentHeight(5);
+        row2.setPercentHeight(65);
+        row3.setPercentHeight(5);
+        row4.setPercentHeight(25);
+
+        layout.getRowConstraints().addAll(row1,row2,row3, row4);
+
+        layout.setVgap(5);
+
+        layout.add(title, 0, 0);
+        layout.add(moveLog, 0, 1);
+        layout.add(infoscreen, 0, 2);
+        layout.add(info, 0, 3);
+
+
+        layout.setGridLinesVisible(false);
+        layout.setHalignment(title, HPos.CENTER);
+        layout.setHalignment(infoscreen, HPos.CENTER);
+
+        borderPane.setLeft(layout);
+
+    }
+
+    public void updateInfoScreen(){
+        title.setText(messages.getString("Movelog"));
+        infoscreen.setText(messages.getString("Infoscreen"));
+
+    }
+
+
+
+
 
 }

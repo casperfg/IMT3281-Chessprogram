@@ -13,7 +13,7 @@ public class EngineHandler {
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
     private engineWorker worker; // workThread that lets engine wait and calculate
-    private static String PATH = "stockfishWin.exe"; // path for window
+    private static String PATH = "./res/stockfishWin.exe"; // path for window
     private static final String PATHmac = "stockfish"; // path max
 
     public EngineHandler() { // start the engine
