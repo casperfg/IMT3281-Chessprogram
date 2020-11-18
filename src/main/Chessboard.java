@@ -492,9 +492,6 @@ public class Chessboard {
             return false;
         }
     }
-<<<<<<< HEAD
-=======
-
 
     public String displayMoves(){ //display all moves
         String move = new String();
@@ -519,7 +516,6 @@ public class Chessboard {
     }
 
 
->>>>>>> madsBranch
 }
 /*
 MATT:
