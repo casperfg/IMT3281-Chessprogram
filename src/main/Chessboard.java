@@ -154,14 +154,14 @@ public class Chessboard {
                         for(int i = 0; i<tmpPossible.size(); i++){
                             // move from piece position to possible
                             tmpBoard.setFen(fen); // resets board position. to original position
-                            xt = tmpPossible.get(i)[0];
-                            yt = tmpPossible.get(i)[1];
+                            xt = tmpPossible.get(i)[0]; yt = tmpPossible.get(i)[1];
 
                             tmpBoard.move(cp.position[0], cp.position[1], xt, yt);
                             if(!tmpBoard.kingAttack(!whiteTurn)){ // avoided the check given
                                 avoided = true; // keep the possible move if it avoids check.
                                 cp.possibleMoves.add(new int[]{xt,yt}); // remove the possible move from the actual list in this piece.
                             }
+
                         }
                         if(avoided){
                             System.out.println(cp.type);
