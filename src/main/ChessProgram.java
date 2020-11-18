@@ -1,19 +1,39 @@
 package main;
 
+import com.sun.javafx.scene.control.LabeledText;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Callback;
+import javafx.util.Pair;
 
+import java.awt.*;
+import java.awt.Button;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,7 +43,7 @@ import java.util.ResourceBundle;
 
 public class ChessProgram extends Application {
     //================== final variables ==================
-    final int WINDOW_WITH = 600;
+    final int WINDOW_WITH = 800;
     final int WINDOW_HEIGHT = 600;
     final int CARLSEN = 2862;
     final int GRANDMASTER = 2500;
@@ -70,6 +90,21 @@ public class ChessProgram extends Application {
     Controller controller;
     int refreshRate = 5000;
 
+    //================== info panel ==================
+    GridPane infoLayout = new GridPane(); //grid layout for infoscreen
+    TextArea moveLog = new TextArea(); //show moves
+    TextArea info = new TextArea(); //info panel
+    Text moveLogTitle = new Text();  //title of move log
+    Text infoscreen = new Text(); //info panel
+
+    RowConstraints row1 = new RowConstraints(); //row constraints
+    RowConstraints row2 = new RowConstraints();
+    RowConstraints row3 = new RowConstraints();
+    RowConstraints row4 = new RowConstraints();
+    ColumnConstraints column1 = new ColumnConstraints(); //column constraint
+    Insets inset = new Insets(10, 20, 20, 20); //padding around the infopanel
+
+
 
     int eloRating = NORMAL;
 
@@ -91,37 +126,46 @@ public class ChessProgram extends Application {
         setLanguage(currentLanguage, currentCountry); //sets language
         cb = chessBoardStage;
         borderPane = new BorderPane();
-        currentDiff.setText("ELO rating: " + controller.elo);
+
+        //currentDiff.setText("ELO rating: " + controller.elo);
         setMenuBar();
+        setInfoScreen();
 
         chessboard = createChessBoard();
         borderPane.setCenter(createChessBoard());
         borderPane.setTop(menubar);
 
         chessBoardStage.setScene(new Scene(borderPane, WINDOW_WITH, WINDOW_HEIGHT));
-        //TODO: remove, used for testing
-        chessBoardStage.setTitle("Chess - " + (controller.isServer ? "server" : "client"));
+        chessBoardStage.setTitle("Chess");
         chessBoardStage.setResizable(false);
 
         chessBoardStage.setOnCloseRequest( windowEvent -> {
-            controller.stopEngine();
-            StartMenu sm = new StartMenu();
-            Stage smStage = new Stage();
-            sm.setStartUpLanguage(currentLanguage, currentCountry);
-            sm.start(smStage);
-            controller.cfg.saveProps();
-            if (game.equals("h-h")) {
-                try {
-                    controller.connection.close();
-                } catch (Exception e) {
-                    System.out.println("Couldnt close connection");
-                }
-            }
+            close();
         });
 
         chessBoardStage.show();
         if (controller.game.equals("e-e")) {
             animationEngEng();
+        }
+
+        if(game.equals("h-h")) {
+            connectionDialog();
+        }
+    }
+
+    public void close() {
+        controller.stopEngine();
+        StartMenu sm = new StartMenu();
+        Stage smStage = new Stage();
+        sm.setStartUpLanguage(currentLanguage, currentCountry);
+        sm.start(smStage);
+        controller.cfg.saveProps();
+        if (game.equals("h-h")) {
+            try {
+                controller.connection.close();
+            } catch (Exception e) {
+                System.out.println("Couldnt close connection");
+            }
         }
     }
 
@@ -164,6 +208,7 @@ public class ChessProgram extends Application {
     public void updateBoard() {
         chessboard = createChessBoard(); // update new chessboard view
         borderPane.setCenter(chessboard); // set the new chessboardView
+        moveLog.setText(controller.chessboard.displayMoves());
     }
 
     public GridPane createChessBoard() {
@@ -214,6 +259,7 @@ public class ChessProgram extends Application {
         currentCountry = country; //current country
         messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle
         setMenuBar(); //call function to update text
+        updateInfoScreen();
 
     }
 
@@ -276,22 +322,25 @@ public class ChessProgram extends Application {
         txtReader.close(); //closes the reader
 
         //================== Set styling to text ==================
-        titleText = setStyling(titleText, title, 30, "BOLD"); //defines styling parameters
-        inputText = setStyling(inputText, input, 15, "NORMAL"); //not good practice hardcoding in values
-        dateText = setStyling(dateText, date, 20, "SEMI-BOLD"); //but the textfile is static
+        titleText = setStyling(titleText, title, 30, "BOLD",true); //defines styling parameters
+        inputText = setStyling(inputText, input, 15, "NORMAL",true); //not good practice hardcoding in values
+        dateText = setStyling(dateText, date, 20, "SEMI-BOLD", true); //but the textfile is static
 
         layout.getChildren().addAll(titleText, inputText, dateText); //adds all text objects to layout
 
         helpStage.setScene(aboutScene); //add scene to stage(frame)
+        helpStage.setResizable(false);
         helpStage.show(); //display the stage
     }
 
 
-    public Text setStyling(Text text, String input, int fontSize, String weight) { //sets styling to text
-        text.setText(input + "\n"); //create seperator
+    public Text setStyling(Text text, String input, int fontSize, String weight, boolean seperator) { //sets styling to text
+        if(seperator){
+            text.setText(input + "\n"); //create seperator
+            text.setWrappingWidth(500); //size before wrapping
+        }
         text.setTextAlignment(TextAlignment.CENTER); //center text
         text.setFont(Font.font("verdana", FontWeight.findByName(weight), FontPosture.REGULAR, fontSize)); //sets font, boldness, posture and size
-        text.setWrappingWidth(400); //size before wrapping
         return text; //returns text object
     }
 
@@ -326,6 +375,74 @@ public class ChessProgram extends Application {
         confirmation.close();
     }
 
+    //TODO: internationalisation
+    public void connectionDialog() {
+        class connectionCfg {
+            public final String ip;
+            public final int port;
+            public final boolean host;
+
+            public connectionCfg(String ip, int port, boolean host) {
+                this.ip = ip;
+                this.port = port;
+                this.host = host;
+            }
+        }
+
+        Dialog<connectionCfg> connectionDialog = new Dialog<>();
+        connectionDialog.setTitle(messages.getString("ConnectionTitle"));
+
+        ButtonType connect = new ButtonType(messages.getString("Connect"), ButtonData.OK_DONE);
+        ButtonType cancel = new ButtonType(messages.getString("Cancel"), ButtonData.CANCEL_CLOSE);
+        connectionDialog.getDialogPane().getButtonTypes().addAll(connect, cancel);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 40, 10, 10));
+
+        TextField ipField = new TextField();
+        ipField.setText(controller.cfg.props.getProperty("ip"));
+
+        TextField portField = new TextField();
+        portField.setText(controller.cfg.props.getProperty("port"));
+
+        CheckBox host = new CheckBox(messages.getString("Host"));
+
+        grid.add(new Label("IP"), 0, 0);
+        grid.add(ipField, 1, 0);
+
+        grid.add(new Label("Port"), 0, 1);
+        grid.add(portField, 1, 1);
+
+        grid.add(host, 0, 2);
+
+        connectionDialog.getDialogPane().setContent(grid);
+
+        connectionDialog.initStyle(StageStyle.UTILITY);
+
+        connectionDialog.setResultConverter(new Callback<ButtonType, connectionCfg>() {
+            @Override
+            public connectionCfg call(ButtonType buttonType) {
+                if (buttonType == connect) {
+                    return new connectionCfg(ipField.getText(),
+                                             Integer.parseInt(portField.getText()),
+                                             host.isSelected());
+                }
+                return null;
+            }
+        });
+
+        Optional<connectionCfg> result = connectionDialog.showAndWait();
+
+        if (result.isPresent()) {
+            controller.ip = result.get().ip;
+            controller.port = result.get().port;
+            controller.isServer = result.get().host;
+            controller.startConnection();
+            System.out.println(controller.ip + " " + controller.port + " " + controller.isServer);
+        }
+    }
 
     public void addLanguageMenu() {
         settings.setText(messages.getString("Settings")); //creating settings in menu bar
@@ -408,8 +525,51 @@ public class ChessProgram extends Application {
     public void setDifficulty(int elo) {
         controller.elo = elo;
         controller.engineHandler.setElo(elo);
-        currentDiff.setText("ELO rating: " + controller.elo);
+        info.setText("ELO rating: " + controller.elo);
         System.out.println("Elo rating  " + controller.elo);
     }
 
+
+    public void setInfoScreen(){ //set info screen
+        moveLog.setEditable(false); //can not edit
+        info.setEditable(false);
+        updateInfoScreen(); //calls function to set text
+        info.setText("ELO rating: " + controller.elo); //set elo rating in information
+
+        moveLogTitle = setStyling(moveLogTitle,moveLogTitle.getText(), 13, "BOLD", false); //set styling
+        infoscreen = setStyling(infoscreen, infoscreen.getText(), 13, "BOLD", false);
+
+        moveLog.setFocusTraversable(false); //when program start, the textarea doesnt get focused
+        info.setFocusTraversable(false);
+
+        column1.setMaxWidth(200); //max width of column
+        row1.setPercentHeight(5); //set percentage of height
+        row2.setPercentHeight(65);
+        row3.setPercentHeight(5);
+        row4.setPercentHeight(25);
+
+        infoLayout.getColumnConstraints().add(column1); //add constraint to layout
+        infoLayout.getRowConstraints().addAll(row1,row2,row3, row4); //add constraints to layout
+
+        infoLayout.setPadding(inset); //top, right, bottom,left
+        infoLayout.setVgap(5); //vertical gap between boxes
+
+        infoLayout.add(moveLogTitle, 0, 0); //adding text to layout
+        infoLayout.add(moveLog, 0, 1);
+        infoLayout.add(infoscreen, 0, 2); //adding textarea to layout
+        infoLayout.add(info, 0, 3);
+
+
+        infoLayout.setHalignment(moveLogTitle, HPos.CENTER); //alignment of title
+        infoLayout.setHalignment(infoscreen, HPos.CENTER); //alignment of information
+
+        borderPane.setLeft(infoLayout); //set layout to left side of borderpane
+
+    }
+
+    public void updateInfoScreen(){
+        moveLogTitle.setText(messages.getString("Movelog"));
+        infoscreen.setText(messages.getString("Infoscreen"));
+
+    }
 }

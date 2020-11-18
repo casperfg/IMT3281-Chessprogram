@@ -48,7 +48,7 @@ public class PromotionDialog extends Dialog<Piece> {
         private void onMouseReleased(MouseEvent mouseEvent) {
             selectedPiece = piece;
             checkColor(selectedPiece);
-            System.out.println(color + " upgraded to " + piece.name);
+            System.out.println(color + " pawn upgraded to " + piece.name);
             getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
             close();
             mouseEvent.consume();

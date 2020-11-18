@@ -39,13 +39,15 @@ public class Controller {
 
         ip = cfg.props.getProperty("ip");
         port = Integer.parseInt(cfg.props.getProperty("port"));
-
-        connection = (isServer ? createServer() : createClient());
-        connection.start();
-        waitingForMove = !isServer;
     }
 
     File difficultyFile = new File("./res/text/difficulty.txt");
+
+    public void startConnection() {
+        connection = (isServer ? createServer() : createClient());
+        waitingForMove = !isServer;
+        connection.start();
+    }
 
     public void startEngine() {
         System.out.println("Engine starting...");

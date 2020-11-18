@@ -5,7 +5,7 @@ import java.util.Properties;
 
 public class Config {
 
-    private final String DEFAULT_PATH = "default.properties";
+    private final String DEFAULT_PATH = "/default.properties";
     private final String CONFIG_PATH = "config.properties";
 
     public Properties props;
@@ -19,7 +19,7 @@ public class Config {
     private void loadDefaultProps() {
         Properties defaultProps = new Properties();
         try {
-            FileInputStream in = new FileInputStream(DEFAULT_PATH);
+            InputStream in = getClass().getResourceAsStream(DEFAULT_PATH);
             defaultProps.load(in);
             in.close();
         } catch (FileNotFoundException e) {
@@ -38,7 +38,7 @@ public class Config {
             if (f.createNewFile()) {
                 System.out.println("File created: " + f.getName());
             } else {
-                System.out.println("File already exists.");
+                System.out.println("Found" + CONFIG_PATH);
             }
 
             FileInputStream in = new FileInputStream(f);
