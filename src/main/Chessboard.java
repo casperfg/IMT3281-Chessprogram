@@ -33,6 +33,7 @@ public class Chessboard {
 
     public int[] humanPiece = new int[2]; // piece responcible for highlights. (x,y)
 
+
     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
     public Chessboard(Controller cnt) {
@@ -494,25 +495,25 @@ public class Chessboard {
     }
 
     public String displayMoves(){ //display all moves
-        String move = new String();
-        String allMoves = new String();
-        int moveNr = 1;
-        int lastMove = 1;
+        String singleMove = new String();  //string to handle single move
+        String allMoves = new String();  //string to handle both moves
+        int moveNr = 1; //move number
+        int lastMove = 1; //when both have done move
 
         for(int i = 0; i < moves.size(); i++){ //loops through move arraylist
             if(i % 2 == 0 && i != 0){ //is true every other move
-                moveNr++;
-                allMoves = allMoves.concat("\n");
+                moveNr++; //increment moveNr
+                allMoves = allMoves.concat("\n"); //new line
             }
-            if(lastMove == moveNr){
+            if(lastMove == moveNr){ //when "new round" starts
                 lastMove++;
-                move = String.format("%o. %s \t",moveNr, moves.get(i)); //first move for that "round"
+                singleMove = String.format("%o. %s \t",moveNr, moves.get(i)); //first move for that "round"
             }else {
-                move = String.format("%s \t", moves.get(i)); //countermove
+                singleMove = String.format("%s \t", moves.get(i)); //countermove
             }
-            allMoves = allMoves.concat(move); //add move to string
+            allMoves = allMoves.concat(singleMove); //add move to string
         }
-        return allMoves; //retur  string
+        return allMoves; //return  string
     }
 
 
