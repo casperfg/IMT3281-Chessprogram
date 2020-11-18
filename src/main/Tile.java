@@ -49,17 +49,38 @@ public class Tile extends Button {
     }
 
     public void removePiece() { // remove piece
+
         chessPiece = null;
         hasPiece = false;
     }
 
-    public void possible(Chessboard board) {
-        chessPiece.possible(board);
+    public void possible(Chessboard chBoard, boolean setHighlight) {
+        chessPiece.removePossible();
+        chessPiece.possible(chBoard);
+        if(setHighlight) {
+            int x, y;
+            for (int i = 0; i < chessPiece.possibleMoves.size(); i++) {
+                x = chessPiece.possibleMoves.get(i)[0];
+                y = chessPiece.possibleMoves.get(i)[1];
+                chBoard.board[y][x].highLight = true;
+            }
+        }
+    }
+
+    public boolean kingAttack(Chessboard chBoard) {
         int x, y;
+        possible(chBoard, false); // get possible moves from here.
         for (int i = 0; i < chessPiece.possibleMoves.size(); i++) {
             x = chessPiece.possibleMoves.get(i)[0];
             y = chessPiece.possibleMoves.get(i)[1];
-            board.board[y][x].highLight = true;
+            if(chBoard.board[y][x].hasPiece){
+                if(chBoard.board[y][x].chessPiece.type == 'k'){
+                    chessPiece.removePossible();
+                    return true;
+                }
+            }
         }
+        chessPiece.removePossible();
+        return false;
     }
 }

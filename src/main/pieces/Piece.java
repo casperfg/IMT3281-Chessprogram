@@ -15,7 +15,10 @@ public class Piece{
     public Image icon; // image icon.
     public ArrayList<int[]> possibleMoves = new ArrayList<>(); // moves possible, coordinates in internal form.
 
-    public void possible(Chessboard board){
+    public void removePossible(){
+        possibleMoves.removeAll(possibleMoves);
+    }
+    public void possible(Chessboard board){ // continues to children (polymorphism)
         System.out.println("piece");
     }
 
@@ -56,7 +59,3 @@ public class Piece{
     public void setIcon() {  // Calls child classes
     }
 }
-/*
-- en passant probably not in possible.
-- spillet kræsjer for ofte
- */

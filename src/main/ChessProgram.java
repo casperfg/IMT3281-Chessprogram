@@ -408,6 +408,7 @@ public class ChessProgram extends Application {
 
     public void setDifficulty(int elo) {
         controller.elo = elo;
+        controller.engineHandler.setElo(elo);
         currentDiff.setText("ELO rating: " + controller.elo);
         System.out.println("Elo rating  " + controller.elo);
     }
