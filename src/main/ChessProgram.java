@@ -440,6 +440,7 @@ public class ChessProgram extends Application {
 
     public void setInfoScreen(){
         moveLog.setEditable(false);
+        info.setEditable(false);
         updateInfoScreen();
         info.setText("ELO rating: " + controller.elo);
 
@@ -469,7 +470,7 @@ public class ChessProgram extends Application {
         layout.add(info, 0, 3);
 
 
-        layout.setGridLinesVisible(true);
+        layout.setGridLinesVisible(false);
         layout.setHalignment(title, HPos.CENTER);
         layout.setHalignment(infoscreen, HPos.CENTER);
 
