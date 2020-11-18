@@ -3,6 +3,8 @@ package main;
 import javafx.scene.control.Button;
 import main.pieces.*;
 
+import java.util.ArrayList;
+
 public class Tile extends Button {
     public Piece chessPiece; // piece pointer
     boolean tileColorWhite; // tile is white
@@ -65,6 +67,9 @@ public class Tile extends Button {
                 chBoard.board[y][x].highLight = true;
             }
         }
+    }
+    public ArrayList<int[]> retPossible(){
+        return chessPiece.possibleMoves;
     }
 
     public boolean kingAttack(Chessboard chBoard) {

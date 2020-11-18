@@ -18,6 +18,9 @@ public class Piece{
     public void removePossible(){
         possibleMoves.removeAll(possibleMoves);
     }
+    public void removePossible(int i) { // remove i element of possible.
+        possibleMoves.remove(i);
+    }
     public void possible(Chessboard board){ // continues to children (polymorphism)
         System.out.println("piece");
     }
@@ -58,4 +61,6 @@ public class Piece{
     }
     public void setIcon() {  // Calls child classes
     }
+
+
 }

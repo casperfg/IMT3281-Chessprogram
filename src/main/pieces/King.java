@@ -31,8 +31,10 @@ public class King extends Piece{
         return (!board.whiteCastle && color) || (!board.blackCastle && !color);
     }
     public boolean shortCastle(Chessboard board){ // if shortCastle is possible.
-        if(!board.blankSq(position[0]+3, position[1])) {
-            towerPiece = board.board[position[1]][position[0] + 3].chessPiece; // tower piece
+        int y = color? 7 : 0;
+        int x = 7;
+        if(!board.blankSq(x, y)) {
+            towerPiece = board.board[color? 7 : 0][7].chessPiece; // tower piece
             if(towerPiece.type == 'r'){
                 towerPiece = board.board[position[1]][position[0] + 3].chessPiece;
                 return board.blankSq(position[0] + 1, position[1]) // blank +1x
@@ -45,8 +47,10 @@ public class King extends Piece{
         return false;
     }
     public boolean longCastle(Chessboard board){
-        if(!board.blankSq(position[0]-4, position[1])) {
-            towerPiece = board.board[position[1]][position[0] - 4].chessPiece; // tower piece
+        int y = color? 7 : 0; // position of tower
+        int x = 0;
+        if(!board.blankSq(x, y)) {
+            towerPiece = board.board[y][x].chessPiece; // tower piece
             if(towerPiece.type == 'r'){
                 return board.blankSq(position[0] - 1, position[1]) // blank x+1
                         && board.blankSq(position[0] - 2, position[1]) // blank x+2

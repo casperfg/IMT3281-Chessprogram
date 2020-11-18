@@ -23,6 +23,8 @@ public class Chessboard {
     public int repetition = 0;
     public String moveString;
     public ArrayList<String> moves = new ArrayList<>();
+    public ArrayList<int[]> checkAvoid = new ArrayList<>(); // pieces that can avoid check. (x,y)
+
     public char promotionTo = '-';
     public Controller cnt = null; // controller pointer.
 
@@ -101,14 +103,57 @@ public class Chessboard {
 
     // can have discovered checks. could have a arraylist int[] with x,y for tiles with pieces. (if slow)
     public boolean kingAttack(boolean color){ // is there any piece of this color that attacks the king
+        Piece cp;
+        Tile thisTile;
         for(int y = 0; y<8; y++){
             for(int x = 0; x<8; x++){
-                if(board[y][x].kingAttack(this)){
-                    return true;
+                thisTile = board[y][x];
+                if(thisTile.hasPiece) {
+                    cp = thisTile.chessPiece;
+                    if(cp.color == color) {
+                        if (thisTile.kingAttack(this)) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
         return false;
+    }
+    public void calcCheckAvoid(){
+        Chessboard tmpBoard = new Chessboard(cnt); // make a copy of the board.
+        tmpBoard.board = board;
+
+        Tile thisTile;
+        ArrayList<int[]> tmpPossible;
+        Piece cp;
+        boolean avoided = false;
+        for (int y = 0; y<8; y++){
+            for(int x = 0; x<8; x++){
+                avoided = false;
+                thisTile = board[y][x];
+                if(thisTile.hasPiece){
+                    cp = thisTile.chessPiece;
+                    if(cp.color == !whiteTurn) {// is opposite color of the color that set the check
+                        thisTile.possible(this, false);
+                        tmpPossible = thisTile.retPossible();
+
+                        for(int i = 0; i<tmpPossible.size(); i++){
+                            // move from piece position to possible
+                            tmpBoard.move(cp.position[0], cp.position[1], tmpPossible.get(i)[0], tmpPossible.get(i)[1]);
+                            if(!tmpBoard.kingAttack(whiteTurn)){ // avoided the check given
+                                avoided = true;
+                            }else{
+                                cp.removePossible(i); // remove the possible move from the actual list in this piece.
+                            }
+                        }
+                        if(avoided){
+                            checkAvoid.add(new int[]{x,y});
+                        }
+                    }
+                }
+            }
+        }
     }
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
         if (board[yt][xt].tileName.equals(enPassantSquare)) { // is taking enpassant
@@ -117,7 +162,10 @@ public class Chessboard {
         }
         enPassantSquare = "-"; // reset enpassant.
         if(cnt.game.contains("h")) { // is human involved. stockfish handels for computer involvement.
-            check = kingAttack(fPiece.color); // cleans up possible moves afterwards
+            check = kingAttack(fPiece.color); // checks if check. cleans possible afterwards
+            if(check){ // calculate avoidment moves.
+
+            }
         }
 
         // piece specific
@@ -414,9 +462,10 @@ public class Chessboard {
             return false;
         } else if (board[y][x].hasPiece && board[y][x].chessPiece.color == whiteTurn) { // clicks on piece with correct turn.
             resetHighlight(); // reset previous highlight.
-
-            board[y][x].possible(this, true); // calculate possible moves by this piece
-            humanPiece = new int[]{x, y}; // set human piece. piece responsible for current highlight
+            if(!check){
+                board[y][x].possible(this, true); // calculate possible moves by this piece
+                humanPiece = new int[]{x, y}; // set human piece. piece responsible for current highlight
+            }
             return false;
         } else if (board[y][x].highLight) { // clicks on highlight, move piece
             move(humanPiece[0], humanPiece[1], x, y); // removes highlight/possible
