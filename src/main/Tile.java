@@ -70,17 +70,19 @@ public class Tile extends Button {
     public boolean kingAttack(Chessboard chBoard) {
         int x, y;
         Tile thisTile;
-        possible(chBoard, false); // get possible moves from here.
-        for (int[] pos : chessPiece.possibleMoves) {
-            thisTile = chBoard.board[pos[1]][pos[0]];
-            if(thisTile.hasPiece){
-                if(thisTile.chessPiece.type == 'k'){
-                    chessPiece.removePossible();
-                    return true;
+        if(hasPiece) {
+            possible(chBoard, false); // get possible moves from here.
+            for (int[] pos : chessPiece.possibleMoves) {
+                thisTile = chBoard.board[pos[1]][pos[0]];
+                if (thisTile.hasPiece) {
+                    if (thisTile.chessPiece.type == 'k') {
+                        chessPiece.removePossible();
+                        return true;
+                    }
                 }
             }
+            chessPiece.removePossible();
         }
-        chessPiece.removePossible();
         return false;
     }
 
