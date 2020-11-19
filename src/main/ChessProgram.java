@@ -85,6 +85,7 @@ public class ChessProgram extends Application {
     Alert confirmation = new Alert(AlertType.CONFIRMATION); //alert object type confirmation
     //================== about window ==================
     Stage helpStage = new Stage();
+
     Controller controller;
     int refreshRate = 5000;
 
@@ -203,7 +204,8 @@ public class ChessProgram extends Application {
     public void updateBoard() {
         chessboard = createChessBoard(); // update new chessboard view
         borderPane.setCenter(chessboard); // set the new chessboardView
-        moveLog.setText(controller.chessboard.displayMoves());
+        moveLog.setText(controller.chessboard.displayMoves()); //display moves in movelog
+        isFinished(); //display mate or stalemate + who won
     }
 
     public GridPane createChessBoard() {
@@ -352,6 +354,7 @@ public class ChessProgram extends Application {
         controller.chessboard = new Chessboard(controller);
         controller.engineHandler = new EngineHandler(controller.elo, controller.thinkTime);
         controller.engineRunning = true;
+        info.setText("ELO rating: " + controller.elo); //only display elo rating when restart game
         updateBoard();
     }
 
@@ -594,4 +597,29 @@ public class ChessProgram extends Application {
         moveLogTitle.setText(messages.getString("Movelog"));
         infoscreen.setText(messages.getString("Infoscreen"));
     }
+
+    public void isFinished(){
+        if(controller.chessboard.checkStaleMate()){
+            info.appendText("\n"+messages.getString("Stalemate"));
+            winColor();
+        }else if(controller.chessboard.mateCheck()){
+            info.appendText("\n"+messages.getString("Mate"));
+            winColor();
+        }else{}
+    }
+
+
+    public void winColor(){
+        if (controller.chessboard.whiteTurn){
+            System.out.println("Black won");
+            info.appendText("\n"+messages.getString("Blackwin"));
+        }else{
+            info.appendText("\n"+messages.getString("Whitewin"));
+        }
+    }
+
+
+
+
+
 }

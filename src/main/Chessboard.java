@@ -41,6 +41,8 @@ public class Chessboard {
     public String highlightColor = "yellow";
     public String tileColorA = "white";
     public String tileColorB = "grey";
+    
+    public boolean ismate = false;
 
 
     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
@@ -180,6 +182,7 @@ public class Chessboard {
         }
         if(checkAvoid.isEmpty()){
             cnt.ISMATE();
+            ismate  = true;
         }
     }
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
@@ -588,9 +591,21 @@ public class Chessboard {
         return allMoves; //return  string
     }
 
+<<<<<<< HEAD
     public String setColor(String color){
         return color;
     }
+=======
+
+    public boolean mateCheck(){ //if mate, sets ismate = true
+        if(ismate)
+            return true;
+        else
+            return  false;
+    }
+
+
+>>>>>>> madsBranch
 }
 /*
 MATT:
