@@ -6,7 +6,7 @@ import main.Chessboard;
 public class Queen extends Piece {
     public int[][] moveVector = new int[][]{{0,1},{0, -1},{1,0},{-1, 0}, {1,-1},{1, 1},{-1,1},{-1, -1}};
     public Queen(boolean color){
-        super(color, "queen");
+        super(color, "queen", 'q');
     }
 
     public Queen(){

@@ -9,7 +9,7 @@ public class King extends Piece{
     public Piece towerPiece;
     public int[][] moveVector = new int[][]{{0,1},{0, -1},{1,0},{-1, 0}, {1,-1},{1, 1},{-1,1},{-1, -1}};
     public King(boolean color){
-        super(color, "king");
+        super(color, "king", 'k');
     }
 
     public King(){

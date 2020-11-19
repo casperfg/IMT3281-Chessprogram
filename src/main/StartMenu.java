@@ -157,7 +157,6 @@ public class StartMenu extends Application {
 
         Pawn pawn = new Pawn();
         pawn.color = true;
-        btn_settings.setOnAction(actionEvent -> new PromotionDialog(pawn).show());
     }
 
     void setButton(Button btn, int width, int height, String input) {
@@ -169,7 +168,7 @@ public class StartMenu extends Application {
     }
 
     void disableButtonsNotWorkingYetGeitGeitGeit(){
-        //btn_settings.setDisable(true);
+        btn_settings.setDisable(true);
     }
 
 

@@ -6,7 +6,7 @@ import main.Chessboard;
 public class Rook extends Piece {
     public int[][] moveVector = new int[][]{{0,1},{0, -1},{1,0},{-1, 0}};
     public Rook(boolean color){
-        super(color, "rook");
+        super(color, "rook", 'r');
     }
 
     public Rook(){

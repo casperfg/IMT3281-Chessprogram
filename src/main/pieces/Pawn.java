@@ -8,7 +8,7 @@ public class Pawn extends Piece{
     int direction; // ychange of piece. -1 white 1 black
 
     public Pawn(boolean color){
-        super(color, "pawn");
+        super(color, "pawn", 'p');
     }
 
     public Pawn(){
