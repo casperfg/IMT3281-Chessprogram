@@ -96,6 +96,8 @@ public class ChessProgram extends Application {
     Text moveLogTitle = new Text();  //title of move log
     Text infoscreen = new Text(); //info panel
 
+    String lastHighlight, lastColorA, lastColorB;
+
     RowConstraints row1 = new RowConstraints(); //row constraints
     RowConstraints row2 = new RowConstraints();
     RowConstraints row3 = new RowConstraints();
@@ -135,9 +137,7 @@ public class ChessProgram extends Application {
         chessBoardStage.setTitle("Chess");
         chessBoardStage.setResizable(false);
 
-        chessBoardStage.setOnCloseRequest( windowEvent -> {
-            close();
-        });
+        chessBoardStage.setOnCloseRequest( windowEvent -> close());
 
         chessBoardStage.show();
         if (controller.game.equals("e-e")) {
@@ -355,6 +355,7 @@ public class ChessProgram extends Application {
         controller.engineHandler = new EngineHandler(controller.elo, controller.thinkTime);
         controller.engineRunning = true;
         info.setText("ELO rating: " + controller.elo); //only display elo rating when restart game
+        setLastTheme();    //Makes it so theme doesn't change when restarting game
         updateBoard();
     }
 
@@ -498,12 +499,13 @@ public class ChessProgram extends Application {
         controller.chessboard.highlightColor = highlight;
         controller.chessboard.tileColorA = A;
         controller.chessboard.tileColorB = B;
+        lastHighlight = highlight;
+        lastColorA = A;
+        lastColorB = B;
         updateBoard();
     }
     public void themeActionEvent(MenuItem theme, String highlight, String A, String B ){
-        theme.setOnAction(actionEvent -> {
-            setColor(highlight, A, B);
-        });
+        theme.setOnAction(actionEvent -> setColor(highlight, A, B));
     }
 
     public void addHelpMenu() {
@@ -599,13 +601,13 @@ public class ChessProgram extends Application {
     }
 
     public void isFinished(){
-        if(controller.chessboard.checkStaleMate()){
+        if (controller.chessboard.checkStaleMate()){
             info.appendText("\n"+messages.getString("Stalemate"));
             winColor();
-        }else if(controller.chessboard.mateCheck()){
+        } else if (controller.chessboard.mateCheck()){
             info.appendText("\n"+messages.getString("Mate"));
             winColor();
-        }else{}
+        }
     }
 
 
@@ -618,8 +620,10 @@ public class ChessProgram extends Application {
         }
     }
 
-
-
-
+    public void setLastTheme(){
+        controller.chessboard.highlightColor = lastHighlight;
+        controller.chessboard.tileColorA = lastColorA;
+        controller.chessboard.tileColorB = lastColorB;
+    }
 
 }
