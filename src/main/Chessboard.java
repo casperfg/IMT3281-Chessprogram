@@ -3,6 +3,7 @@ package main;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import main.pieces.Pawn;
 import main.pieces.Piece;
 
 import java.lang.reflect.Array;
@@ -212,7 +213,7 @@ public class Chessboard {
         }
 
         if (fPiece.type == 'p') {
-            if (isPromotion(x,y,xt,yt)) { // PROMOTION
+            if ((fPiece.color && yt == 0) || (!fPiece.color && yt == 7)) { // PROMOTION
                 newPiece(xt, yt, (promotionTo == '-') ? 'q' : promotionTo, fPiece.color);
                 promotionTo = '-';
             } else if (yt - y != 1) { // 2 squares up
@@ -508,14 +509,8 @@ public class Chessboard {
     // x,y = from position
     // xt, yt = to position
     public boolean isPromotion(int x, int y, int xt, int yt){
-        Tile tile = board[y][x];
-        Piece cp;
-        if(tile.hasPiece){
-            cp = tile.chessPiece;
-            return (cp.type == 'p' && ((yt == 0 && cp.color) || (yt == 7 && !cp.color)));
-        }else{
-            return false;
-        }
+        //Piece cp = board[yt][xt].chessPiece;
+        return ((yt == 0 && whiteTurn) || (yt == 7 && !whiteTurn));
     }
 
     public boolean humanClick(int x, int y) { // maybe possible of board should be known beforehand
@@ -541,6 +536,7 @@ public class Chessboard {
             return false;
         } else if (board[y][x].highLight) { // clicks on highlight, move piece
             if(isPromotion(humanPiece[0], humanPiece[1], x, y)){
+                setPromotion();
                 // TODO: open promotion window, set (char) promotionTo variable to corresponding type
             }
             move(humanPiece[0], humanPiece[1], x, y); // removes highlight/possible
@@ -549,6 +545,16 @@ public class Chessboard {
             resetHighlight();
             return false;
         }
+    }
+
+    public void setPromotion(){
+        Tile dummyTile = new Tile();
+        Piece promotedPiece = board[humanPiece[1]][humanPiece[0]].chessPiece;
+        PromotionDialog promotionDialog = new PromotionDialog((Pawn)promotedPiece);
+        promotionDialog.showAndWait();
+        promotionTo = promotionDialog.getType();
+        dummyTile.updatePiece(promotionTo);
+        System.out.println(promotionDialog.getType());
     }
 
     public String displayMoves(){ //display all moves
@@ -572,7 +578,6 @@ public class Chessboard {
         }
         return allMoves; //return  string
     }
-
 
 }
 /*

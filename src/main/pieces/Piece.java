@@ -25,9 +25,10 @@ public class Piece{
         }
     }
 
-    Piece(boolean color, String name){
+    Piece(boolean color, String name, char type){
         this.color = color;
         this.name = name;
+        this.type = type;
     }
 
     Piece(){
