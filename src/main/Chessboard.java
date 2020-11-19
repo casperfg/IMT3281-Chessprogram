@@ -51,6 +51,7 @@ public class Chessboard {
 
     public Chessboard(Controller cnt) {
         makeStart();
+
         this.cnt = cnt;
         check = false;
     }
@@ -562,7 +563,7 @@ public class Chessboard {
     // xt, yt = to position
     public boolean isPromotion(int x, int y, int xt, int yt){
         boolean piece = (board[y][x].chessPiece.type == 'p');
-        return piece && (yt == 0 || y == 7);
+        return piece && (yt == 0 || yt == 7);
     }
 
     public boolean humanClick(int x, int y) { // maybe possible of board should be known beforehand
@@ -599,7 +600,6 @@ public class Chessboard {
     public void setPromotion(){
         Tile tempTile = new Tile();
         Piece promotedPiece = board[humanPiece[1]][humanPiece[0]].chessPiece;
-
         PromotionDialog promotionDialog = new PromotionDialog((Pawn)promotedPiece);
         promotionDialog.showAndWait();
 

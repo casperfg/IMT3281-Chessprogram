@@ -34,7 +34,7 @@ public class PromotionDialog extends Dialog<Piece> {
     private class PromotionPiece extends Label {
         Piece piece;
 
-        PromotionPiece(Piece piece){
+        PromotionPiece(Piece piece){            //Constructor for the dialog window
             piece.setIcon();
             ImageView pieceIcon = new ImageView(piece.icon);
             pieceIcon.setFitHeight(size);
@@ -44,7 +44,7 @@ public class PromotionDialog extends Dialog<Piece> {
             setOnMouseReleased(this::onMouseReleased);
         }
 
-        private void onMouseReleased(MouseEvent mouseEvent) {
+        private void onMouseReleased(MouseEvent mouseEvent) {       //mouserelease action
             selectedPiece = piece;
             checkColor(selectedPiece);
             System.out.println(color + " pawn upgraded to " + piece.name);
