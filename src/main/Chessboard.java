@@ -180,7 +180,7 @@ public class Chessboard {
     }
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
         if (board[yt][xt].tileName.equals(enPassantSquare)) { // is taking enpassant
-            updatePieceLeft(board[pawnPassant[1]][pawnPassant[0]].chessPiece);
+            updatePieceLeft(board[pawnPassant[1]][pawnPassant[0]].chessPiece, -1);
             board[pawnPassant[1]][pawnPassant[0]].removePiece();
         }
         enPassantSquare = "-"; // reset enpassant.
@@ -215,6 +215,8 @@ public class Chessboard {
         if (fPiece.type == 'p') {
             if ((fPiece.color && yt == 0) || (!fPiece.color && yt == 7)) { // PROMOTION
                 newPiece(xt, yt, (promotionTo == '-') ? 'q' : promotionTo, fPiece.color);
+                piecesLeft[5] -= 1; // remove pawn from pieces left
+                updatePieceLeft(board[yt][xt].chessPiece, 1); // add new piece to piece left.
                 promotionTo = '-';
             } else if (yt - y != 1) { // 2 squares up
                 enPassantSquare = board[(fPiece.color) ? 5 : 2][xt].tileName;
@@ -254,7 +256,7 @@ public class Chessboard {
     // TODO: update king functionality (castle/check/mate)
     public void move(int x, int y, int xt, int yt) { // from x,y to xt, yt
         Piece fPiece; // piece from
-        Piece tPiece; // pice to
+        Piece tPiece; // piece to (taken)
         Boolean taking;
         resetHighlight();
         if (legalMove(x, y, xt, yt)) { // checks if legal
@@ -264,7 +266,7 @@ public class Chessboard {
             repetition(xt, yt, fPiece); // count repetition of moves
             if (taking) { // update number of officers left.
                 tPiece = board[yt][xt].chessPiece;
-                updatePieceLeft(tPiece);
+                updatePieceLeft(tPiece, -1);
             }
 
             fPiece.position = new int[]{xt, yt};
@@ -302,10 +304,10 @@ public class Chessboard {
         }
     }
 
-    public void updatePieceLeft(Piece piece) { // call every time a piece is taken
+    public void updatePieceLeft(Piece piece, int inc) { // call every time a piece is taken
         try {
             int index = piecesLeftIndex.indexOf(piece.type);
-            piecesLeft[index] -= 1;
+            piecesLeft[index] += inc; // inc=-1 or 1; adds or remove piece
         } catch (Exception ignored) {
         }
 
@@ -509,8 +511,8 @@ public class Chessboard {
     // x,y = from position
     // xt, yt = to position
     public boolean isPromotion(int x, int y, int xt, int yt){
-        //Piece cp = board[yt][xt].chessPiece;
-        return ((yt == 0 && whiteTurn) || (yt == 7 && !whiteTurn));
+        boolean piece = (board[y][x].chessPiece.type == 'p');
+        return piece && (yt == 0 || y == 7);
     }
 
     public boolean humanClick(int x, int y) { // maybe possible of board should be known beforehand

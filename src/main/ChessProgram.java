@@ -105,7 +105,6 @@ public class ChessProgram extends Application {
     Insets inset = new Insets(10, 20, 20, 20); //padding around the infopanel
 
 
-
     int eloRating = NORMAL;
 
     public ChessProgram(String game) throws IOException {
