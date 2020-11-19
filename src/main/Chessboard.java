@@ -293,6 +293,7 @@ public class Chessboard {
 
             moves.add(moveString);
 
+            // If move was made by local player, send the move via connection
             if (cnt.game.equals("h-o") && !cnt.waitingForMove) {
                 Move move = new Move(x, y, xt, yt);
                 move.moveString = moves.get(moves.size() - 1);
@@ -305,6 +306,7 @@ public class Chessboard {
                 }
             }
 
+            // If move is coming in via connection, we are no longer waiting for move
             if (cnt.waitingForMove) {
                 cnt.waitingForMove = false;
             }

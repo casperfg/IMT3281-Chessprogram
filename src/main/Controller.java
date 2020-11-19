@@ -33,8 +33,8 @@ public class Controller {
         engineHandler = new EngineHandler(elo, thinkTime);
         System.out.println("Elo rating: " + this.elo);
 
+        // Load properties
         cfg = new Config();
-
         ip = cfg.props.getProperty("ip");
         port = Integer.parseInt(cfg.props.getProperty("port"));
 
@@ -51,7 +51,7 @@ public class Controller {
 
     public void startConnection() {
         connection = (isServer ? createServer() : createClient());
-        waitingForMove = !isServer;
+        waitingForMove = !isServer;  // Server moves first
         connection.start();
     }
 
@@ -134,6 +134,7 @@ public class Controller {
     public void click(int x, int y) { // clicked by human
         if (programPtr != null) { // is not null when human is involved.
             boolean change = false;
+            // Block input if not your turn in online mode
             if ((game.equals("h-o") && !waitingForMove) | !game.equals("h-o")) {
                 change = chessboard.humanClick(x, y);
                 programPtr.updateBoard(); // update the board
@@ -176,6 +177,7 @@ public class Controller {
         });
     }
 
+    // This is called everytime the connection receives data
     private void handleData(Move move) {
         System.out.println("Move received from " + (isServer ? "client" : "server") + ": " + move.moveString);
         chessboard.move(move.x, move.y, move.xt, move.yt);
