@@ -31,6 +31,7 @@ public class Controller {
         this.isServer = isSer;
         this.game = game;
         chessboard = new Chessboard(this);
+        chessboard.move("f2f3"); chessboard.move("e7e5");
 
         engineHandler = new EngineHandler(elo, thinkTime);
         System.out.println("Elo rating: " + this.elo);
@@ -49,7 +50,7 @@ public class Controller {
         connection.start();
     }
 
-    public void startEngine() {
+    public void startEngine(){
         System.out.println("Engine starting...");
         if (!engineRunning) {
             engineRunning = true;
@@ -126,7 +127,7 @@ public class Controller {
     }
 
     public void click(int x, int y) { // clicked by human
-        if (programPtr != null && engineRunning && !waitingForMove) { // is not null when human is involved.
+        if (programPtr != null && engineRunning || (!waitingForMove && game.equals("h-h"))) { // is not null when human is involved.
             boolean change = chessboard.humanClick(x, y);
             programPtr.updateBoard(); // update the board
             if (change) { // other player makes move.

@@ -43,6 +43,7 @@ public class Chessboard {
     public Chessboard(Controller cnt) {
         makeStart();
         this.cnt = cnt;
+        check = false;
     }
 
     public void makeStart() { // setup start position
@@ -186,6 +187,8 @@ public class Chessboard {
             check = kingAttack(fPiece.color); // checks if check. cleans possible afterwards
             if(check){ // calculate avoidment moves.
                 calcCheckAvoid();
+            }else{
+                check = false;
             }
         }
 
@@ -294,8 +297,7 @@ public class Chessboard {
             cnt.waitingForMove = !cnt.waitingForMove;
 
         } else {
-            System.out.println("wrong move");
-            //System.exit(1);
+            System.out.println("wrong move"); // freezes after this
         }
     }
 
