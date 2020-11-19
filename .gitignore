@@ -21,3 +21,4 @@ out/
 
 .DS_Store
 config.properties
+src/META-INF

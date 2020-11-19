@@ -31,8 +31,8 @@ public class StartMenu extends Application {
     Image logo_no = new Image(getClass().getResourceAsStream("/images/logo_no.png"));
     Scene scene = new Scene(borderPane, 600, 600);
     Button btn_play = new Button();
-    Button btn_multi = new Button();
-    Button btn_settings = new Button();
+    Button btn_pvp = new Button();
+    Button btn_online = new Button();
     Button btn_cpu = new Button();
     Button btn_exit = new Button();
     Button btn_no = new Button();
@@ -54,7 +54,6 @@ public class StartMenu extends Application {
         setLanguage(defaultLanguage, defaultCountry);
         createMenu();
         addLogo();
-        disableButtonsNotWorkingYetGeitGeitGeit(); //TODO IMPLEMENT BUTTON FUNCTIONS
 
         menuStage.setScene(scene);
         menuStage.show();
@@ -85,7 +84,19 @@ public class StartMenu extends Application {
             menuStage.close();
         });
 
-        btn_multi.setOnAction(actionEvent -> {
+        btn_pvp.setOnAction(actionEvent -> {
+            ChessProgram cp = null;
+            try {
+                cp = new ChessProgram("h-h");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            cp.setStartUpLanguage(currentLanguage,currentCountry);
+            cp.start(cpuStage);
+            menuStage.close();
+        });
+
+        btn_online.setOnAction(actionEvent -> {
             ChessProgram cp = null;
             try {
                 cp = new ChessProgram("h-o");
@@ -114,9 +125,9 @@ public class StartMenu extends Application {
 
     void createMenu() {
         setButton(btn_play, WIDTH, HEIGHT, "Pvc");
-        setButton(btn_multi, WIDTH, HEIGHT, "Pvp");
+        setButton(btn_pvp, WIDTH, HEIGHT, "Pvp");
+        setButton(btn_online, WIDTH, HEIGHT, "Online");
         setButton(btn_cpu, WIDTH, HEIGHT, "Cvc");
-        setButton(btn_settings, WIDTH, HEIGHT, "Settings");
         setButton(btn_exit, WIDTH, HEIGHT, "Exit");
 
         //================== Language Buttons  ==================
@@ -138,7 +149,7 @@ public class StartMenu extends Application {
         flowPane.setOrientation(Orientation.VERTICAL);
         flowPane.setAlignment(Pos.CENTER);
         flowPane.setVgap(30);
-        flowPane.getChildren().addAll(btn_play, btn_multi ,btn_cpu ,btn_settings ,btn_exit);
+        flowPane.getChildren().addAll(btn_play, btn_pvp , btn_online, btn_cpu ,btn_exit);
 
         borderPane.setCenter(flowPane);
         borderPane.setBottom(langPane);
@@ -167,10 +178,6 @@ public class StartMenu extends Application {
         btn.setPrefSize(width, height);
     }
 
-    void disableButtonsNotWorkingYetGeitGeitGeit(){
-        btn_settings.setDisable(true);
-    }
-
 
     public Background setBackgroundImage(Image flag) {
         BackgroundImage backgroundImage = new BackgroundImage(flag, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
@@ -194,9 +201,9 @@ public class StartMenu extends Application {
     void updateButton() {
         mm.setTitle(messages.getString("Chess")); //updates title
         btn_play.setText(messages.getString("Pvc"));
-        btn_multi.setText(messages.getString("Pvp"));
+        btn_pvp.setText(messages.getString("Pvp"));
+        btn_online.setText(messages.getString("Online"));
         btn_cpu.setText(messages.getString("Cvc"));
-        btn_settings.setText(messages.getString("Settings"));
         btn_exit.setText(messages.getString("Exit"));
         addLogo();
     }
