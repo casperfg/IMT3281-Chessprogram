@@ -1,15 +1,11 @@
 package main;
 
-import java.util.Arrays;
-
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import main.pieces.Bishop;
 import main.pieces.Knight;
 import main.pieces.Pawn;
@@ -28,17 +24,17 @@ public class PromotionDialog extends Dialog<Piece> {
         setResultConverter(f -> selectedPiece);
 
         HBox hBox = new HBox();
-        hBox.getChildren().add(new PromotionCandidate(new Queen(pawn.getColor())));
-        hBox.getChildren().add(new PromotionCandidate(new Knight(pawn.getColor())));
-        hBox.getChildren().add(new PromotionCandidate(new Rook(pawn.getColor())));
-        hBox.getChildren().add(new PromotionCandidate(new Bishop(pawn.getColor())));
+        hBox.getChildren().add(new PromotionPiece(new Queen(pawn.getColor())));
+        hBox.getChildren().add(new PromotionPiece(new Knight(pawn.getColor())));
+        hBox.getChildren().add(new PromotionPiece(new Rook(pawn.getColor())));
+        hBox.getChildren().add(new PromotionPiece(new Bishop(pawn.getColor())));
         getDialogPane().setContent(hBox);
 }
 
-    private class PromotionCandidate extends Label {
+    private class PromotionPiece extends Label {
         Piece piece;
 
-        PromotionCandidate(Piece piece){
+        PromotionPiece(Piece piece){
             piece.setIcon();
             ImageView pieceIcon = new ImageView(piece.icon);
             pieceIcon.setFitHeight(size);
