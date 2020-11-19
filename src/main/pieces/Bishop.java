@@ -7,7 +7,7 @@ public class Bishop extends Piece{
     // Defines how the piece moves (Dx, Dy)
     public int[][] moveVector = new int[][]{{1,-1},{1, 1},{-1,1},{-1, -1}};
     public Bishop(boolean color){
-        super(color, "bishop");
+        super(color, "bishop", 'b');
     }
 
     public Bishop(){

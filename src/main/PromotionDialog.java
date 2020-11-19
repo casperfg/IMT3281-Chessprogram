@@ -1,5 +1,7 @@
 package main;
 
+import java.util.Arrays;
+
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
@@ -16,7 +18,8 @@ import main.pieces.Queen;
 import main.pieces.Rook;
 
 public class PromotionDialog extends Dialog<Piece> {
-    public Piece selectedPiece;
+    private Piece selectedPiece;
+
     int size = 80;
     String color;
 
@@ -55,11 +58,14 @@ public class PromotionDialog extends Dialog<Piece> {
         }
 
         private void checkColor(Piece piece){
-            if (selectedPiece.color)
+            if (piece.color)
                 color = "White";
             else
                 color = "Black";
         }
+    }
+    public char getType(){
+        return selectedPiece.type;
     }
 }
 

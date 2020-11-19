@@ -23,9 +23,10 @@ public class Piece{
         possibleMoves.remove(i);
     }
 
-    Piece(boolean color, String name){
+    Piece(boolean color, String name, char type){
         this.color = color;
         this.name = name;
+        this.type = type;
     }
 
     Piece(){
