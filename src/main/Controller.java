@@ -19,7 +19,7 @@ public class Controller {
     public Boolean engineRunning = true; // wether engine is running or not
     public ChessProgram programPtr = null; // has pointer to chessprogram for board updation. IF there is a human involved
     public int thinkTime = 1000;
-    public int elo = 1000;
+    public int elo = 900;
     public Config cfg;
     public NetworkConnection connection;
     public boolean isServer = true;

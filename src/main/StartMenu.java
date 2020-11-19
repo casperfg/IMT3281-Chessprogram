@@ -62,11 +62,7 @@ public class StartMenu extends Application {
 
         btn_cpu.setOnAction(actionEvent -> {
             ChessProgram cp = null;
-            try {
-                cp = new ChessProgram("e-e");
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
+            cp = new ChessProgram("e-e", false); // TODO IS SERVER!
             cp.setStartUpLanguage(currentLanguage, currentCountry);
             cp.start(cpuStage);
             menuStage.close();
@@ -74,11 +70,7 @@ public class StartMenu extends Application {
 
         btn_play.setOnAction(actionEvent -> {
             ChessProgram cp = null;
-            try {
-                cp = new ChessProgram("h-e");
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
+            cp = new ChessProgram("h-e", false);
             cp.setStartUpLanguage(currentLanguage, currentCountry);
             cp.start(cpuStage);
             menuStage.close();
@@ -86,23 +78,7 @@ public class StartMenu extends Application {
 
         btn_pvp.setOnAction(actionEvent -> {
             ChessProgram cp = null;
-            try {
-                cp = new ChessProgram("h-h");
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-            cp.setStartUpLanguage(currentLanguage,currentCountry);
-            cp.start(cpuStage);
-            menuStage.close();
-        });
-
-        btn_online.setOnAction(actionEvent -> {
-            ChessProgram cp = null;
-            try {
-                cp = new ChessProgram("h-o");
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
+            cp = new ChessProgram("h-h", false);
             cp.setStartUpLanguage(currentLanguage,currentCountry);
             cp.start(cpuStage);
             menuStage.close();
