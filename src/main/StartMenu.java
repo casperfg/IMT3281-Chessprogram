@@ -57,6 +57,7 @@ public class StartMenu extends Application {
 
         menuStage.setScene(scene);
         menuStage.show();
+        menuStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/black_knight.png")));
 
         Stage cpuStage = new Stage();
 
