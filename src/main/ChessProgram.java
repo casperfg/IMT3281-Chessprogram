@@ -65,6 +65,7 @@ public class ChessProgram extends Application {
     MenuItem classicTheme = new MenuItem();
     MenuItem blueTheme = new MenuItem();
     MenuItem greenTheme = new MenuItem();
+    MenuItem districtTheme = new MenuItem();
     //================== Difficulties ==================
     Menu difficultySubMenu = new Menu();
     MenuItem diff_carlsen = new MenuItem();
@@ -290,7 +291,7 @@ public class ChessProgram extends Application {
             settings.getItems().add(themeSubMenu);
 
             difficultySubMenu.getItems().addAll(diff_carlsen, diff_gm, diff_lahl, diff_hard, diff_normal, diff_easy);
-            themeSubMenu.getItems().addAll(standardTheme, darkTheme, classicTheme, blueTheme, greenTheme);
+            themeSubMenu.getItems().addAll(standardTheme, darkTheme, classicTheme, blueTheme, greenTheme, districtTheme);
 
             file.getItems().add(restartMenu);
             menubar.getMenus().addAll(file, settings, help); //add all menus to menubar
@@ -492,12 +493,14 @@ public class ChessProgram extends Application {
         classicTheme.setText(messages.getString("Classic"));
         blueTheme.setText(messages.getString("Blue"));
         greenTheme.setText(messages.getString("Green"));
+        districtTheme.setText(messages.getString("District"));
 
         themeActionEvent(standardTheme,"yellow", "white", "grey" );
         themeActionEvent(darkTheme,"#800e13","#737373", "#353535");
         themeActionEvent(classicTheme,"#d90429", "#FFCE9E","#D18B47");
         themeActionEvent(blueTheme,"#023047", "#7DAFEA", "#6092CF");
         themeActionEvent(greenTheme,"yellow",  "#EEEED2","#769656");
+        themeActionEvent(districtTheme, "white", "#602352", "#e80b35");
     }
 
     public void setColor(String highlight, String A, String B){
