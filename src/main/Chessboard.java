@@ -596,7 +596,6 @@ public class Chessboard {
         return color;
     }
 
-
     public boolean mateCheck(){ //if mate, sets ismate = true
         if(ismate)
             return true;
@@ -604,7 +603,7 @@ public class Chessboard {
             return  false;
     }
 
-    
+
 }
 /*
 MATT:

@@ -480,12 +480,12 @@ public class ChessProgram extends Application {
     }
 
     public void addThemeMenu() {
-        themeSubMenu.setText("Board Color Themes");
-        standardTheme.setText("Standard");
-        darkTheme.setText("Dark");
-        classicTheme.setText("Classic");
-        blueTheme.setText("Blue");
-        greenTheme.setText("Green");
+        themeSubMenu.setText(messages.getString("BoardColor"));
+        standardTheme.setText(messages.getString("Standard"));
+        darkTheme.setText(messages.getString("Dark"));
+        classicTheme.setText(messages.getString("Classic"));
+        blueTheme.setText(messages.getString("Blue"));
+        greenTheme.setText(messages.getString("Green"));
 
         themeActionEvent(standardTheme,"yellow", "white", "grey" );
         themeActionEvent(darkTheme,"#800e13","#737373", "#353535");
