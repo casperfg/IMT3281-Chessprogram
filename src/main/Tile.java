@@ -75,7 +75,7 @@ public class Tile extends Button {
             for (int[] pos : chessPiece.possibleMoves) { // loop the possible moves this piece has
                 thisTile = chBoard.board[pos[1]][pos[0]];
                 if (thisTile.hasPiece) { // attacks a piece
-                    if (thisTile.chessPiece.type == 'k' && thisTile.chessPiece.color == color) { // attacks the king
+                    if (thisTile.chessPiece.type == 'k' && thisTile.chessPiece.color != color) { // attacks the king
                         chessPiece.removePossible(); // remove possible
                         return true; // return true
                     }
