@@ -205,6 +205,7 @@ public class ChessProgram extends Application {
         chessboard = createChessBoard(); // update new chessboard view
         borderPane.setCenter(chessboard); // set the new chessboardView
         moveLog.setText(controller.chessboard.displayMoves()); //display moves in movelog
+        moveLog.appendText(""); //to make the scrollbar follow the moves downwards
         isFinished(); //display mate or stalemate + who won
     }
 
