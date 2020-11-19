@@ -312,7 +312,7 @@ public class Chessboard {
             moves.add(moveString);
 
             // If move was made by local player, send the move via connection
-            if (cnt.game.equals("h-o") && !cnt.waitingForMove) {
+            if (cnt.game.equals("h-o") && !cnt.waitingForMove && checkForChecks) {
                 Move move = new Move(x, y, xt, yt);
                 move.moveString = moves.get(moves.size() - 1);
                 try {
