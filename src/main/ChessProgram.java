@@ -502,7 +502,7 @@ public class ChessProgram extends Application {
         themeActionEvent(classicTheme,"#d90429", "#FFCE9E","#D18B47");
         themeActionEvent(blueTheme,"#023047", "#7DAFEA", "#6092CF");
         themeActionEvent(greenTheme,"yellow",  "#EEEED2","#769656");
-        themeActionEvent(districtTheme, "white", "#602352", "#e80b35");
+        themeActionEvent(districtTheme, "cyan", "#f39dff", "#e80b35");
     }
 
     public void setColor(String highlight, String A, String B){
@@ -615,9 +615,10 @@ public class ChessProgram extends Application {
         if (controller.chessboard.checkStaleMate()){
             info.appendText("\n"+messages.getString("Stalemate"));
             winColor();
-        } else if (controller.chessboard.mateCheck()){
+        } else if (controller.chessboard.mateCheck() || !controller.engineRunning){
             info.appendText("\n"+messages.getString("Mate"));
             winColor();
+            controller.chessboard.isMate = false;
         }
     }
 
