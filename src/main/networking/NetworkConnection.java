@@ -60,7 +60,14 @@ public abstract class NetworkConnection {
                 // Lower latency by disabling Nagle's algorithm. We're only using small sets of data
                 socket.setTcpNoDelay(true);
 
-                System.out.println("ip: " + getIP() + ", port: " + getPort());
+                String msg = "Connection established\n";
+                if (isServer()) {
+                    msg += "Port: " + getPort();
+                }
+                else {
+                    msg += "IP: " + getIP() + "\nPort: " + getPort();
+                }
+                callOnReceive.accept(msg);
 
                 // Wait for data to be received
                 while (true) {
@@ -68,7 +75,7 @@ public abstract class NetworkConnection {
                     callOnReceive.accept(data);
                 }
             } catch (Exception e) {
-                System.out.println("Connection with " + (isServer() ? "client" : "server") + " closed");
+                callOnReceive.accept("Connection with " + (isServer() ? "client" : "host") + " closed");
             }
         }
     }

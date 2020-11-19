@@ -22,8 +22,6 @@ public class Config {
             InputStream in = getClass().getResourceAsStream(DEFAULT_PATH);
             defaultProps.load(in);
             in.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -54,8 +52,6 @@ public class Config {
         try {
             FileOutputStream out = new FileOutputStream(CONFIG_PATH);
             props.store(out, "Custom properties");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

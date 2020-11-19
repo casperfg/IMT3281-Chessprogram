@@ -4,10 +4,8 @@ import javafx.application.Platform;
 import main.networking.Client;
 import main.networking.NetworkConnection;
 import main.networking.Server;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.Scanner;
 
 
@@ -53,6 +51,9 @@ public class Controller {
         connection = (isServer ? createServer() : createClient());
         waitingForMove = !isServer;  // Server moves first
         connection.start();
+        if (programPtr != null) {
+            programPtr.info.setText("Waiting for opponent...");
+        }
     }
 
     public void startEngine(){
@@ -164,7 +165,7 @@ public class Controller {
     private Server createServer() {
         return new Server(port, data -> {
             Platform.runLater(() -> {
-                handleData((Move) data);
+                handleData(data);
             });
         });
     }
@@ -172,18 +173,29 @@ public class Controller {
     private Client createClient() {
         return new Client(ip, port, data -> {
             Platform.runLater(() -> {
-                handleData((Move) data);
+                handleData(data);
             });
         });
     }
 
     // This is called everytime the connection receives data
-    private void handleData(Move move) {
-        System.out.println("Move received from " + (isServer ? "client" : "server") + ": " + move.moveString);
-        chessboard.move(move.x, move.y, move.xt, move.yt);
-        if (programPtr != null) {
-            programPtr.animationHumHum();
-            programPtr.updateBoard();
+    private void handleData(Serializable data) {
+        if (data instanceof Move) {
+            Move move = (Move) data;
+            System.out.println("Move received from " + (isServer ? "client" : "server") + ": " + move.moveString);
+            chessboard.move(move.x, move.y, move.xt, move.yt);
+            if (programPtr != null) {
+                programPtr.animationHumHum();
+                programPtr.updateBoard();
+            }
+        }
+        else if (data instanceof String) {
+            String msg = (String) data;
+            programPtr.info.setText(msg);
+        }
+        else {
+            System.out.print("Data recieved is not of type Move or String");
+            System.exit(-1);
         }
     }
 
