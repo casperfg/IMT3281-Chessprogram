@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Piece{
     public int[] position; // internal position of tile (x,y) 0-7
-    public int[] lastPosition = new int[2]; // x, y
+    public int[] lastPosition = new int[]{-1, -1}; // x, y
     public boolean color; // color of piece, true=white
     public String name;
     public char type = '-'; // knbr osv..

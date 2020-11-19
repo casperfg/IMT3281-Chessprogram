@@ -9,7 +9,7 @@ public class Tile extends Button {
     public Piece chessPiece; // piece pointer
     boolean tileColorWhite; // tile is white
     boolean highLight = false;
-    String tileName; // name of tile: e4, e6 etc..
+    String tileName = "yoyoyo"; // name of tile: e4, e6 etc..
     String column = "abcdefgh"; // column names for tilename
     Boolean hasPiece = false; // has a piece on it
 
@@ -69,12 +69,12 @@ public class Tile extends Button {
 
     public boolean kingAttack(Chessboard chBoard) {
         int x, y;
+        Tile thisTile;
         possible(chBoard, false); // get possible moves from here.
-        for (int i = 0; i < chessPiece.possibleMoves.size(); i++) {
-            x = chessPiece.possibleMoves.get(i)[0];
-            y = chessPiece.possibleMoves.get(i)[1];
-            if(chBoard.board[y][x].hasPiece){
-                if(chBoard.board[y][x].chessPiece.type == 'k'){
+        for (int[] pos : chessPiece.possibleMoves) {
+            thisTile = chBoard.board[pos[1]][pos[0]];
+            if(thisTile.hasPiece){
+                if(thisTile.chessPiece.type == 'k'){
                     chessPiece.removePossible();
                     return true;
                 }

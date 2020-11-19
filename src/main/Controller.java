@@ -31,6 +31,7 @@ public class Controller {
         this.isServer = isSer;
         this.game = game;
         chessboard = new Chessboard(this);
+        chessboard.move("d2d4"); chessboard.move("e7e6"); chessboard.move("e2e4"); chessboard.move("f8b4");
         engineHandler = new EngineHandler(elo, thinkTime);
         System.out.println("Elo rating: " + this.elo);
 
