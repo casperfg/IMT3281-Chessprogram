@@ -135,7 +135,9 @@ public class ChessProgram extends Application {
 
         chessBoardStage.setScene(new Scene(borderPane, WINDOW_WITH, WINDOW_HEIGHT));
         chessBoardStage.setTitle("Chess");
+        chessBoardStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/black_knight.png")));
         chessBoardStage.setResizable(false);
+
 
         chessBoardStage.setOnCloseRequest( windowEvent -> close());
 
