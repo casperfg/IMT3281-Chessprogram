@@ -97,7 +97,9 @@ public class ChessProgram extends Application {
     Text moveLogTitle = new Text();  //title of move log
     Text infoscreen = new Text(); //info panel
 
-    String lastHighlight, lastColorA, lastColorB;
+    String lastHighlight = "yellow";
+    String lastColorA = "white";
+    String lastColorB = "gray";
 
     RowConstraints row1 = new RowConstraints(); //row constraints
     RowConstraints row2 = new RowConstraints();
@@ -512,6 +514,7 @@ public class ChessProgram extends Application {
         lastColorB = B;
         updateBoard();
     }
+
     public void themeActionEvent(MenuItem theme, String highlight, String A, String B ){
         theme.setOnAction(actionEvent -> setColor(highlight, A, B));
     }
