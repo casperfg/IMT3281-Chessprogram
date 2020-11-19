@@ -38,7 +38,7 @@ public class Config {
             if (f.createNewFile()) {
                 System.out.println("File created: " + f.getName());
             } else {
-                System.out.println("Found" + CONFIG_PATH);
+                System.out.println("Found " + CONFIG_PATH);
             }
 
             FileInputStream in = new FileInputStream(f);

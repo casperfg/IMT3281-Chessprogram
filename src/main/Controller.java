@@ -25,7 +25,7 @@ public class Controller {
     public boolean isServer = true;
     public String ip;
     public int port;
-    public boolean waitingForMove = false;
+    public boolean waitingForMove;
 
     public Controller(String game) {
         this.game = game;
@@ -37,6 +37,14 @@ public class Controller {
 
         ip = cfg.props.getProperty("ip");
         port = Integer.parseInt(cfg.props.getProperty("port"));
+
+        if (game.contains("h")) {
+            waitingForMove = false;
+        }
+
+        if (game.equals("h-h") || game.equals("h-o")) {
+            engineRunning = false;
+        }
     }
 
     File difficultyFile = new File("./res/text/difficulty.txt");
@@ -124,21 +132,19 @@ public class Controller {
     }
 
     public void click(int x, int y) { // clicked by human
-        if (programPtr != null && engineRunning && !game.equals("h-o")) { // is not null when human is involved.
-            boolean change = chessboard.humanClick(x, y);
-            programPtr.updateBoard(); // update the board
+        if (programPtr != null) { // is not null when human is involved.
+            boolean change = false;
+            if ((game.equals("h-o") && !waitingForMove) | !game.equals("h-o")) {
+                change = chessboard.humanClick(x, y);
+                programPtr.updateBoard(); // update the board
+            }
+
             if (change) { // other player makes move.
                 if (engineRunning) {
                     engineHandler.getBest(chessboard); // start the thread calculation
                     programPtr.animationEngMove();  // start the animationloop for once.
                 }
-            }
-        }
-        else if (programPtr != null && game.equals("h-o") && !waitingForMove) {
-            boolean change = chessboard.humanClick(x, y);
-            programPtr.updateBoard(); // update the board
-            if (change) {
-                programPtr.animationHumHum();
+                waitingForMove = true;
             }
         }
     }
@@ -173,6 +179,10 @@ public class Controller {
     private void handleData(Move move) {
         System.out.println("Move received from " + (isServer ? "client" : "server") + ": " + move.moveString);
         chessboard.move(move.x, move.y, move.xt, move.yt);
+        if (programPtr != null) {
+            programPtr.animationHumHum();
+            programPtr.updateBoard();
+        }
     }
 
     public void readEloRating() throws IOException {

@@ -297,7 +297,10 @@ public class Chessboard {
                     System.out.println("Failed to send");
                 }
             }
-            cnt.waitingForMove = !cnt.waitingForMove;
+
+            if (cnt.waitingForMove) {
+                cnt.waitingForMove = false;
+            }
 
         } else {
             System.out.println("wrong move"); // freezes after this
