@@ -106,7 +106,7 @@ public class ChessProgram extends Application {
     Insets inset = new Insets(10, 20, 20, 20); //padding around the infopanel
 
 
-    public ChessProgram(String game, boolean isServer) {
+    public ChessProgram(String game) {
         controller = new Controller(game);
         this.game = game;
         if (game.contains("h")) { // set program pointer
@@ -155,6 +155,8 @@ public class ChessProgram extends Application {
         Stage smStage = new Stage();
         sm.setStartUpLanguage(currentLanguage, currentCountry);
         sm.start(smStage);
+        controller.cfg.props.setProperty("ip", controller.ip);
+        controller.cfg.props.setProperty("port", String.valueOf(controller.port));
         controller.cfg.saveProps();
         if (game.equals("h-o")) {
             try {

@@ -61,24 +61,28 @@ public class StartMenu extends Application {
         Stage cpuStage = new Stage();
 
         btn_cpu.setOnAction(actionEvent -> {
-            ChessProgram cp = null;
-            cp = new ChessProgram("e-e", false); // TODO IS SERVER!
+            ChessProgram cp = new ChessProgram("e-e"); // TODO IS SERVER!
             cp.setStartUpLanguage(currentLanguage, currentCountry);
             cp.start(cpuStage);
             menuStage.close();
         });
 
         btn_play.setOnAction(actionEvent -> {
-            ChessProgram cp = null;
-            cp = new ChessProgram("h-e", false);
+            ChessProgram cp = new ChessProgram("h-e");
             cp.setStartUpLanguage(currentLanguage, currentCountry);
             cp.start(cpuStage);
             menuStage.close();
         });
 
         btn_pvp.setOnAction(actionEvent -> {
-            ChessProgram cp = null;
-            cp = new ChessProgram("h-h", false);
+            ChessProgram cp = new ChessProgram("h-h");
+            cp.setStartUpLanguage(currentLanguage,currentCountry);
+            cp.start(cpuStage);
+            menuStage.close();
+        });
+
+        btn_online.setOnAction(actionEvent -> {
+            ChessProgram cp = new ChessProgram("h-o");
             cp.setStartUpLanguage(currentLanguage,currentCountry);
             cp.start(cpuStage);
             menuStage.close();
