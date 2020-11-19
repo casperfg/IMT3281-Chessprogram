@@ -6,7 +6,6 @@ import javafx.scene.layout.StackPane;
 import main.pieces.Pawn;
 import main.pieces.Piece;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -29,6 +28,9 @@ public class Chessboard {
     public String moveString;
     public ArrayList<String> moves = new ArrayList<>();
     public ArrayList<int[]> checkAvoid = new ArrayList<>(); // pieces that can avoid check. (x,y)
+    public ArrayList<int[]> whitePieces = new ArrayList<>();
+    public ArrayList<int[]> blackPieces = new ArrayList<>();
+
 
     public char promotionTo = '-';
     public Controller cnt = null; // controller pointer.
@@ -41,7 +43,7 @@ public class Chessboard {
     public String highlightColor = "yellow";
     public String tileColorA = "white";
     public String tileColorB = "grey";
-    
+
     public boolean ismate = false;
 
 
@@ -52,6 +54,31 @@ public class Chessboard {
         this.cnt = cnt;
         check = false;
     }
+    public Chessboard(Chessboard chBoard, String fen, Controller cnt){
+        whitePieces = (ArrayList<int[]>) chBoard.whitePieces.clone();
+        blackPieces = (ArrayList<int[]>) chBoard.blackPieces.clone();
+        setFen(fen);
+        checkForChecks = false;
+        check = false;
+        this.cnt = cnt;
+    }
+    public int arrContains(ArrayList<int[]> ar, int[] array){
+        int x, y;
+        for(int i = 0; i<ar.size(); i++){
+            x = ar.get(i)[0]; y = ar.get(i)[1];
+            if(x == array[0] && y == array[1]){
+                return i;
+            }
+        }
+        return -1;
+    }
+    public ArrayList<int[]> getPieceList(boolean color){
+        if(color){
+            return whitePieces;
+        }else{
+            return blackPieces;
+        }
+    }
 
     public void makeStart() { // setup start position
         int size = 8;
@@ -59,22 +86,26 @@ public class Chessboard {
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
                 board[y][x] = new Tile();
-
-                if (y == 7 || y == 0) { // place officer
-                    board[y][x].updatePiece(line.charAt(x));
-                } else if (y == 6 || y == 1) { // place pawn
-                    board[y][x].updatePiece('p');
+                if (y == 7 || y == 0){
+                    makeTile(x, y, line.charAt(x), y == 7);
+                }else if (y == 6 || y == 1){
+                    makeTile(x, y, 'p', y == 6);
+                }else{
+                    makeTile(x,y, '-', false);
                 }
-
-                // set location and color of piece.
-                // y=6 || y=6 when color is white
-                board[y][x].setProp(new int[]{x, y}, (y == 7 || y == 6));
             }
         }
     }
 
-    public void newPiece(int x, int y, char type, boolean color) {
-        board[y][x].updatePiece(type);
+    public void makeTile(int x, int y, char type, boolean color) {
+        if(type != '-'){
+            if(color){
+                whitePieces.add(new int[]{x,y});
+            }else{
+                blackPieces.add(new int[]{x,y});
+            }
+            board[y][x].updatePiece(type);
+        }
         board[y][x].setProp(new int[]{x, y}, color);
     }
 
@@ -115,69 +146,52 @@ public class Chessboard {
             repetition = 0;
         }
     }
-
-    // can have discovered checks. could have a arraylist int[] with x,y for tiles with pieces. (if slow)
-    public boolean kingAttack(boolean color){ // is there any piece of this color that attacks the king
-        Piece cp;
+    // checks if color attacks the opposite color
+    public boolean kingAttack(boolean color){
         Tile thisTile;
-        for(int y = 0; y<8; y++){
-            for(int x = 0; x<8; x++){
-                thisTile = board[y][x];
-                if(thisTile.hasPiece) {
-                    cp = thisTile.chessPiece;
-                    if(cp.color == color) {
-                        if (thisTile.kingAttack(this)) {
-                            return true;
-                        }
-                    }
-                }
+        ArrayList<int[]> piecePos = getPieceList(color);
+        for(int[] pos : piecePos){ // loops all the pieces of this color
+            thisTile = board[pos[1]][pos[0]];
+            if (thisTile.kingAttack(this)) {
+                return true;
             }
         }
         return false;
     }
-    public void calcCheckAvoid(){
-        Chessboard tmpBoard = new Chessboard(cnt); // make a copy of the board.
-        tmpBoard.checkForChecks = false; // has sto the tmpBoard for calling this function
+    // can this color avoid checkmate. keeps only the possible moves that avoids check/mate
+    public void calcCheckAvoid(boolean color){ // should be whiteTurn
+        Chessboard tmpBoard = new Chessboard(this, toFen(), cnt); // make a copy of the board.
 
         Tile thisTile;
-        ArrayList<int[]> tmpPossible;
+        ArrayList<int[]> piecePos = getPieceList(color); // piece position for this color
+        ArrayList<int[]> tmpPossible; // possible moves
         Piece cp;
-        boolean avoided = false;
+        boolean avoided = false; // avoided check or not
         String fen = this.toFen(); // save the fen
         int xt, yt;
-        checkAvoid.removeAll(checkAvoid);
+        checkAvoid.removeAll(checkAvoid); // reset checkavoid array list
 
+        for(int[] pos : piecePos){ // loop all chess pieces
+            thisTile = board[pos[1]][pos[0]]; // get the tile
+            cp = thisTile.chessPiece; // get the chesspiece
 
-        System.out.println(toFen());
-        for (int y = 0; y<8; y++){
-            for(int x = 0; x<8; x++){
-                avoided = false;
-                thisTile = board[y][x];
-                if(thisTile.hasPiece){
-                    cp = thisTile.chessPiece;
-                    if(cp.color == whiteTurn) {// is right color
-                        thisTile.possible(this, false);
-                        tmpPossible = (ArrayList<int[]>) thisTile.retPossible().clone();
-                        cp.removePossible();
+            thisTile.possible(this, false); // get possible moves for this piece
+            tmpPossible = (ArrayList<int[]>) thisTile.retPossible().clone(); // clone the possible moves
+            cp.removePossible(); // remove every possible move in the piece
 
-                        for(int i = 0; i<tmpPossible.size(); i++){
-                            // move from piece position to possible
-                            tmpBoard.setFen(fen); // resets board position. to original position
-                            xt = tmpPossible.get(i)[0]; yt = tmpPossible.get(i)[1];
+            for(int i = 0; i<tmpPossible.size(); i++){ // loop all the possible moves
+                // move from piece position to possible
+                tmpBoard = new Chessboard(this, fen, cnt); // resets board position. to original position
+                xt = tmpPossible.get(i)[0]; yt = tmpPossible.get(i)[1]; // get where this piece moves
+                tmpBoard.move(cp.position[0], cp.position[1], xt, yt); // move this move
 
-                            tmpBoard.move(cp.position[0], cp.position[1], xt, yt);
-                            if(!tmpBoard.kingAttack(!whiteTurn)){ // avoided the check given
-                                avoided = true; // keep the possible move if it avoids check.
-                                cp.possibleMoves.add(new int[]{xt,yt}); // remove the possible move from the actual list in this piece.
-                            }
-
-                        }
-                        if(avoided){
-                            System.out.println(cp.type);
-                            checkAvoid.add(new int[]{x,y}); // save the pieces that avoids this check
-                        }
-                    }
+                if(!tmpBoard.kingAttack(!color)){ // avoided the check given
+                    avoided = true; // keep the possible move if it avoids check.
+                    cp.possibleMoves.add(new int[]{xt,yt}); // add back this possible move.
                 }
+            }
+            if(avoided){ // avoided check somehow with this piece
+                checkAvoid.add(pos.clone()); // save the pieces that avoids this check
             }
         }
         if(checkAvoid.isEmpty()){
@@ -191,12 +205,14 @@ public class Chessboard {
             board[pawnPassant[1]][pawnPassant[0]].removePiece();
         }
         enPassantSquare = "-"; // reset enpassant.
-        if(cnt.game.contains("h") && checkForChecks) { // is human involved. stockfish handels for computer involvement.
-            check = kingAttack(fPiece.color); // checks if check. cleans possible afterwards
-            if(check){ // calculate avoidment moves.
-                calcCheckAvoid();
-            }else{
-                check = false;
+        if(checkForChecks) { // is human involved. stockfish handels for computer involvement//check = kingAttack(fPiece.color); // checks if check. cleans possible afterwards
+            if(cnt.game.contains("h")){
+                check = kingAttack(fPiece.color);
+                if(check){ // calculate avoidment moves.
+                    calcCheckAvoid(whiteTurn);
+                }else{
+                    check = false;
+                }
             }
         }
 
@@ -206,7 +222,7 @@ public class Chessboard {
                 if (!whiteCastle || !blackCastle) {
                     moveString = (((xt - x) == 2) ? "0-0" : "0-0-0"); // true if short castle.
                     board[y][((xt - x) == 2) ? 7 : 0].removePiece(); // remove tower
-                    newPiece((xt + x) / 2, y, 'r', fPiece.color); // place new tower
+                    makeTile((xt + x) / 2, y, 'r', fPiece.color); // place new tower
                 }
             }
             if (fPiece.color) { // king or tower moved. no castle
@@ -221,7 +237,7 @@ public class Chessboard {
 
         if (fPiece.type == 'p') {
             if ((fPiece.color && yt == 0) || (!fPiece.color && yt == 7)) { // PROMOTION
-                newPiece(xt, yt, (promotionTo == '-') ? 'q' : promotionTo, fPiece.color);
+                makeTile(xt, yt, (promotionTo == '-') ? 'q' : promotionTo, fPiece.color);
                 piecesLeft[5] -= 1; // remove pawn from pieces left
                 updatePieceLeft(board[yt][xt].chessPiece, 1); // add new piece to piece left.
                 promotionTo = '-';
@@ -278,6 +294,7 @@ public class Chessboard {
 
             fPiece.position = new int[]{xt, yt};
             fPiece.lastPosition = new int[]{x, y};
+            updatePieceList(fPiece); // update the lists that holds where the pieces are
             fPiece.removePossible();
             moveStringSet(fPiece, x, y, xt, yt); // update movelist
 
@@ -287,7 +304,8 @@ public class Chessboard {
 
             whiteTurn = !whiteTurn; // change turn/count moves
             if (whiteTurn) {
-                moveCount++;
+
+                moveCount++; // used in fen
             }
             specialMoves(x, y, xt, yt, fPiece); // OBS! fpiece is not added afterwards.
 
@@ -313,6 +331,24 @@ public class Chessboard {
 
         } else {
             System.out.println("wrong move"); // freezes after this
+        }
+    }
+
+    public void updatePieceList(Piece cp) {
+        int index;
+        if(cp.color){
+            index = arrContains(whitePieces, cp.lastPosition);
+            if (index != -1) {
+                whitePieces.remove(index);
+            }
+            whitePieces.add(cp.position.clone());
+
+        }else{
+            index = arrContains(blackPieces, cp.lastPosition);
+            if (index != -1) {
+                blackPieces.remove(index);
+            }
+            blackPieces.add(cp.position.clone());
         }
     }
 
@@ -454,6 +490,7 @@ public class Chessboard {
 
         for(int y = 0; y<8; y++){
             for(int x = 0; x<8; x++){
+                board[y][x] = new Tile();
                 i++;
                 part = fen.substring(i, i+1);
 
@@ -463,11 +500,12 @@ public class Chessboard {
                 }
                 partC = fen.charAt(i);
                 if(!isDigit(partC)){
-                    newPiece(x,y, Character.toLowerCase(partC), Character.isUpperCase(partC));
+                    makeTile(x,y, Character.toLowerCase(partC), Character.isUpperCase(partC));
 
                 }else{
                     for(int j = x; j<x+Character.getNumericValue(partC); j++){
-                        board[y][j].removePiece();
+                        board[y][j] = new Tile();
+                        makeTile(j, y, '-', false);
                     }
                     x += Character.getNumericValue(partC)-1;
                 }
@@ -540,18 +578,15 @@ public class Chessboard {
                 board[y][x].possible(this, true); // calculate possible moves by this piece
                 humanPiece = new int[]{x, y}; // set human piece. piece responsible for current highlight
             }else{ // is in a check. and clicks piece that avoids
-                checkAvoid.forEach( n -> {
-                    if(n[0] == x && n[1] == y){
-                        board[y][x].setHighlight(this);
-                        humanPiece = new int[]{x, y}; // set human piece. piece responsible for current highlight
-                    }
-                });
+                if(arrContains(checkAvoid, new int[]{x, y}) != -1){
+                    board[y][x].setHighlight(this);
+                    humanPiece = new int[]{x, y}; // set human piece. piece responsible for current highlight
+                }
             }
             return false;
         } else if (board[y][x].highLight) { // clicks on highlight, move piece
             if(isPromotion(humanPiece[0], humanPiece[1], x, y)){
                 setPromotion();
-                // TODO: open promotion window, set (char) promotionTo variable to corresponding type
             }
             move(humanPiece[0], humanPiece[1], x, y); // removes highlight/possible
             return true;

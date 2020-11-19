@@ -428,8 +428,8 @@ public class ChessProgram extends Application {
             public connectionCfg call(ButtonType buttonType) {
                 if (buttonType == connect) {
                     return new connectionCfg(ipField.getText(),
-                                             Integer.parseInt(portField.getText()),
-                                             host.isSelected());
+                            Integer.parseInt(portField.getText()),
+                            host.isSelected());
                 }
                 return null;
             }
