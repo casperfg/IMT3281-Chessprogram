@@ -27,11 +27,15 @@ public class Controller {
     public int port;
     public boolean waitingForMove;
 
+    // FOOLS MATE:
+    // chessboard.move("f2f3"); chessboard.move("e7e5");
+    // CHECK:
+    // chessboard.move("d2d4"); chessboard.move("e7e6"); chessboard.move("e2e4"); chessboard.move("f8b4");
+
     public Controller(boolean isSer, String game) {
         this.isServer = isSer;
         this.game = game;
         chessboard = new Chessboard(this);
-        chessboard.move("d2d4"); chessboard.move("e7e6"); chessboard.move("e2e4"); chessboard.move("f8b4");
         engineHandler = new EngineHandler(elo, thinkTime);
         System.out.println("Elo rating: " + this.elo);
 
@@ -81,10 +85,7 @@ public class Controller {
         return false;
     }
 
-    // FOOLS MATE:
-    // chessboard.move("f2f3"); chessboard.move("e7e5");
-    // CHECK:
-    // chessboard.move("d2d4"); chessboard.move("e7e6"); chessboard.move("e2e4"); chessboard.move("f8b4");
+
     public Boolean engVsEng() {
         String ret = engineHandler.checkWorker(); // check workerThread
         if (firstRun) {

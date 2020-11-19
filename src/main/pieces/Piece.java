@@ -40,11 +40,30 @@ public class Piece{
 
     // add position with movevector to possibleMoves, if legal.
     // used by Pawn and Piece.nonRepeat()
+    public boolean avoidCheck(Chessboard board, int xt, int yt){ // 60-100ms
+        Chessboard tmpBoard = new Chessboard(board, board.toFen(), board.cnt); // resets board position. to original position
+        tmpBoard.checkForChecks = false;
+        tmpBoard.move(position[0], position[1], xt, yt);
+
+        if(!tmpBoard.kingAttack(!color)){ // avoided the check given
+            return true;
+        }
+        return false;
+    }
+    public void addWithAvoid(Chessboard board, int xt, int yt){
+        if(board.checkForChecks && !board.check){ // if in check, the possible moves are given.
+            if(avoidCheck(board, xt, yt)){
+                possibleMoves.add(new int[]{xt, yt});
+            }
+        }else{
+            possibleMoves.add(new int[]{xt, yt});
+        }
+    }
     public void addPoss(Chessboard board, int dx, int dy){
         int xt = position[0]+dx;
         int yt = position[1]+dy;
-        if(board.legalMove(position[0], position[1], xt, yt)) {
-            possibleMoves.add(new int[]{xt, yt});
+        if(board.legalMove(position[0], position[1], xt, yt) ) {
+            addWithAvoid(board, xt, yt);
         }
     }
     // continues to add movevector to position until illegal move
@@ -57,7 +76,7 @@ public class Piece{
             y = position[1]+vector[1];
 
             while(board.legalMove(position[0], position[1], x, y)){
-                possibleMoves.add(new int[]{x, y});
+                addWithAvoid(board, x, y);
                 if(!board.blankSq(x,y)){
                     break;
                 }

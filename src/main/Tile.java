@@ -70,18 +70,18 @@ public class Tile extends Button {
     public boolean kingAttack(Chessboard chBoard) {
         int x, y;
         Tile thisTile;
-        if(hasPiece) {
-            possible(chBoard, false); // get possible moves from here.
-            for (int[] pos : chessPiece.possibleMoves) {
+        if(hasPiece) { // this tile as a piece.
+            possible(chBoard, false); // get possible moves
+            for (int[] pos : chessPiece.possibleMoves) { // loop the possible moves this piece has
                 thisTile = chBoard.board[pos[1]][pos[0]];
-                if (thisTile.hasPiece) {
-                    if (thisTile.chessPiece.type == 'k') {
-                        chessPiece.removePossible();
-                        return true;
+                if (thisTile.hasPiece) { // attacks a piece
+                    if (thisTile.chessPiece.type == 'k') { // attacks the king
+                        chessPiece.removePossible(); // remove possible
+                        return true; // return true
                     }
                 }
             }
-            chessPiece.removePossible();
+            chessPiece.removePossible(); // remove possible
         }
         return false;
     }
