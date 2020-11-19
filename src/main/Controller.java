@@ -22,13 +22,12 @@ public class Controller {
     public int elo = 1000;
     public Config cfg;
     public NetworkConnection connection;
-    public boolean isServer;
+    public boolean isServer = true;
     public String ip;
     public int port;
-    public boolean waitingForMove;
+    public boolean waitingForMove = false;
 
-    public Controller(boolean isSer, String game) {
-        this.isServer = isSer;
+    public Controller(String game) {
         this.game = game;
         chessboard = new Chessboard(this);
         engineHandler = new EngineHandler(elo, thinkTime);
@@ -113,7 +112,7 @@ public class Controller {
                 // check if the player was mated
             } else if (game.equals("h-e")) {
                 change = humVsEng();
-            } else if(game.equals("h-h") && !waitingForMove) {
+            } else if(game.equals("h-o") && !waitingForMove) {
                 change = true;
             }
             //gameCheck();
@@ -125,7 +124,7 @@ public class Controller {
     }
 
     public void click(int x, int y) { // clicked by human
-        if (programPtr != null && engineRunning || (!waitingForMove && game.equals("h-h"))) { // is not null when human is involved.
+        if (programPtr != null && engineRunning && !game.equals("h-o")) { // is not null when human is involved.
             boolean change = chessboard.humanClick(x, y);
             programPtr.updateBoard(); // update the board
             if (change) { // other player makes move.
@@ -133,9 +132,13 @@ public class Controller {
                     engineHandler.getBest(chessboard); // start the thread calculation
                     programPtr.animationEngMove();  // start the animationloop for once.
                 }
-                else if (game.equals("h-h")) {
-                    programPtr.animationHumHum();
-                }
+            }
+        }
+        else if (programPtr != null && game.equals("h-o") && !waitingForMove) {
+            boolean change = chessboard.humanClick(x, y);
+            programPtr.updateBoard(); // update the board
+            if (change) {
+                programPtr.animationHumHum();
             }
         }
     }

@@ -32,8 +32,8 @@ public class StartMenu extends Application {
     Scene scene = new Scene(borderPane, 600, 600);
     Button btn_play = new Button();
     Button btn_multi = new Button();
-    Button btn_cpu = new Button();
     Button btn_settings = new Button();
+    Button btn_cpu = new Button();
     Button btn_exit = new Button();
     Button btn_no = new Button();
     Button btn_en = new Button();
@@ -64,7 +64,7 @@ public class StartMenu extends Application {
         btn_cpu.setOnAction(actionEvent -> {
             ChessProgram cp = null;
             try {
-                cp = new ChessProgram("e-e", false); // TODO IS SERVER!
+                cp = new ChessProgram("e-e");
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
@@ -76,7 +76,7 @@ public class StartMenu extends Application {
         btn_play.setOnAction(actionEvent -> {
             ChessProgram cp = null;
             try {
-                cp = new ChessProgram("h-e", false);
+                cp = new ChessProgram("h-e");
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
@@ -88,7 +88,7 @@ public class StartMenu extends Application {
         btn_multi.setOnAction(actionEvent -> {
             ChessProgram cp = null;
             try {
-                cp = new ChessProgram("h-h", false);
+                cp = new ChessProgram("h-o");
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }

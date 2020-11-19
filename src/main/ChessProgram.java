@@ -108,8 +108,8 @@ public class ChessProgram extends Application {
 
     int eloRating = NORMAL;
 
-    public ChessProgram(String game, boolean isServer) throws IOException {
-        controller = new Controller(isServer, game);
+    public ChessProgram(String game) throws IOException {
+        controller = new Controller(game);
         this.game = game;
         if (game.contains("h")) { // set program pointer
             controller.programPtr = this; // used on humanclick in chessboard
@@ -148,7 +148,7 @@ public class ChessProgram extends Application {
             animationEngEng();
         }
 
-        if(game.equals("h-h")) {
+        if(game.equals("h-o")) {
             connectionDialog();
         }
     }
@@ -160,7 +160,7 @@ public class ChessProgram extends Application {
         sm.setStartUpLanguage(currentLanguage, currentCountry);
         sm.start(smStage);
         controller.cfg.saveProps();
-        if (game.equals("h-h")) {
+        if (game.equals("h-o")) {
             try {
                 controller.connection.close();
             } catch (Exception e) {
@@ -375,7 +375,6 @@ public class ChessProgram extends Application {
         confirmation.close();
     }
 
-    //TODO: internationalisation
     public void connectionDialog() {
         class connectionCfg {
             public final String ip;

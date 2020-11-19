@@ -98,7 +98,7 @@ public class Chessboard {
             moveString += Character.toString(promotionTo).toUpperCase();
         }
         if(check){
-            moveString += "+";
+            moveString += "+"; // TODO: bugged
         }
     }
 
@@ -284,7 +284,7 @@ public class Chessboard {
 
             moves.add(moveString);
 
-            if (cnt.game.equals("h-h") && !cnt.waitingForMove) {
+            if (cnt.game.equals("h-o") && !cnt.waitingForMove) {
                 Move move = new Move(x, y, xt, yt);
                 move.moveString = moves.get(moves.size() - 1);
                 try {
