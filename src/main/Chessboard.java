@@ -37,6 +37,8 @@ public class Chessboard {
 
     public int[] humanPiece = new int[2]; // piece responcible for highlights. (x,y)
 
+    public boolean ismate = false;
+
 
     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
@@ -174,6 +176,7 @@ public class Chessboard {
         }
         if(checkAvoid.isEmpty()){
             cnt.ISMATE();
+            ismate  = true;
         }
     }
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
@@ -569,6 +572,14 @@ public class Chessboard {
             allMoves = allMoves.concat(singleMove); //add move to string
         }
         return allMoves; //return  string
+    }
+
+
+    public boolean mateCheck(){ //if mate, sets ismate = true
+        if(ismate)
+            return true;
+        else
+            return  false;
     }
 
 

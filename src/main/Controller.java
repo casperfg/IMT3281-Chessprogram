@@ -31,6 +31,7 @@ public class Controller {
         this.isServer = isSer;
         this.game = game;
         chessboard = new Chessboard(this);
+        chessboard.move("f2f3"); chessboard.move("e7e5");
 
         engineHandler = new EngineHandler(elo, thinkTime);
         System.out.println("Elo rating: " + this.elo);
@@ -173,27 +174,7 @@ public class Controller {
         chessboard.move(move.x, move.y, move.xt, move.yt);
     }
 
-    public void readEloRating() throws IOException {
-        System.out.println("Reading from file difficulty.txt...\n");
-        Scanner scanner = new Scanner(difficultyFile);
-        elo = scanner.nextInt();
-        System.out.println("Elo rating after file is read: " + elo + "\n");
-    }
-
-    public void writeEloRatingToFile(int elo) throws IOException {
-        System.out.println("Writing to file difficulty.txt...");
-        FileWriter fileWriter = new FileWriter(difficultyFile.getAbsoluteFile());
-        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-
-        String rating = String.valueOf(elo);
-
-        bufferedWriter.write(rating);
-        bufferedWriter.close();
-
-        System.out.println("Done... | Rating = " + rating + "\n");
-    }
-
     public void ISMATE() {
-        System.out.println("MATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println("MATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
 }
