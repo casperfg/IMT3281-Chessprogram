@@ -1,16 +1,10 @@
 package main;
 
-import com.sun.javafx.scene.control.LabeledText;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.geometry.VPos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
@@ -30,10 +24,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
-import javafx.util.Pair;
 
-import java.awt.*;
-import java.awt.Button;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -63,12 +54,19 @@ public class ChessProgram extends Application {
     Menu file = new Menu(); //creating file in menu bar
     Menu settings = new Menu(); //creating settings in menu bar
     Menu langSubMenu = new Menu(); //submenu for language
+    Menu themeSubMenu = new Menu();
+    //================== Help Menu ==================
     Menu help = new Menu();
     MenuItem about = new MenuItem();
     MenuItem rules = new MenuItem();
-    Menu currentDiff = new Menu();
+    //================== Themes ==================
+    MenuItem standardTheme = new MenuItem();
+    MenuItem darkTheme = new MenuItem();
+    MenuItem classicTheme = new MenuItem();
+    MenuItem blueTheme = new MenuItem();
+    MenuItem greenTheme = new MenuItem();
     //================== Difficulties ==================
-    Menu difficulty = new Menu();
+    Menu difficultySubMenu = new Menu();
     MenuItem diff_carlsen = new MenuItem();
     MenuItem diff_gm = new MenuItem();
     MenuItem diff_lahl = new MenuItem();
@@ -87,6 +85,7 @@ public class ChessProgram extends Application {
     Alert confirmation = new Alert(AlertType.CONFIRMATION); //alert object type confirmation
     //================== about window ==================
     Stage helpStage = new Stage();
+
     Controller controller;
     int refreshRate = 5000;
 
@@ -105,9 +104,7 @@ public class ChessProgram extends Application {
     Insets inset = new Insets(10, 20, 20, 20); //padding around the infopanel
 
 
-    int eloRating = NORMAL;
-
-    public ChessProgram(String game) throws IOException {
+    public ChessProgram(String game, boolean isServer) {
         controller = new Controller(game);
         this.game = game;
         if (game.contains("h")) { // set program pointer
@@ -207,13 +204,13 @@ public class ChessProgram extends Application {
     public void updateBoard() {
         chessboard = createChessBoard(); // update new chessboard view
         borderPane.setCenter(chessboard); // set the new chessboardView
-        moveLog.setText(controller.chessboard.displayMoves());
+        moveLog.setText(controller.chessboard.displayMoves()); //display moves in movelog
+        isFinished(); //display mate or stalemate + who won
     }
 
     public GridPane createChessBoard() {
         final int size = 10;
         GridPane gridPane = controller.chessboard.createBoard();
-
         for (int i = 0; i < size; i++) {
             gridPane.getColumnConstraints().add(new ColumnConstraints(5, Control.USE_COMPUTED_SIZE,
                     Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.CENTER, true));
@@ -284,12 +281,14 @@ public class ChessProgram extends Application {
             langSubMenu.getItems().addAll(Norwegian, English); //adds item to language
 
             settings.getItems().add(langSubMenu); //adds language under settings
-            settings.getItems().add(difficulty);
+            settings.getItems().add(difficultySubMenu);
+            settings.getItems().add(themeSubMenu);
 
-            difficulty.getItems().addAll(diff_carlsen, diff_gm, diff_lahl, diff_hard, diff_normal, diff_easy);
+            difficultySubMenu.getItems().addAll(diff_carlsen, diff_gm, diff_lahl, diff_hard, diff_normal, diff_easy);
+            themeSubMenu.getItems().addAll(standardTheme, darkTheme, classicTheme, blueTheme, greenTheme);
 
             file.getItems().add(restartMenu);
-            menubar.getMenus().addAll(file, settings, help, currentDiff); //add all menus to menubar
+            menubar.getMenus().addAll(file, settings, help); //add all menus to menubar
         }
     }
 
@@ -355,6 +354,7 @@ public class ChessProgram extends Application {
         controller.chessboard = new Chessboard(controller);
         controller.engineHandler = new EngineHandler(controller.elo, controller.thinkTime);
         controller.engineRunning = true;
+        info.setText("ELO rating: " + controller.elo); //only display elo rating when restart game
         updateBoard();
     }
 
@@ -462,7 +462,7 @@ public class ChessProgram extends Application {
     }
 
     public void addDifficulties() {
-        difficulty.setText(messages.getString("Difficulty"));
+        difficultySubMenu.setText(messages.getString("Difficulty"));
 
         diff_carlsen.setText("Magnus Carlsen");
         diff_gm.setText(messages.getString("Grandmaster"));
@@ -477,6 +477,33 @@ public class ChessProgram extends Application {
         diff_hard.setOnAction(e -> setDifficulty(HARD));
         diff_normal.setOnAction(e -> setDifficulty(NORMAL));
         diff_easy.setOnAction(e -> setDifficulty(EASY));
+    }
+
+    public void addThemeMenu() {
+        themeSubMenu.setText(messages.getString("BoardColor"));
+        standardTheme.setText(messages.getString("Standard"));
+        darkTheme.setText(messages.getString("Dark"));
+        classicTheme.setText(messages.getString("Classic"));
+        blueTheme.setText(messages.getString("Blue"));
+        greenTheme.setText(messages.getString("Green"));
+
+        themeActionEvent(standardTheme,"yellow", "white", "grey" );
+        themeActionEvent(darkTheme,"#800e13","#737373", "#353535");
+        themeActionEvent(classicTheme,"#d90429", "#FFCE9E","#D18B47");
+        themeActionEvent(blueTheme,"#023047", "#7DAFEA", "#6092CF");
+        themeActionEvent(greenTheme,"yellow",  "#EEEED2","#769656");
+    }
+
+    public void setColor(String highlight, String A, String B){
+        controller.chessboard.highlightColor = highlight;
+        controller.chessboard.tileColorA = A;
+        controller.chessboard.tileColorB = B;
+        updateBoard();
+    }
+    public void themeActionEvent(MenuItem theme, String highlight, String A, String B ){
+        theme.setOnAction(actionEvent -> {
+            setColor(highlight, A, B);
+        });
     }
 
     public void addHelpMenu() {
@@ -504,6 +531,7 @@ public class ChessProgram extends Application {
     public void addSettingsMenu() {
         addLanguageMenu();
         addDifficulties();
+        addThemeMenu();
     }
 
     public void addFileMenu() {
@@ -568,6 +596,30 @@ public class ChessProgram extends Application {
     public void updateInfoScreen(){
         moveLogTitle.setText(messages.getString("Movelog"));
         infoscreen.setText(messages.getString("Infoscreen"));
-
     }
+
+    public void isFinished(){
+        if(controller.chessboard.checkStaleMate()){
+            info.appendText("\n"+messages.getString("Stalemate"));
+            winColor();
+        }else if(controller.chessboard.mateCheck()){
+            info.appendText("\n"+messages.getString("Mate"));
+            winColor();
+        }else{}
+    }
+
+
+    public void winColor(){
+        if (controller.chessboard.whiteTurn){
+            System.out.println("Black won");
+            info.appendText("\n"+messages.getString("Blackwin"));
+        }else{
+            info.appendText("\n"+messages.getString("Whitewin"));
+        }
+    }
+
+
+
+
+
 }

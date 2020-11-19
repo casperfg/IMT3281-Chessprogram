@@ -38,6 +38,12 @@ public class Chessboard {
 
     public int[] humanPiece = new int[2]; // piece responcible for highlights. (x,y)
 
+    public String highlightColor = "yellow";
+    public String tileColorA = "white";
+    public String tileColorB = "grey";
+    
+    public boolean ismate = false;
+
 
     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
@@ -176,6 +182,7 @@ public class Chessboard {
         }
         if(checkAvoid.isEmpty()){
             cnt.ISMATE();
+            ismate  = true;
         }
     }
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
@@ -490,12 +497,13 @@ public class Chessboard {
         thisTile.setPrefSize(50, 50);
 
         if (thisTile.highLight) {
-            color = "yellow";
+            color = setColor(highlightColor);
         } else if (thisTile.tileColorWhite) {
-            color = "white";
+            color = setColor(tileColorA);
         } else {
-            color = "gray";
+            color = setColor(tileColorB);
         }
+
         if (thisTile.hasPiece) { // if has piece
             piece = thisTile.chessPiece;
             ImageView pieceIcon = new ImageView(piece.icon);
@@ -506,7 +514,6 @@ public class Chessboard {
         thisTile.setOnAction(e -> cnt.click(row - 1, col - 1));
         thisTile.setOpacity(0);
         square.getChildren().add(thisTile);
-
         square.setStyle("-fx-background-color: " + color + ";");
         gridPane.add(square, row, col);
     }
@@ -553,12 +560,15 @@ public class Chessboard {
     }
 
     public void setPromotion(){
-        Tile dummyTile = new Tile();
+        Tile tempTile = new Tile();
         Piece promotedPiece = board[humanPiece[1]][humanPiece[0]].chessPiece;
+
         PromotionDialog promotionDialog = new PromotionDialog((Pawn)promotedPiece);
         promotionDialog.showAndWait();
+
         promotionTo = promotionDialog.getType();
-        dummyTile.updatePiece(promotionTo);
+        tempTile.updatePiece(promotionTo);
+
         System.out.println(promotionDialog.getType());
     }
 
@@ -583,6 +593,19 @@ public class Chessboard {
         }
         return allMoves; //return  string
     }
+
+
+    public String setColor(String color){
+        return color;
+    }
+
+    public boolean mateCheck(){ //if mate, sets ismate = true
+        if(ismate)
+            return true;
+        else
+            return  false;
+    }
+
 
 }
 /*
