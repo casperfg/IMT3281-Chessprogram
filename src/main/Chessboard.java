@@ -152,7 +152,7 @@ public class Chessboard {
         ArrayList<int[]> piecePos = getPieceList(color);
         for(int[] pos : piecePos){ // loops all the pieces of this color
             thisTile = board[pos[1]][pos[0]];
-            if (thisTile.kingAttack(this)) {
+            if (thisTile.kingAttack(this, color)) {
                 return true;
             }
         }
