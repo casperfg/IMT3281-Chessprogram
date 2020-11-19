@@ -637,10 +637,7 @@ public class Chessboard {
     }
 
     public boolean mateCheck(){ //if mate, sets ismate = true
-        if(ismate)
-            return true;
-        else
-            return  false;
+        return ismate;
     }
 
 
