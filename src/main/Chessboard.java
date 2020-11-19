@@ -591,11 +591,11 @@ public class Chessboard {
         return allMoves; //return  string
     }
 
-<<<<<<< HEAD
+
     public String setColor(String color){
         return color;
     }
-=======
+
 
     public boolean mateCheck(){ //if mate, sets ismate = true
         if(ismate)
@@ -604,8 +604,7 @@ public class Chessboard {
             return  false;
     }
 
-
->>>>>>> madsBranch
+    
 }
 /*
 MATT:
