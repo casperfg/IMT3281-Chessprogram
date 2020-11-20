@@ -23,7 +23,6 @@ import javafx.scene.text.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Callback;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,7 +42,6 @@ public class ChessProgram extends Application {
     final int NORMAL = 900;
     final int EASY = 300;
     public GridPane chessboard;
-    public boolean aniGoing = true;
     public String game;
     //================== Initialize internationalization ==================
     String currentLanguage;
@@ -142,7 +140,7 @@ public class ChessProgram extends Application {
         chessBoardStage.setResizable(false);
 
 
-        chessBoardStage.setOnCloseRequest( windowEvent -> close());
+        chessBoardStage.setOnCloseRequest(windowEvent -> close());
 
         chessBoardStage.show();
         if (controller.game.equals("e-e")) {
@@ -196,6 +194,7 @@ public class ChessProgram extends Application {
             }
         }.start(); // start main animation loop
     }
+
     public void animationHumHum() {
         new AnimationTimer() { // mainloop of the program (controller??)
             @Override
@@ -229,7 +228,6 @@ public class ChessProgram extends Application {
         return gridPane;
     }
 
-
     void labelBoard(GridPane gridPane) {
         final String[] letterLabels = {"A", "B", "C", "D", "E", "F", "G", "H"};
         final String[] numbers = {"8", "7", "6", "5", "4", "3", "2", "1"};
@@ -240,7 +238,6 @@ public class ChessProgram extends Application {
             gridPane.add(new Label(numbers[i - 1]), 0, i);
         }
     }
-
 
     public void setLanguage(String language, String country) {  //set language for program
         language = language.toUpperCase(); //makes uppercase
@@ -264,9 +261,7 @@ public class ChessProgram extends Application {
         messages = ResourceBundle.getBundle("languages/MessagesBundle", currentLocale); //fetches resource bundle
         setMenuBar(); //call function to update text
         updateInfoScreen();
-
     }
-
 
     public ImageView setIcon(Image flagIcon) { //gets an image as parameter and adds to imageView
         ImageView flag = new ImageView(flagIcon); //creates new imageview
@@ -274,7 +269,6 @@ public class ChessProgram extends Application {
         flag.setFitWidth(15); //set width
         return flag; //return ImageView-object
     }
-
 
     public void setMenuBar() { //fetches text and initialises the menu bar
         addFileMenu();
@@ -339,7 +333,6 @@ public class ChessProgram extends Application {
         helpStage.show(); //display the stage
     }
 
-
     public Text setStyling(Text text, String input, int fontSize, String weight, boolean seperator) { //sets styling to text
         if(seperator){
             text.setText(input + "\n"); //create seperator
@@ -355,8 +348,6 @@ public class ChessProgram extends Application {
         currentCountry = country;
     }
 
-
-
     public void restartGame() { //restart game by closing and creating new window.
         controller.stopEngine();
         controller.chessboard = new Chessboard(controller);
@@ -367,7 +358,7 @@ public class ChessProgram extends Application {
         updateBoard();
     }
 
-    public void setConfirmation() throws IOException { //set confirmation text and function to handle action.
+    public void setConfirmation() { //set confirmation text and function to handle action.
         ButtonType cancel = new ButtonType(messages.getString("Cancel"), ButtonData.CANCEL_CLOSE);
         ButtonType ok = new ButtonType(messages.getString("OK"), ButtonData.OK_DONE);
         confirmation.setTitle(messages.getString("Confirm")); //set title text
@@ -376,7 +367,7 @@ public class ChessProgram extends Application {
         confirmation.getButtonTypes().setAll(ok, cancel); //add buttons
 
         Optional<ButtonType> result = confirmation.showAndWait(); //display dialogue and wait for input
-        if (result.get() == ok) { //if presses, calls restart function and closes message.
+        if (result.isPresent() && result.get() == ok) { //if presses, calls restart function and closes message.
             confirmation.close();
             restartGame();
         }
@@ -428,16 +419,13 @@ public class ChessProgram extends Application {
 
         connectionDialog.initStyle(StageStyle.UTILITY);
 
-        connectionDialog.setResultConverter(new Callback<ButtonType, connectionCfg>() {
-            @Override
-            public connectionCfg call(ButtonType buttonType) {
-                if (buttonType == connect) {
-                    return new connectionCfg(ipField.getText(),
-                            Integer.parseInt(portField.getText()),
-                            host.isSelected());
-                }
-                return null;
+        connectionDialog.setResultConverter(buttonType -> {
+            if (buttonType == connect) {
+                return new connectionCfg(ipField.getText(),
+                        Integer.parseInt(portField.getText()),
+                        host.isSelected());
             }
+            return null;
         });
 
         Optional<connectionCfg> result = connectionDialog.showAndWait();
@@ -553,11 +541,7 @@ public class ChessProgram extends Application {
 
         restartMenu.setOnAction(e -> {
             confirmation.setContentText(messages.getString("sure"));
-            try {
-                setConfirmation();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
+            setConfirmation();
         });
     }
 
@@ -567,7 +551,6 @@ public class ChessProgram extends Application {
         info.setText("ELO rating: " + controller.elo);
         System.out.println("Elo rating  " + controller.elo);
     }
-
 
     public void setInfoScreen(){ //set info screen
         moveLog.setEditable(false); //can not edit
@@ -599,11 +582,10 @@ public class ChessProgram extends Application {
         infoLayout.add(info, 0, 3);
 
 
-        infoLayout.setHalignment(moveLogTitle, HPos.CENTER); //alignment of title
-        infoLayout.setHalignment(infoscreen, HPos.CENTER); //alignment of information
+        GridPane.setHalignment(moveLogTitle, HPos.CENTER); //alignment of title
+        GridPane.setHalignment(infoscreen, HPos.CENTER); //alignment of information
 
         borderPane.setLeft(infoLayout); //set layout to left side of borderpane
-
     }
 
     public void updateInfoScreen(){
@@ -622,7 +604,6 @@ public class ChessProgram extends Application {
         }
     }
 
-
     public void winColor(){
         if (controller.chessboard.whiteTurn){
             System.out.println("Black won");
@@ -637,5 +618,4 @@ public class ChessProgram extends Application {
         controller.chessboard.tileColorA = lastColorA;
         controller.chessboard.tileColorB = lastColorB;
     }
-
 }
