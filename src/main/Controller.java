@@ -27,6 +27,8 @@ public class Controller {
     // chessboard.move("f2f3"); chessboard.move("e7e5");
     // CHECK:
     // chessboard.move("d2d4"); chessboard.move("e7e6"); chessboard.move("e2e4"); chessboard.move("f8b4");
+    // Mads spesial:
+    //chessboard.move("f2f3"); chessboard.move("e7e5"); chessboard.move("g2g4"); chessboard.move("d8h4");
 
     public Controller(String game) {
         this.game = game;

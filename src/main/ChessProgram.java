@@ -599,7 +599,7 @@ public class ChessProgram extends Application {
         if (controller.chessboard.checkStaleMate()){
             info.appendText("\n"+messages.getString("Stalemate"));
             winColor();
-        } else if (controller.chessboard.mateCheck() || !controller.engineRunning){
+        } else if (controller.chessboard.mateCheck() || (!controller.engineRunning && controller.game.contains("e"))){
             info.appendText("\n"+messages.getString("Mate"));
             winColor();
             controller.chessboard.isMate = false;
