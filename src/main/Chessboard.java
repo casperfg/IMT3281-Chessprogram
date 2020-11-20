@@ -148,9 +148,6 @@ public class Chessboard {
         if (promotionTo != '-') { // pawn promotion
             moveString += Character.toString(promotionTo).toUpperCase();
         }
-        if(check){
-            moveString += "+"; // TODO: bugged
-        }
     }
 
     public void repetition(int xt, int yt, Piece fPiece) {
@@ -230,6 +227,7 @@ public class Chessboard {
                 check = kingAttack(fPiece.color);
                 if(check){ // calculate avoidment moves.
                     calcCheckAvoid(whiteTurn);
+                    moveString += "+"; // add check sign to move
                 }
             }
         }
@@ -294,7 +292,6 @@ public class Chessboard {
         this.promotionTo = promotionTo;
     }
 
-    // TODO: update king functionality (castle/check/mate)
     public void move(int x, int y, int xt, int yt) { // from x,y to xt, yt
         Piece fPiece; // piece from
         Piece tPiece; // piece to (taken)
