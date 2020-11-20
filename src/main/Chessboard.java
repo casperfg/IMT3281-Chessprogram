@@ -3,9 +3,13 @@ package main;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import main.pieces.Pawn;
 import main.pieces.Piece;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -31,6 +35,7 @@ public class Chessboard {
     public ArrayList<int[]> whitePieces = new ArrayList<>();
     public ArrayList<int[]> blackPieces = new ArrayList<>();
 
+    public static AudioClip moveSound;
 
     public char promotionTo = '-';
     public Controller cnt = null; // controller pointer.
@@ -51,6 +56,7 @@ public class Chessboard {
 
     public Chessboard(Controller cnt) {
         makeStart();
+        initSounds();
         this.cnt = cnt;
         check = false;
     }
@@ -94,6 +100,16 @@ public class Chessboard {
                     makeTile(x,y, '-', false);
                 }
             }
+        }
+    }
+
+    public void initSounds() {
+        try {
+            URL path = getClass().getResource("/sound/move.wav");
+            moveSound = new AudioClip(path.toString());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -285,6 +301,10 @@ public class Chessboard {
         if (legalMove(x, y, xt, yt)) { // checks if legal
             fPiece = board[y][x].chessPiece;
             taking = board[yt][xt].hasPiece;
+
+            if (checkForChecks) {
+                moveSound.play();
+            }
 
             repetition(xt, yt, fPiece); // count repetition of moves
             if (taking) { // update number of officers left.
@@ -562,7 +582,7 @@ public class Chessboard {
     // xt, yt = to position
     public boolean isPromotion(int x, int y, int xt, int yt){
         boolean piece = (board[y][x].chessPiece.type == 'p');
-        return piece && (yt == 0 || y == 7);
+        return piece && (yt == 0 || yt == 7);
     }
 
     public boolean humanClick(int x, int y) { // maybe possible of board should be known beforehand
@@ -599,7 +619,6 @@ public class Chessboard {
     public void setPromotion(){
         Tile tempTile = new Tile();
         Piece promotedPiece = board[humanPiece[1]][humanPiece[0]].chessPiece;
-
         PromotionDialog promotionDialog = new PromotionDialog((Pawn)promotedPiece);
         promotionDialog.showAndWait();
 

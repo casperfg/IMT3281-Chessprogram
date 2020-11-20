@@ -5,7 +5,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.function.Consumer;
 
 public abstract class NetworkConnection {
@@ -52,7 +51,7 @@ public abstract class NetworkConnection {
             try (ServerSocket server = (isServer() ? new ServerSocket(getPort()) : null);
                  Socket socket = (isServer() ? server.accept() : new Socket(getIP(), getPort()));
                  ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-                 ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                 ObjectInputStream in = new ObjectInputStream(socket.getInputStream())
             ) {
                 this.socket = socket;
                 this.out = out;
