@@ -546,7 +546,12 @@ public class Chessboard {
 
     public void createSquare(GridPane gridPane, int col, int row, int size) {
         StackPane square = new StackPane();     //creates new square obj
-        Tile thisTile = board[col - 1][row - 1];
+        Tile thisTile;
+        if(!cnt.isServer && cnt.game.equals("h-o")){
+            thisTile = board[8-col][row - 1];
+        }else{
+            thisTile = board[col-1][row-1];
+        }
         Piece piece;
         String color;
 
@@ -584,7 +589,9 @@ public class Chessboard {
     }
 
     public boolean humanClick(int x, int y) { // maybe possible of board should be known beforehand
-        System.out.println("click");
+        if(!cnt.isServer && cnt.game.equals("h-o")){
+            y = 7-y;
+        }
         if (x == humanPiece[0] && y == humanPiece[1]) { // clicks on piece again, reset.
             humanPiece[0] = -1;
             humanPiece[1] = -1; // should be able to click on this piece again

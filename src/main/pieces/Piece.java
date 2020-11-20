@@ -93,7 +93,6 @@ public class Piece{
     }
     public void setIcon() {  // Calls child classes
     }
-
     public boolean getColor(){
         return color;
     }

@@ -64,10 +64,10 @@ public class EngineHandler {
             ZipException,
             IOException {
         final URI uri;
-        final URI exe;
-        uri = getJarURI();
-        URI getFileRet = getFile(uri, Path);
-        File exeFile = new File(getFileRet);
+        final URI exe; // makes a copy of the .exe file that is in the jar
+        uri = getJarURI(); // puts it on the computer. makes sure it is executable
+        URI getFileRet = getFile(uri, Path); // and uses the path to that file.
+        File exeFile = new File(getFileRet); // deletes the file when the program exits.
         exeFile.setExecutable(true);
         return getFileRet.getPath();
     }

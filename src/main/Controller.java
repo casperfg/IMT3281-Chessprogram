@@ -31,8 +31,10 @@ public class Controller {
     public Controller(String game) {
         this.game = game;
         chessboard = new Chessboard(this);
-        engineHandler = new EngineHandler(elo, thinkTime);
-        System.out.println("Elo rating: " + this.elo);
+        if(game.contains("e")){
+            engineHandler = new EngineHandler(elo, thinkTime);
+            System.out.println("Elo rating: " + this.elo);
+        }
 
         // Load properties
         cfg = new Config();
@@ -67,8 +69,10 @@ public class Controller {
     }
 
     public void stopEngine() {
+        if(game.contains("e")){
+            engineHandler.stopEngine();
+        }
         engineRunning = false;
-        engineHandler.stopEngine();
         System.out.println("Engine stopped...");
     }
 

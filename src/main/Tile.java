@@ -66,7 +66,11 @@ public class Tile extends Button {
         }
     }
     public ArrayList<int[]> retPossible(){
-        return chessPiece.possibleMoves;
+        if(hasPiece) {
+            return chessPiece.possibleMoves;
+        }else{
+            return new ArrayList<>();
+        }
     }
 
     public boolean kingAttack(Chessboard chBoard, boolean color) {

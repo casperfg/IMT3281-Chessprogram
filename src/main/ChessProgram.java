@@ -27,9 +27,7 @@ import javafx.stage.StageStyle;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ChessProgram extends Application {
     //================== final variables ==================
@@ -231,6 +229,9 @@ public class ChessProgram extends Application {
     void labelBoard(GridPane gridPane) {
         final String[] letterLabels = {"A", "B", "C", "D", "E", "F", "G", "H"};
         final String[] numbers = {"8", "7", "6", "5", "4", "3", "2", "1"};
+        if(!controller.isServer && game.equals("h-o")) {
+            Collections.reverse(Arrays.asList(numbers));
+        }
         for (int i = 8; i > 0; i--) {
             gridPane.add(new Label(letterLabels[i - 1]), i, 0);
             gridPane.add(new Label(letterLabels[i - 1]), i, 9);
@@ -349,6 +350,7 @@ public class ChessProgram extends Application {
     }
 
     public void restartGame() { //restart game by closing and creating new window.
+
         controller.stopEngine();
         controller.chessboard = new Chessboard(controller);
         controller.engineHandler = new EngineHandler(controller.elo, controller.thinkTime);
