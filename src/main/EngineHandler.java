@@ -66,7 +66,10 @@ public class EngineHandler {
         final URI uri;
         final URI exe;
         uri = getJarURI();
-        return getFile(uri, Path).getPath();
+        URI getFileRet = getFile(uri, Path);
+        File exeFile = new File(getFileRet);
+        exeFile.setExecutable(true);
+        return getFileRet.getPath();
     }
 
     private void startEngine() { // works for both windows and max
