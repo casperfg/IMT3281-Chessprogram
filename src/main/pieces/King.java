@@ -25,7 +25,7 @@ public class King extends Piece{
     public void possible(Chessboard board) {
         nonRepeat(moveVector, board);
 
-        if(canCastle(board)){ // fix threats on these squares
+        if(canCastle(board) && !board.check){ // fix threats on these squares
             if(shortCastle(board)){
                 addPoss(board, 2, 0);
             }
