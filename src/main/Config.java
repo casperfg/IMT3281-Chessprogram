@@ -5,7 +5,6 @@ import java.util.Properties;
 
 public class Config {
 
-    private final String DEFAULT_PATH = "/default.properties";
     private final String CONFIG_PATH = "config.properties";
 
     public Properties props;
@@ -19,7 +18,7 @@ public class Config {
     private void loadDefaultProps() {
         Properties defaultProps = new Properties();
         try {
-            InputStream in = getClass().getResourceAsStream(DEFAULT_PATH);
+            InputStream in = getClass().getResourceAsStream("/default.properties");
             defaultProps.load(in);
             in.close();
         } catch (IOException e) {
