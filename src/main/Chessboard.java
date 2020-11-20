@@ -4,8 +4,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.media.AudioClip;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
+
 import main.pieces.Pawn;
 import main.pieces.Piece;
 
@@ -38,7 +37,7 @@ public class Chessboard {
     public static AudioClip moveSound;
 
     public char promotionTo = '-';
-    public Controller cnt = null; // controller pointer.
+    public Controller cnt; // controller pointer.
 
     public String piecesLeftIndex = "rnbkqp";
     public int[] piecesLeft = new int[]{4, 4, 4, 2, 2, 16};
@@ -51,23 +50,20 @@ public class Chessboard {
 
     public boolean isMate = false;
 
-
-    // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
-
     public Chessboard(Controller cnt) {
         makeStart();
         initSounds();
         this.cnt = cnt;
-        check = false;
     }
+
     public Chessboard(Chessboard chBoard, String fen, Controller cnt){
         whitePieces = (ArrayList<int[]>) chBoard.whitePieces.clone();
         blackPieces = (ArrayList<int[]>) chBoard.blackPieces.clone();
         setFen(fen);
         checkForChecks = false;
-        check = false;
         this.cnt = cnt;
     }
+
     public int arrContains(ArrayList<int[]> ar, int[] array){
         int x, y;
         for(int i = 0; i<ar.size(); i++){
@@ -78,6 +74,7 @@ public class Chessboard {
         }
         return -1;
     }
+
     public ArrayList<int[]> getPieceList(boolean color){
         if(color){
             return whitePieces;
@@ -132,6 +129,7 @@ public class Chessboard {
             }
         }
     }
+
     // ------------MOVE-----------------
     // converts move to save friendly format
     public void moveStringSet(Piece fPiece, int x, int y, int xt, int yt) {
@@ -162,6 +160,7 @@ public class Chessboard {
             repetition = 0;
         }
     }
+
     // checks if color attacks the opposite color
     public boolean kingAttack(boolean color){
         Tile thisTile;
@@ -174,9 +173,10 @@ public class Chessboard {
         }
         return false;
     }
+
     // can this color avoid checkmate. keeps only the possible moves that avoids check/mate
     public void calcCheckAvoid(boolean color){ // should be whiteTurn
-        Chessboard tmpBoard = new Chessboard(this, toFen(), cnt); // make a copy of the board.
+        Chessboard tmpBoard; // make a copy of the board.
 
         Tile thisTile;
         ArrayList<int[]> piecePos = getPieceList(color); // piece position for this color
@@ -195,15 +195,15 @@ public class Chessboard {
             tmpPossible = (ArrayList<int[]>) thisTile.retPossible().clone(); // clone the possible moves
             cp.removePossible(); // remove every possible move in the piece
 
-            for(int i = 0; i<tmpPossible.size(); i++){ // loop all the possible moves
+            for (int[] ints : tmpPossible) { // loop all the possible moves
                 // move from piece position to possible
                 tmpBoard = new Chessboard(this, fen, cnt); // resets board position. to original position
-                xt = tmpPossible.get(i)[0]; yt = tmpPossible.get(i)[1]; // get where this piece moves
+                xt = ints[0];  yt = ints[1]; // get where this piece moves
                 tmpBoard.move(cp.position[0], cp.position[1], xt, yt); // move this move
 
-                if(!tmpBoard.kingAttack(!color)){ // avoided the check given
+                if (!tmpBoard.kingAttack(!color)) { // avoided the check given
                     avoided = true; // keep the possible move if it avoids check.
-                    cp.possibleMoves.add(new int[]{xt,yt}); // add back this possible move.
+                    cp.possibleMoves.add(new int[]{xt, yt}); // add back this possible move.
                 }
             }
             if(avoided){ // avoided check somehow with this piece
@@ -215,6 +215,7 @@ public class Chessboard {
             isMate = true;
         }
     }
+
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
         if (board[yt][xt].tileName.equals(enPassantSquare)) { // is taking enpassant
             updatePieceLeft(board[pawnPassant[1]][pawnPassant[0]].chessPiece, -1);
@@ -226,8 +227,6 @@ public class Chessboard {
                 check = kingAttack(fPiece.color);
                 if(check){ // calculate avoidment moves.
                     calcCheckAvoid(whiteTurn);
-                }else{
-                    check = false;
                 }
             }
         }
@@ -376,9 +375,7 @@ public class Chessboard {
         try {
             int index = piecesLeftIndex.indexOf(piece.type);
             piecesLeft[index] += inc; // inc=-1 or 1; adds or remove piece
-        } catch (Exception ignored) {
-        }
-
+        } catch (Exception ignored) {}
     }
 
     public boolean checkStaleMate() { // takes care of automatic draws.
@@ -446,7 +443,6 @@ public class Chessboard {
                     System.out.println(y);
                     System.out.println(xt);
                     System.out.println(yt);
-                    isBlank = false;
                 }
             }
             return board[y][x].hasPiece && (isBlank || isOpposite);
@@ -500,6 +496,7 @@ public class Chessboard {
         }
         return fen.toString() + result;
     }
+
     public void setFen(String fen){ // piecesLeftIndex
         int i = -1;
         String part;
@@ -577,6 +574,7 @@ public class Chessboard {
         square.setStyle("-fx-background-color: " + color + ";");
         gridPane.add(square, row, col);
     }
+
     // tests if move is promotion
     // x,y = from position
     // xt, yt = to position
@@ -629,8 +627,8 @@ public class Chessboard {
     }
 
     public String displayMoves(){ //display all moves
-        String singleMove = new String();  //string to handle single move
-        String allMoves = new String();  //string to handle both moves
+        String singleMove;  //string to handle single move
+        String allMoves = "";  //string to handle both moves
         int moveNr = 1; //move number
         int lastMove = 1; //when both have done move
 
@@ -650,7 +648,6 @@ public class Chessboard {
         return allMoves; //return  string
     }
 
-
     public String setColor(String color){
         return color;
     }
@@ -658,12 +655,4 @@ public class Chessboard {
     public boolean mateCheck(){ //if mate, sets ismate = true
         return isMate;
     }
-
-
 }
-/*
-MATT:
-1. kongen er under trussel (aka sjakk)
-2. kongen har ingen felt å gå til
-3. det er ikke noe trekk kongens farge kan gjøre for å forhindre trusselen til kongen
- */
