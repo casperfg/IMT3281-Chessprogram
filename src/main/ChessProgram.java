@@ -65,6 +65,7 @@ public class ChessProgram extends Application {
     MenuItem classicTheme = new MenuItem();
     MenuItem blueTheme = new MenuItem();
     MenuItem greenTheme = new MenuItem();
+    MenuItem districtTheme = new MenuItem();
     //================== Difficulties ==================
     Menu difficultySubMenu = new Menu();
     MenuItem diff_carlsen = new MenuItem();
@@ -96,7 +97,9 @@ public class ChessProgram extends Application {
     Text moveLogTitle = new Text();  //title of move log
     Text infoscreen = new Text(); //info panel
 
-    String lastHighlight, lastColorA, lastColorB;
+    String lastHighlight = "yellow";
+    String lastColorA = "white";
+    String lastColorB = "gray";
 
     RowConstraints row1 = new RowConstraints(); //row constraints
     RowConstraints row2 = new RowConstraints();
@@ -290,7 +293,7 @@ public class ChessProgram extends Application {
             settings.getItems().add(themeSubMenu);
 
             difficultySubMenu.getItems().addAll(diff_carlsen, diff_gm, diff_lahl, diff_hard, diff_normal, diff_easy);
-            themeSubMenu.getItems().addAll(standardTheme, darkTheme, classicTheme, blueTheme, greenTheme);
+            themeSubMenu.getItems().addAll(standardTheme, darkTheme, classicTheme, blueTheme, greenTheme, districtTheme);
 
             file.getItems().add(restartMenu);
             menubar.getMenus().addAll(file, settings, help); //add all menus to menubar
@@ -492,12 +495,14 @@ public class ChessProgram extends Application {
         classicTheme.setText(messages.getString("Classic"));
         blueTheme.setText(messages.getString("Blue"));
         greenTheme.setText(messages.getString("Green"));
+        districtTheme.setText(messages.getString("District"));
 
         themeActionEvent(standardTheme,"yellow", "white", "grey" );
         themeActionEvent(darkTheme,"#800e13","#737373", "#353535");
         themeActionEvent(classicTheme,"#d90429", "#FFCE9E","#D18B47");
         themeActionEvent(blueTheme,"#023047", "#7DAFEA", "#6092CF");
         themeActionEvent(greenTheme,"yellow",  "#EEEED2","#769656");
+        themeActionEvent(districtTheme, "cyan", "#f39dff", "#e80b35");
     }
 
     public void setColor(String highlight, String A, String B){
@@ -509,6 +514,7 @@ public class ChessProgram extends Application {
         lastColorB = B;
         updateBoard();
     }
+
     public void themeActionEvent(MenuItem theme, String highlight, String A, String B ){
         theme.setOnAction(actionEvent -> setColor(highlight, A, B));
     }
@@ -609,9 +615,10 @@ public class ChessProgram extends Application {
         if (controller.chessboard.checkStaleMate()){
             info.appendText("\n"+messages.getString("Stalemate"));
             winColor();
-        } else if (controller.chessboard.mateCheck()){
+        } else if (controller.chessboard.mateCheck() || !controller.engineRunning){
             info.appendText("\n"+messages.getString("Mate"));
             winColor();
+            controller.chessboard.isMate = false;
         }
     }
 

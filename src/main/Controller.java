@@ -44,7 +44,6 @@ public class Controller {
         if (game.contains("h")) {
             waitingForMove = false;
         }
-
         if (game.equals("h-h") || game.equals("h-o")) {
             engineRunning = false;
         }
@@ -126,7 +125,6 @@ public class Controller {
             } else if(game.equals("h-o") && !waitingForMove) {
                 change = true;
             }
-            //gameCheck();
             if (!engineRunning) {
                 return true;
             }

@@ -49,7 +49,7 @@ public class Chessboard {
     public String tileColorA = "white";
     public String tileColorB = "grey";
 
-    public boolean ismate = false;
+    public boolean isMate = false;
 
 
     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
@@ -212,7 +212,7 @@ public class Chessboard {
         }
         if(checkAvoid.isEmpty()){
             cnt.ISMATE();
-            ismate  = true;
+            isMate = true;
         }
     }
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
@@ -413,7 +413,7 @@ public class Chessboard {
                 return (ab[0] && ab[1]) || (!ab[0] && !ab[1]);
             }
         }
-        return false;
+        return repetition == 4;
     }
 
     // -----------------LEGALMOVE ---------------------------
@@ -582,7 +582,7 @@ public class Chessboard {
     // xt, yt = to position
     public boolean isPromotion(int x, int y, int xt, int yt){
         boolean piece = (board[y][x].chessPiece.type == 'p');
-        return piece && (yt == 0 || y == 7);
+        return piece && (yt == 0 || yt == 7);
     }
 
     public boolean humanClick(int x, int y) { // maybe possible of board should be known beforehand
@@ -619,7 +619,6 @@ public class Chessboard {
     public void setPromotion(){
         Tile tempTile = new Tile();
         Piece promotedPiece = board[humanPiece[1]][humanPiece[0]].chessPiece;
-
         PromotionDialog promotionDialog = new PromotionDialog((Pawn)promotedPiece);
         promotionDialog.showAndWait();
 
@@ -657,7 +656,7 @@ public class Chessboard {
     }
 
     public boolean mateCheck(){ //if mate, sets ismate = true
-        return ismate;
+        return isMate;
     }
 
 
