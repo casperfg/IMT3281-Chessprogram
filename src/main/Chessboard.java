@@ -16,30 +16,30 @@ import static java.lang.Character.isDigit;
 
 public class Chessboard {
     public Tile[][] board = new Tile[8][8];
-    public boolean checkForChecks = true;
+    public boolean checkForChecks = true; // check if this moves check. false when calculation moves to avoid check
 
     public boolean whiteTurn = true;
-    public boolean check = false;
-    public boolean whiteCastle = false;
+    public boolean check = false; // is check
+    public boolean whiteCastle = false; // has castled
     public boolean blackCastle = false;
 
     public String enPassantSquare = "-"; // '-' if no passantsquare
-    public int[] pawnPassant;
+    public int[] pawnPassant;  // the pawn responsible for passant
     public int moveCount = 0; // increments after black move
 
-    public int repetition = 0;
-    public String moveString;
-    public ArrayList<String> moves = new ArrayList<>();
+    public int repetition = 0; // repetiotion of moves
+    public String moveString; // movestring of move
+    public ArrayList<String> moves = new ArrayList<>(); // list of moves
     public ArrayList<int[]> checkAvoid = new ArrayList<>(); // pieces that can avoid check. (x,y)
     public ArrayList<int[]> whitePieces = new ArrayList<>();
     public ArrayList<int[]> blackPieces = new ArrayList<>();
 
     public static AudioClip moveSound;
 
-    public char promotionTo = '-';
+    public char promotionTo = '-'; // to promote to
     public Controller cnt; // controller pointer.
 
-    public String piecesLeftIndex = "rnbkqp";
+    public String piecesLeftIndex = "rnbkqp"; // index for pieces
     public int[] piecesLeft = new int[]{4, 4, 4, 2, 2, 16};
 
     public int[] humanPiece = new int[2]; // piece responcible for highlights. (x,y)

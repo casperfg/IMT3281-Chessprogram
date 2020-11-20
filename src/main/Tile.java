@@ -9,7 +9,7 @@ public class Tile extends Button {
     public Piece chessPiece; // piece pointer
     boolean tileColorWhite; // tile is white
     boolean highLight = false;
-    String tileName = "yoyoyo"; // name of tile: e4, e6 etc..
+    public String tileName = "yoyoyo"; // name of tile: e4, e6 etc..
     String column = "abcdefgh"; // column names for tilename
     Boolean hasPiece = false; // has a piece on it
 
