@@ -537,7 +537,7 @@ public class ChessProgram extends Application {
         addThemeMenu();
     }
 
-    public void addFileMenu() {
+    public void addFileMenu() { //setting text
         file.setText(messages.getString("File"));
         restartMenu.setText(messages.getString("Restart"));
 
@@ -595,7 +595,7 @@ public class ChessProgram extends Application {
         infoscreen.setText(messages.getString("Infoscreen"));
     }
 
-    public void isFinished(){
+    public void isFinished(){ //checks for mate and stalemate
         if (controller.chessboard.checkStaleMate()){
             info.appendText("\n"+messages.getString("Stalemate"));
             winColor();
@@ -606,9 +606,8 @@ public class ChessProgram extends Application {
         }
     }
 
-    public void winColor(){
+    public void winColor(){ //which color wins
         if (controller.chessboard.whiteTurn){
-            System.out.println("Black won");
             info.appendText("\n"+messages.getString("Blackwin"));
         }else{
             info.appendText("\n"+messages.getString("Whitewin"));
