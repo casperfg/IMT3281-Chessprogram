@@ -29,7 +29,6 @@ public class Pawn extends Piece {
     }
 
     public void possible(Chessboard chBoard) {
-        int xt, yt;
         direction = color? -1: 1; // y change direction
         if(chBoard.blankSq(position[0], position[1]+direction)){ // 1 square forward is blank
             addPoss(chBoard, 0, direction); // move 1 square forward
@@ -39,13 +38,10 @@ public class Pawn extends Piece {
                 }
             }
         }
-        xt = position[0]-1; // pawn taking -x
-        yt = position[1]+direction;
         passant(chBoard, -1, direction);
         passant(chBoard, 1, direction);
 
         if(!chBoard.blankSq(position[0]-1, position[1]+direction)){ // pawn taking -x
-            ;
             addPoss(chBoard, -1, direction);
         }
         if(!chBoard.blankSq(position[0]+1, position[1]+direction)) { // pawn taking +x
