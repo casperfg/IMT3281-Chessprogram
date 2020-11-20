@@ -10,7 +10,7 @@ public class Tile extends Button {
     boolean tileColorWhite; // tile is white
     boolean highLight = false;
     public String tileName = "yoyoyo"; // name of tile: e4, e6 etc..
-    String column = "abcdefgh"; // column names for tilename
+    final String column = "abcdefgh"; // column names for tilename
     Boolean hasPiece = false; // has a piece on it
 
     public void updatePiece(char type) { // set a piece (INITIAL)

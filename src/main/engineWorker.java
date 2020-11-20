@@ -41,7 +41,7 @@ public class engineWorker extends Thread {
     }
 
     public String getOutput(int waitTime) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         try {
             Thread.sleep(waitTime);
             sendCommand("isready");
@@ -55,7 +55,7 @@ public class engineWorker extends Thread {
                     if (text.equals("readyok")) {
                         break;
                     } else {
-                        buffer.append(text + "\n");
+                        buffer.append(text).append("\n");
                     }
                     if (text.contains("mate 1 ")) { // this move mates the other player
                         playerMated = true;

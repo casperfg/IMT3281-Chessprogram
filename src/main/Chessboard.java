@@ -15,7 +15,7 @@ import java.util.Arrays;
 import static java.lang.Character.isDigit;
 
 public class Chessboard {
-    public Tile[][] board = new Tile[8][8];
+    public final Tile[][] board = new Tile[8][8];
     public boolean checkForChecks = true; // check if this moves check. false when calculation moves to avoid check
 
     public boolean whiteTurn = true;
@@ -29,18 +29,18 @@ public class Chessboard {
 
     public int repetition = 0; // repetiotion of moves
     public String moveString; // movestring of move
-    public ArrayList<String> moves = new ArrayList<>(); // list of moves
-    public ArrayList<int[]> checkAvoid = new ArrayList<>(); // pieces that can avoid check. (x,y)
+    public final ArrayList<String> moves = new ArrayList<>(); // list of moves
+    public final ArrayList<int[]> checkAvoid = new ArrayList<>(); // pieces that can avoid check. (x,y)
     public ArrayList<int[]> whitePieces = new ArrayList<>();
     public ArrayList<int[]> blackPieces = new ArrayList<>();
 
     public static AudioClip moveSound;
 
     public char promotionTo = '-'; // to promote to
-    public Controller cnt; // controller pointer.
+    public final Controller cnt; // controller pointer.
 
-    public String piecesLeftIndex = "rnbkqp"; // index for pieces
-    public int[] piecesLeft = new int[]{4, 4, 4, 2, 2, 16};
+    public final String piecesLeftIndex = "rnbkqp"; // index for pieces
+    public final int[] piecesLeft = new int[]{4, 4, 4, 2, 2, 16};
 
     public int[] humanPiece = new int[2]; // piece responcible for highlights. (x,y)
 
@@ -581,7 +581,7 @@ public class Chessboard {
     // tests if move is promotion
     // x,y = from position
     // xt, yt = to position
-    public boolean isPromotion(int x, int y, int xt, int yt){
+    public boolean isPromotion(int x, int y, int yt){
         boolean piece = (board[y][x].chessPiece.type == 'p');
         return piece && (yt == 0 || yt == 7);
     }
@@ -608,7 +608,7 @@ public class Chessboard {
             }
             return false;
         } else if (board[y][x].highLight) { // clicks on highlight, move piece
-            if(isPromotion(humanPiece[0], humanPiece[1], x, y)){
+            if(isPromotion(humanPiece[0], humanPiece[1], y)){
                 setPromotion();
             }
             move(humanPiece[0], humanPiece[1], x, y); // removes highlight/possible

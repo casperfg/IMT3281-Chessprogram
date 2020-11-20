@@ -12,7 +12,7 @@ public class Piece {
     public char type = '-';  // knbr osv..
     public boolean rookMoved = false;  // set to true if tower and has moved (Castle not allowed)
     public Image icon;
-    public ArrayList<int[]> possibleMoves = new ArrayList<>();  // moves possible, coordinates in internal form.
+    public final ArrayList<int[]> possibleMoves = new ArrayList<>();  // moves possible, coordinates in internal form.
 
     public void removePossible() {
         possibleMoves.removeAll(possibleMoves);

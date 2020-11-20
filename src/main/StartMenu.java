@@ -7,7 +7,6 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -15,7 +14,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import main.pieces.Pawn;
 
-import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -23,24 +21,24 @@ public class StartMenu extends Application {
     final int WIDTH = 290;
     final int HEIGHT = 50;
     Stage mm = new Stage(); //main menu stage
-    BorderPane borderPane = new BorderPane();
-    ImageView imageView = new ImageView();
-    FlowPane flowPane = new FlowPane();
-    FlowPane langPane = new FlowPane();
-    Image logo_en = new Image(getClass().getResourceAsStream("/images/logo_en.png"));
-    Image logo_no = new Image(getClass().getResourceAsStream("/images/logo_no.png"));
-    Scene scene = new Scene(borderPane, 600, 600);
-    Button btn_play = new Button();
-    Button btn_pvp = new Button();
-    Button btn_online = new Button();
-    Button btn_cpu = new Button();
-    Button btn_exit = new Button();
-    Button btn_no = new Button();
-    Button btn_en = new Button();
+    final BorderPane borderPane = new BorderPane();
+    final ImageView imageView = new ImageView();
+    final FlowPane flowPane = new FlowPane();
+    final FlowPane langPane = new FlowPane();
+    final Image logo_en = new Image(getClass().getResourceAsStream("/images/logo_en.png"));
+    final Image logo_no = new Image(getClass().getResourceAsStream("/images/logo_no.png"));
+    final Scene scene = new Scene(borderPane, 600, 600);
+    final Button btn_play = new Button();
+    final Button btn_pvp = new Button();
+    final Button btn_online = new Button();
+    final Button btn_cpu = new Button();
+    final Button btn_exit = new Button();
+    final Button btn_no = new Button();
+    final Button btn_en = new Button();
 
     //================== Fetching icons ==================
-    Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg"), 30, 20, false, true); //fetches from res folder
-    Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg"), 30, 20, false, true); //fetches from res folder
+    final Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg"), 30, 20, false, true); //fetches from res folder
+    final Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg"), 30, 20, false, true); //fetches from res folder
 
     //================== Initialize internationalization ==================
     String defaultLanguage = "en";
@@ -162,8 +160,7 @@ public class StartMenu extends Application {
 
     public Background setBackgroundImage(Image flag) {
         BackgroundImage backgroundImage = new BackgroundImage(flag, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
-        Background background = new Background(backgroundImage);
-        return background;
+        return new Background(backgroundImage);
     }
 
     public void setLanguage(String language, String country) {  //set language for program

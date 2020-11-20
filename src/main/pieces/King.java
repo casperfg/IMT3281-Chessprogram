@@ -8,7 +8,7 @@ public class King extends Piece {
     // movevector same as queen, but not reating vector.
     public boolean castled = false;
     public Piece towerPiece;
-    public int[][] moveVector = new int[][]{{0,1},{0, -1},{1,0},{-1, 0}, {1,-1},{1, 1},{-1,1},{-1, -1}};
+    public final int[][] moveVector = new int[][]{{0,1},{0, -1},{1,0},{-1, 0}, {1,-1},{1, 1},{-1,1},{-1, -1}};
 
     public King() {}
 

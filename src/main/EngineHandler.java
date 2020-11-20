@@ -1,7 +1,6 @@
 package main;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Closeable;
@@ -17,7 +16,6 @@ import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 // https://stackoverflow.com/questions/600146/run-exe-which-is-packaged-inside-jar-file
@@ -25,7 +23,6 @@ import java.util.zip.ZipFile;
 public class EngineHandler {
     public int eloRating;
     public int thinkTime = 1000; // ms
-    private Process engine;
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
     private engineWorker worker; // workThread that lets engine wait and calculate
@@ -60,8 +57,7 @@ public class EngineHandler {
     public boolean checkMate() {
         return worker.playerMated;
     }
-    public String jarFuckery(String Path)throws URISyntaxException,
-            ZipException,
+    public String resolveJarPath(String Path)throws URISyntaxException,
             IOException {
         final URI uri;
         final URI exe; // makes a copy of the .exe file that is in the jar
@@ -78,7 +74,7 @@ public class EngineHandler {
             PATH = PATHmac; // set path to the mac path
         }
         try {
-            engine = Runtime.getRuntime().exec(jarFuckery(PATH)); // execute exe
+            Process engine = Runtime.getRuntime().exec(resolveJarPath(PATH)); // execute exe
             // make reader / writer stream
             processReader = new BufferedReader(new InputStreamReader(engine.getInputStream()));
             processWriter = new OutputStreamWriter(engine.getOutputStream());
@@ -127,7 +123,7 @@ public class EngineHandler {
 
     private static URI getFile(final URI    where,
                                final String fileName)
-            throws ZipException,
+            throws
             IOException
     {
         final File location;

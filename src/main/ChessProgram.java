@@ -9,18 +9,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -40,56 +32,56 @@ public class ChessProgram extends Application {
     final int NORMAL = 900;
     final int EASY = 300;
     public GridPane chessboard;
-    public String game;
+    public final String game;
     //================== Initialize internationalization ==================
     String currentLanguage;
     String currentCountry;
     ResourceBundle messages; //initializing resource bundle
     //================== Menu-bar  ==================
-    MenuBar menubar = new MenuBar(); //creates menubar
-    Menu file = new Menu(); //creating file in menu bar
-    Menu settings = new Menu(); //creating settings in menu bar
-    Menu langSubMenu = new Menu(); //submenu for language
-    Menu themeSubMenu = new Menu();
+    final MenuBar menubar = new MenuBar(); //creates menubar
+    final Menu file = new Menu(); //creating file in menu bar
+    final Menu settings = new Menu(); //creating settings in menu bar
+    final Menu langSubMenu = new Menu(); //submenu for language
+    final Menu themeSubMenu = new Menu();
     //================== Help Menu ==================
-    Menu help = new Menu();
-    MenuItem about = new MenuItem();
-    MenuItem rules = new MenuItem();
+    final Menu help = new Menu();
+    final MenuItem about = new MenuItem();
+    final MenuItem rules = new MenuItem();
     //================== Themes ==================
-    MenuItem standardTheme = new MenuItem();
-    MenuItem darkTheme = new MenuItem();
-    MenuItem classicTheme = new MenuItem();
-    MenuItem blueTheme = new MenuItem();
-    MenuItem greenTheme = new MenuItem();
-    MenuItem districtTheme = new MenuItem();
+    final MenuItem standardTheme = new MenuItem();
+    final MenuItem darkTheme = new MenuItem();
+    final MenuItem classicTheme = new MenuItem();
+    final MenuItem blueTheme = new MenuItem();
+    final MenuItem greenTheme = new MenuItem();
+    final MenuItem districtTheme = new MenuItem();
     //================== Difficulties ==================
-    Menu difficultySubMenu = new Menu();
-    MenuItem diff_carlsen = new MenuItem();
-    MenuItem diff_gm = new MenuItem();
-    MenuItem diff_lahl = new MenuItem();
-    MenuItem diff_hard = new MenuItem();
-    MenuItem diff_normal = new MenuItem();
-    MenuItem diff_easy = new MenuItem();
-    MenuItem restartMenu = new MenuItem();
-    MenuItem Norwegian = new MenuItem(); //Norwegian as a choice
-    Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg")); //fetches from res folder
-    MenuItem English = new MenuItem(); //English as a choice
-    Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg")); //fetches from res folder
+    final Menu difficultySubMenu = new Menu();
+    final MenuItem diff_carlsen = new MenuItem();
+    final MenuItem diff_gm = new MenuItem();
+    final MenuItem diff_lahl = new MenuItem();
+    final MenuItem diff_hard = new MenuItem();
+    final MenuItem diff_normal = new MenuItem();
+    final MenuItem diff_easy = new MenuItem();
+    final MenuItem restartMenu = new MenuItem();
+    final MenuItem Norwegian = new MenuItem(); //Norwegian as a choice
+    final Image norFlag = new Image(getClass().getResourceAsStream("/images/NorwayFlag.jpg")); //fetches from res folder
+    final MenuItem English = new MenuItem(); //English as a choice
+    final Image UKFlag = new Image(getClass().getResourceAsStream("/images/UnitedKingdomFlag.jpg")); //fetches from res folder
     boolean startUp = true;
     BorderPane borderPane;
     Stage cb = new Stage(); //main chessboard stage
     //================== Confirmation-dialogue ==================
-    Alert confirmation = new Alert(AlertType.CONFIRMATION); //alert object type confirmation
+    final Alert confirmation = new Alert(AlertType.CONFIRMATION); //alert object type confirmation
     //================== about window ==================
-    Stage helpStage = new Stage();
+    final Stage helpStage = new Stage();
 
-    Controller controller;
+    final Controller controller;
     int refreshRate = 5000;
 
     //================== info panel ==================
-    GridPane infoLayout = new GridPane(); //grid layout for infoscreen
-    TextArea moveLog = new TextArea(); //show moves
-    TextArea info = new TextArea(); //info panel
+    final GridPane infoLayout = new GridPane(); //grid layout for infoscreen
+    final TextArea moveLog = new TextArea(); //show moves
+    final TextArea info = new TextArea(); //info panel
     Text moveLogTitle = new Text();  //title of move log
     Text infoscreen = new Text(); //info panel
 
@@ -97,12 +89,12 @@ public class ChessProgram extends Application {
     String lastColorA = "white";
     String lastColorB = "gray";
 
-    RowConstraints row1 = new RowConstraints(); //row constraints
-    RowConstraints row2 = new RowConstraints();
-    RowConstraints row3 = new RowConstraints();
-    RowConstraints row4 = new RowConstraints();
-    ColumnConstraints column1 = new ColumnConstraints(); //column constraint
-    Insets inset = new Insets(10, 20, 20, 20); //padding around the infopanel
+    final RowConstraints row1 = new RowConstraints(); //row constraints
+    final RowConstraints row2 = new RowConstraints();
+    final RowConstraints row3 = new RowConstraints();
+    final RowConstraints row4 = new RowConstraints();
+    final ColumnConstraints column1 = new ColumnConstraints(); //column constraint
+    final Insets inset = new Insets(10, 20, 20, 20); //padding around the infopanel
 
 
     public ChessProgram(String game) {

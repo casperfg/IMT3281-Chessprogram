@@ -9,14 +9,14 @@ import java.io.Serializable;
 
 public class Controller {
     public Chessboard chessboard;
-    public String game;
+    public final String game;
     public EngineHandler engineHandler;
     public Boolean firstRun = true;
     public Boolean engineRunning = true; // wether engine is running or not
     public ChessProgram programPtr = null; // has pointer to chessprogram for board updation. IF there is a human involved
-    public int thinkTime = 1000;
+    public final int thinkTime = 1000;
     public int elo = 900;
-    public Config cfg;
+    public final Config cfg;
     public NetworkConnection connection;
     public boolean isServer = true;
     public String ip;
@@ -85,13 +85,11 @@ public class Controller {
         }
     }
 
-    public boolean gameCheck() { // this move mates the other player
+    public void gameCheck() { // this move mates the other player
         if ((engineHandler.checkMate() || chessboard.repetition == 4 || chessboard.checkStaleMate()) && engineRunning) {
             System.out.println("Game Finished");
             stopEngine();
-            return true;
         }
-        return false;
     }
 
     public Boolean engVsEng() {

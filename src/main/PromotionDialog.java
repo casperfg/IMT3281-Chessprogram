@@ -16,7 +16,7 @@ import main.pieces.Rook;
 public class PromotionDialog extends Dialog<Piece> {
     private Piece selectedPiece;
 
-    int size = 80;
+    final int size = 80;
     String color;
 
     public PromotionDialog(Pawn pawn){
@@ -32,7 +32,7 @@ public class PromotionDialog extends Dialog<Piece> {
 }
 
     private class PromotionPiece extends Label {
-        Piece piece;
+        final Piece piece;
 
         PromotionPiece(Piece piece){            //Constructor for the dialog window
             piece.setIcon();
