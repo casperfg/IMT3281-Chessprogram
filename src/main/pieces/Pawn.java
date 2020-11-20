@@ -2,26 +2,21 @@ package main.pieces;
 
 import javafx.scene.image.Image;
 import main.Chessboard;
-import main.Tile;
 
-public class Pawn extends Piece{
+public class Pawn extends Piece {
+
     int direction; // ychange of piece. -1 white 1 black
 
-    public Pawn(boolean color){
-        super(color, "pawn", 'p');
-    }
+    public Pawn() {}
 
-    public Pawn(){
-
-    }
-
-    public void setIcon(){
+    public void setIcon() {
         if(color){
             icon = new Image(getClass().getResourceAsStream("/images/white_pawn.png"));
         }else{
             icon = new Image(getClass().getResourceAsStream("/images/black_pawn.png"));
         }
     }
+
     public void possible(Chessboard board) {
         direction = color? -1: 1; // y change direction
         if(board.blankSq(position[0], position[1]+direction)){ // 1 square forward is blank
