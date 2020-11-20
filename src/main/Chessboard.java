@@ -189,6 +189,9 @@ public class Chessboard {
 
         for(int[] pos : piecePos){ // loop all chess pieces
             thisTile = board[pos[1]][pos[0]]; // get the tile
+            if(!thisTile.hasPiece){
+                break;
+            }
             cp = thisTile.chessPiece; // get the chesspiece
 
             thisTile.possible(this, false); // get possible moves for this piece
@@ -331,22 +334,24 @@ public class Chessboard {
             moves.add(moveString);
 
             // If move was made by local player, send the move via connection
-            if (cnt.game.equals("h-o") && !cnt.waitingForMove && checkForChecks) {
-                Move move = new Move(x, y, xt, yt);
-                move.moveString = moves.get(moves.size() - 1);
-                try {
-                    System.out.println((cnt.isServer ? "Server" : "Client") +
-                                        " is trying to send move " + move.moveString);
-                    cnt.connection.send(move);
-                } catch (Exception e) {
-                    System.out.println("Failed to send");
+            if(checkForChecks){
+                if (cnt.game.equals("h-o") && !cnt.waitingForMove) {
+                    Move move = new Move(x, y, xt, yt);
+                    move.moveString = moves.get(moves.size() - 1);
+                    try {
+                        System.out.println((cnt.isServer ? "Server" : "Client") +
+                                " is trying to send move " + move.moveString);
+                        cnt.connection.send(move);
+                    } catch (Exception e) {
+                        System.out.println("Failed to send");
+                    }
+                }
+                // If move is coming in via connection, we are no longer waiting for move
+                if (cnt.waitingForMove) {
+                    cnt.waitingForMove = false;
                 }
             }
 
-            // If move is coming in via connection, we are no longer waiting for move
-            if (cnt.waitingForMove) {
-                cnt.waitingForMove = false;
-            }
 
         } else {
             System.out.println("wrong move"); // freezes after this
@@ -439,10 +444,7 @@ public class Chessboard {
                 try {
                     isOpposite = tPiece.color != fPiece.color;
                 } catch (Exception e) {
-                    System.out.println(x);
-                    System.out.println(y);
-                    System.out.println(xt);
-                    System.out.println(yt);
+                    isOpposite = true;
                 }
             }
             return board[y][x].hasPiece && (isBlank || isOpposite);
