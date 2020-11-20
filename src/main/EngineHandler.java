@@ -4,7 +4,23 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
+// https://stackoverflow.com/questions/600146/run-exe-which-is-packaged-inside-jar-file
 // https://github.com/rahular/chess-misc/blob/master/JavaStockfish/src/com/rahul/stockfish/Stockfish.java
 public class EngineHandler {
     public int eloRating;
@@ -13,7 +29,7 @@ public class EngineHandler {
     private BufferedReader processReader;
     private OutputStreamWriter processWriter;
     private engineWorker worker; // workThread that lets engine wait and calculate
-    private static String PATH = "./res/stockfishWin.exe"; // path for window
+    private static String PATH = "stockfishWin.exe"; // path for window
     private static final String PATHmac = "stockfish"; // path max
 
     public EngineHandler() { // start the engine
@@ -44,6 +60,14 @@ public class EngineHandler {
     public boolean checkMate() {
         return worker.playerMated;
     }
+    public String jarFuckery(String Path)throws URISyntaxException,
+            ZipException,
+            IOException {
+        final URI uri;
+        final URI exe;
+        uri = getJarURI();
+        return getFile(uri, Path).getPath();
+    }
 
     private void startEngine() { // works for both windows and max
         String os = System.getProperty("os.name"); // get operatingsystem name
@@ -51,7 +75,7 @@ public class EngineHandler {
             PATH = PATHmac; // set path to the mac path
         }
         try {
-            engine = Runtime.getRuntime().exec(PATH); // execute exe
+            engine = Runtime.getRuntime().exec(jarFuckery(PATH)); // execute exe
             // make reader / writer stream
             processReader = new BufferedReader(new InputStreamReader(engine.getInputStream()));
             processWriter = new OutputStreamWriter(engine.getOutputStream());
@@ -81,4 +105,113 @@ public class EngineHandler {
         sendCommand("setoption name UCI_Elo value " + Elo);
     }
 
+    // from stackoverflow
+    private static URI getJarURI()
+            throws URISyntaxException
+    {
+        final ProtectionDomain domain;
+        final CodeSource       source;
+        final URL              url;
+        final URI              uri;
+
+        domain = Main.class.getProtectionDomain();
+        source = domain.getCodeSource();
+        url    = source.getLocation();
+        uri    = url.toURI();
+
+        return (uri);
+    }
+
+    private static URI getFile(final URI    where,
+                               final String fileName)
+            throws ZipException,
+            IOException
+    {
+        final File location;
+        final URI  fileURI;
+
+        location = new File(where);
+
+        // not in a JAR, just return the path on disk
+        if(location.isDirectory())
+        {
+            fileURI = URI.create(where.toString() + fileName);
+        }
+        else
+        {
+            final ZipFile zipFile;
+
+            zipFile = new ZipFile(location);
+
+            try
+            {
+                fileURI = extract(zipFile, fileName);
+            }
+            finally
+            {
+                zipFile.close();
+            }
+        }
+
+        return (fileURI);
+    }
+
+    private static URI extract(final ZipFile zipFile,
+                               final String  fileName)
+            throws IOException
+    {
+        final File         tempFile;
+        final ZipEntry     entry;
+        final InputStream  zipStream;
+        OutputStream       fileStream;
+
+        tempFile = File.createTempFile(fileName, Long.toString(System.currentTimeMillis()));
+        tempFile.deleteOnExit();
+        entry    = zipFile.getEntry(fileName);
+
+        if(entry == null)
+        {
+            throw new FileNotFoundException("cannot find file: " + fileName + " in archive: " + zipFile.getName());
+        }
+
+        zipStream  = zipFile.getInputStream(entry);
+        fileStream = null;
+
+        try
+        {
+            final byte[] buf;
+            int          i;
+
+            fileStream = new FileOutputStream(tempFile);
+            buf        = new byte[1024];
+            i          = 0;
+
+            while((i = zipStream.read(buf)) != -1)
+            {
+                fileStream.write(buf, 0, i);
+            }
+        }
+        finally
+        {
+            close(zipStream);
+            close(fileStream);
+        }
+
+        return (tempFile.toURI());
+    }
+
+    private static void close(final Closeable stream)
+    {
+        if(stream != null)
+        {
+            try
+            {
+                stream.close();
+            }
+            catch(final IOException ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+    }
 }

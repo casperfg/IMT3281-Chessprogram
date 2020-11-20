@@ -50,7 +50,7 @@ public class Piece{
         }
         return false;
     }
-    public void addWithAvoid(Chessboard board, int xt, int yt){
+    public void addWithAvoid(Chessboard board, int xt, int yt){ // add to list if it avoids check
         if(board.checkForChecks && !board.check){ // if in check, the possible moves are given.
             if(avoidCheck(board, xt, yt)){
                 possibleMoves.add(new int[]{xt, yt});
@@ -59,7 +59,7 @@ public class Piece{
             possibleMoves.add(new int[]{xt, yt});
         }
     }
-    public void addPoss(Chessboard board, int dx, int dy){
+    public void addPoss(Chessboard board, int dx, int dy){ // add this vector to the list
         int xt = position[0]+dx;
         int yt = position[1]+dy;
         if(board.legalMove(position[0], position[1], xt, yt) ) {

@@ -57,10 +57,12 @@ public class Tile extends Button {
     }
 
     public void possible(Chessboard chBoard, boolean setHighlight) {
-        chessPiece.removePossible();
-        chessPiece.possible(chBoard);
-        if(setHighlight) {
-            setHighlight(chBoard);
+        if(hasPiece) {
+            chessPiece.removePossible();
+            chessPiece.possible(chBoard);
+            if (setHighlight) {
+                setHighlight(chBoard);
+            }
         }
     }
     public ArrayList<int[]> retPossible(){
