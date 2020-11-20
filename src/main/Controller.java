@@ -190,8 +190,4 @@ public class Controller {
             System.exit(-1);
         }
     }
-
-    public void ISMATE() {
-        System.out.println("MATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    }
 }

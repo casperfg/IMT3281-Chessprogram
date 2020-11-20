@@ -211,13 +211,12 @@ public class Chessboard {
             }
         }
         if(checkAvoid.isEmpty()){
-            cnt.ISMATE();
             isMate = true;
         }
     }
 
     public void specialMoves(int x, int y, int xt, int yt, Piece fPiece) {
-        if (board[yt][xt].tileName.equals(enPassantSquare)) { // is taking enpassant
+        if (board[yt][xt].tileName.equals(enPassantSquare) && checkForChecks) { // is taking enpassant
             updatePieceLeft(board[pawnPassant[1]][pawnPassant[0]].chessPiece, -1);
             board[pawnPassant[1]][pawnPassant[0]].removePiece();
         }
@@ -257,7 +256,7 @@ public class Chessboard {
                 piecesLeft[5] -= 1; // remove pawn from pieces left
                 updatePieceLeft(board[yt][xt].chessPiece, 1); // add new piece to piece left.
                 promotionTo = '-';
-            } else if (yt - y != 1) { // 2 squares up
+            } else if (Math.abs(yt - y) != 1) { // 2 squares up
                 enPassantSquare = board[(fPiece.color) ? 5 : 2][xt].tileName;
                 pawnPassant = new int[]{xt, yt};
             }
