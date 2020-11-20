@@ -5,13 +5,11 @@ import main.networking.Client;
 import main.networking.NetworkConnection;
 import main.networking.Server;
 
-import java.io.*;
-import java.util.Scanner;
-
+import java.io.Serializable;
 
 public class Controller {
     public Chessboard chessboard;
-    public String game = "e-e";
+    public String game;
     public EngineHandler engineHandler;
     public Boolean firstRun = true;
     public Boolean engineRunning = true; // wether engine is running or not
@@ -48,8 +46,6 @@ public class Controller {
             engineRunning = false;
         }
     }
-
-    File difficultyFile = new File("./res/text/difficulty.txt");
 
     public void startConnection() {
         connection = (isServer ? createServer() : createClient());
@@ -91,7 +87,6 @@ public class Controller {
         }
         return false;
     }
-
 
     public Boolean engVsEng() {
         String ret = engineHandler.checkWorker(); // check workerThread
@@ -153,7 +148,6 @@ public class Controller {
 
     private Boolean humVsEng() {
         String ret = engineHandler.checkWorker(); // check workerThread
-        Boolean thinking = false;
         if (!ret.equals("-1")) {
             gameCheck(ret);
             chessboard.move(ret);
@@ -163,19 +157,11 @@ public class Controller {
     }
 
     private Server createServer() {
-        return new Server(port, data -> {
-            Platform.runLater(() -> {
-                handleData(data);
-            });
-        });
+        return new Server(port, data -> Platform.runLater(() -> handleData(data)));
     }
 
     private Client createClient() {
-        return new Client(ip, port, data -> {
-            Platform.runLater(() -> {
-                handleData(data);
-            });
-        });
+        return new Client(ip, port, data -> Platform.runLater(() -> handleData(data)));
     }
 
     // This is called everytime the connection receives data
